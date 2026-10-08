@@ -1,0 +1,62 @@
+{
+  "id": "onc_alk_missing_flip_005",
+  "title": "Missing ALK result versus positive ALK result",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "task": "As of the decision date, determine eligibility for the ALTA-ALK trial requiring metastatic NSCLC with ALK rearrangement positive status and ECOG 0-2.",
+  "base_patient": {
+    "id": "syn-onc-005A",
+    "as_of": "2025-04-12",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250401_oncology",
+        "date": "2025-04-01",
+        "type": "oncology_note",
+        "text": "Metastatic NSCLC adenocarcinoma. ECOG 1. Molecular testing pending."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-005B",
+    "as_of": "2025-04-12",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250401_oncology",
+        "date": "2025-04-01",
+        "type": "oncology_note",
+        "text": "Metastatic NSCLC adenocarcinoma. ECOG 1."
+      },
+      {
+        "id": "path_20250408_alk",
+        "date": "2025-04-08",
+        "type": "pathology",
+        "text": "FISH confirms ALK rearrangement positive."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "insufficient",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": ["note_20250401_oncology"],
+      "variant": ["path_20250408_alk"]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The base chart lacks required ALK evidence; the variant includes definitive ALK-positive evidence."
+}
+

@@ -1,0 +1,86 @@
+{
+  "id": "onc_temporal_leakage_004",
+  "title": "Future progression note must not affect decision",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "task": "As of the decision date, determine eligibility for the STABLE-EGFR trial requiring EGFR-positive NSCLC, ECOG 0-1, and no documented progression before the decision date.",
+  "base_patient": {
+    "id": "syn-onc-004A",
+    "as_of": "2025-02-15",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Hispanic",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250109_egfr",
+        "date": "2025-01-09",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive."
+      },
+      {
+        "id": "note_20250201_ecog",
+        "date": "2025-02-01",
+        "type": "oncology_note",
+        "text": "ECOG 1. No new symptoms."
+      },
+      {
+        "id": "img_20250210_stable",
+        "date": "2025-02-10",
+        "type": "imaging",
+        "text": "CT scan shows stable disease."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-004B",
+    "as_of": "2025-02-15",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Hispanic",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250109_egfr",
+        "date": "2025-01-09",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive."
+      },
+      {
+        "id": "note_20250201_ecog",
+        "date": "2025-02-01",
+        "type": "oncology_note",
+        "text": "ECOG 1. No new symptoms."
+      },
+      {
+        "id": "img_20250210_stable",
+        "date": "2025-02-10",
+        "type": "imaging",
+        "text": "CT scan shows stable disease."
+      },
+      {
+        "id": "img_20250301_future_progression",
+        "date": "2025-03-01",
+        "type": "imaging",
+        "text": "CT scan performed after the decision date shows progressive disease."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "eligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": ["path_20250109_egfr", "img_20250210_stable"],
+      "variant": ["path_20250109_egfr", "img_20250210_stable"]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The future progression note is unavailable on the decision date and must not change the decision."
+}
+

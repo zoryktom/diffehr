@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: "DiffEHR: Counterfactual Contract Testing for Clinical AI Systems"
+message: "If you use DiffEHR in research, please cite this software artifact."
+type: software
+authors:
+  - name: "DiffEHR Contributors"
+version: "0.1.0"
+license: "Apache-2.0"
+keywords:
+  - biomedical informatics
+  - clinical AI
+  - counterfactual evaluation
+  - synthetic EHR
+  - FHIR
+

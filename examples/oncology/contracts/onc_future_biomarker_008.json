@@ -1,0 +1,62 @@
+{
+  "id": "onc_future_biomarker_008",
+  "title": "Future biomarker result must not create eligibility",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "task": "As of the decision date, determine eligibility for an EGFR-directed trial requiring documented EGFR exon 19 deletion or L858R before enrollment.",
+  "base_patient": {
+    "id": "syn-onc-008A",
+    "as_of": "2025-07-10",
+    "attributes": {
+      "age": 70,
+      "sex": "male",
+      "race": "White",
+      "insurance": "Medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250701_molecular",
+        "date": "2025-07-01",
+        "type": "oncology_note",
+        "text": "Molecular testing pending. No EGFR result available yet."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-008B",
+    "as_of": "2025-07-10",
+    "attributes": {
+      "age": 70,
+      "sex": "male",
+      "race": "White",
+      "insurance": "Medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250701_molecular",
+        "date": "2025-07-01",
+        "type": "oncology_note",
+        "text": "Molecular testing pending. No EGFR result available yet."
+      },
+      {
+        "id": "path_20250720_future_egfr",
+        "date": "2025-07-20",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive. This result became available after the decision date."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "insufficient",
+    "variant_decision": "insufficient",
+    "required_citations": {
+      "base": ["note_20250701_molecular"],
+      "variant": ["note_20250701_molecular"]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The future biomarker result is not available at the decision time and must not be used."
+}
+

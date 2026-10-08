@@ -1,0 +1,68 @@
+{
+  "id": "onc_ecog_trial_flip_003",
+  "title": "ECOG performance status flip changes eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "task": "As of the decision date, determine eligibility for the ECOG-LUNG trial requiring metastatic NSCLC, EGFR-positive disease, and ECOG performance status 0-1.",
+  "base_patient": {
+    "id": "syn-onc-003A",
+    "as_of": "2025-03-01",
+    "attributes": {
+      "age": 71,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "Medicare"
+    },
+    "record": [
+      {
+        "id": "path_20250201_egfr",
+        "date": "2025-02-01",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive in metastatic lung adenocarcinoma."
+      },
+      {
+        "id": "note_20250220_ecog",
+        "date": "2025-02-20",
+        "type": "oncology_note",
+        "text": "ECOG performance status is 1. Patient ambulates independently."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-003B",
+    "as_of": "2025-03-01",
+    "attributes": {
+      "age": 71,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "Medicare"
+    },
+    "record": [
+      {
+        "id": "path_20250201_egfr",
+        "date": "2025-02-01",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive in metastatic lung adenocarcinoma."
+      },
+      {
+        "id": "note_20250220_ecog",
+        "date": "2025-02-20",
+        "type": "oncology_note",
+        "text": "ECOG performance status is 3. Patient spends more than half the day in bed or chair."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": ["note_20250220_ecog"],
+      "variant": ["note_20250220_ecog"]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "ECOG status is the controlled eligibility change."
+}
+
