@@ -25,7 +25,42 @@
         "type": "oncology_note",
         "text": "Breast cancer biopsy sent for HER2 testing; result pending as of decision date."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-011A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-011A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-09-30",
+            "description": "Breast cancer biopsy sent for HER2 testing; result pending as of decision date.",
+            "id": "note_20250930_biopsy_pending",
+            "subject": {
+              "reference": "Patient/syn-onc-011A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-011B",
@@ -49,7 +84,57 @@
         "type": "pathology",
         "text": "HER2 3+ positive result finalized 48 hours after the decision index."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-011B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-011B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-09-30",
+            "description": "Breast cancer biopsy sent for HER2 testing; result pending as of decision date.",
+            "id": "note_20250930_biopsy_pending",
+            "subject": {
+              "reference": "Patient/syn-onc-011B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-10-03",
+            "valueString": "HER2 3+ positive result finalized 48 hours after the decision index.",
+            "id": "path_20251003_future_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-011B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

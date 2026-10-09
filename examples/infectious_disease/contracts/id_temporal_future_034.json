@@ -1,0 +1,256 @@
+{
+  "id": "id_temporal_future_034",
+  "title": "Post-admission sputum susceptibility must not alter time-zero plan",
+  "domain": "infectious_disease",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "empiric_broad_spectrum",
+    "narrow_therapy"
+  ],
+  "task": "As of the decision date, choose antimicrobial strategy: empiric_broad_spectrum while cultures are pending, or narrow_therapy only when susceptibility results are available at the decision date.",
+  "base_patient": {
+    "id": "syn-id-034A",
+    "as_of": "2025-10-14",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "enc_20251011_admit",
+        "date": "2025-10-11",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251012_cx",
+        "date": "2025-10-12",
+        "type": "lab",
+        "text": "Sputum culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251012_abx",
+        "date": "2025-10-12",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-034A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-034A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-11"
+            },
+            "id": "enc_20251011_admit",
+            "subject": {
+              "reference": "Patient/syn-id-034A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Sputum culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-12",
+            "id": "lab_20251012_cx",
+            "subject": {
+              "reference": "Patient/syn-id-034A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-12",
+            "id": "med_20251012_abx",
+            "subject": {
+              "reference": "Patient/syn-id-034A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-034B",
+    "as_of": "2025-10-14",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "enc_20251011_admit",
+        "date": "2025-10-11",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251012_cx",
+        "date": "2025-10-12",
+        "type": "lab",
+        "text": "Sputum culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251012_abx",
+        "date": "2025-10-12",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      },
+      {
+        "id": "lab_20251017_future_susceptibility",
+        "date": "2025-10-17",
+        "type": "lab",
+        "text": "Culture sensitivity report dated 72 hours after admission: sputum isolate susceptible to ampicillin."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-034B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-034B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-11"
+            },
+            "id": "enc_20251011_admit",
+            "subject": {
+              "reference": "Patient/syn-id-034B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Sputum culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-12",
+            "id": "lab_20251012_cx",
+            "subject": {
+              "reference": "Patient/syn-id-034B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-12",
+            "id": "med_20251012_abx",
+            "subject": {
+              "reference": "Patient/syn-id-034B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Culture sensitivity report dated 72 hours after admission: sputum isolate susceptible to ampicillin."
+            },
+            "effectiveDateTime": "2025-10-17",
+            "id": "lab_20251017_future_susceptibility",
+            "subject": {
+              "reference": "Patient/syn-id-034B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "empiric_broad_spectrum",
+    "variant_decision": "empiric_broad_spectrum",
+    "required_citations": {
+      "base": [
+        "lab_20251012_cx",
+        "med_20251012_abx"
+      ],
+      "variant": [
+        "lab_20251012_cx",
+        "med_20251012_abx"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "A culture sensitivity report resulting 72 hours after admission cannot inform the time-zero decision.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-10-14",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a susceptibility report dated after the decision date.",
+    "changed_fields": [
+      "record.future_susceptibility"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

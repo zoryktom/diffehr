@@ -1,11 +1,15 @@
 cff-version: 1.2.0
-title: "DiffEHR: Counterfactual Contract Testing for Clinical AI Systems"
+title: "DiffEHR: Counterfactual Contract Testing for Clinical AI Systems on Synthetic FHIR Records"
 message: "If you use DiffEHR in research, please cite this software artifact."
 type: software
 authors:
-  - name: "Zorykto Mykola"
+  - family-names: "Zorykto"
+    given-names: "Mykola"
 version: "0.2.0"
+date-released: "2026-10-09"
 license: "Apache-2.0"
+repository-code: "https://github.com/zoryktom/diffehr"
+abstract: "Executable counterfactual contracts over paired synthetic FHIR R4 records for testing clinical AI sensitivity, invariance, temporal validity and evidence citation."
 keywords:
   - biomedical informatics
   - clinical AI

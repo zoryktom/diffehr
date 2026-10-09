@@ -33,7 +33,57 @@
         "type": "laboratory",
         "text": "Creatinine clearance 42 mL/min. Renal function permits labeled DOAC use."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-001A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-001A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-03-01",
+            "description": "Persistent non-valvular atrial fibrillation with CHA2DS2-VASc score 5. No mechanical valve or moderate mitral stenosis.",
+            "id": "card_note_20250301_af",
+            "subject": {
+              "reference": "Patient/syn-card-001A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-03-03",
+            "valueString": "Creatinine clearance 42 mL/min. Renal function permits labeled DOAC use.",
+            "id": "card_lab_20250303_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-001A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-001B",
@@ -59,7 +109,57 @@
         "type": "laboratory",
         "text": "Creatinine clearance 12 mL/min, below 15 mL/min, severe renal failure and DOAC contraindication."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-001B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-001B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-03-01",
+            "description": "Persistent non-valvular atrial fibrillation with CHA2DS2-VASc score 5. No mechanical valve or moderate mitral stenosis.",
+            "id": "card_note_20250301_af",
+            "subject": {
+              "reference": "Patient/syn-card-001B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-03-03",
+            "valueString": "Creatinine clearance 12 mL/min, below 15 mL/min, severe renal failure and DOAC contraindication.",
+            "id": "card_lab_20250303_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-001B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

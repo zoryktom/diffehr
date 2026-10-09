@@ -3,7 +3,11 @@
   "title": "Paclitaxel allergy changes medication safety decision",
   "domain": "oncology",
   "contract_type": "clinical_sensitivity",
-  "allowed_decisions": ["safe", "unsafe", "insufficient"],
+  "allowed_decisions": [
+    "safe",
+    "unsafe",
+    "insufficient"
+  ],
   "task": "As of the decision date, determine whether paclitaxel is safe to include in the next chemotherapy plan based only on documented allergy and infusion reaction history.",
   "base_patient": {
     "id": "syn-onc-007A",
@@ -21,7 +25,42 @@
         "type": "oncology_note",
         "text": "Discussed carboplatin and paclitaxel. Allergies reviewed: no known drug allergies."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-007A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-007A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-05-22",
+            "description": "Discussed carboplatin and paclitaxel. Allergies reviewed: no known drug allergies.",
+            "id": "note_20250522_chemo",
+            "subject": {
+              "reference": "Patient/syn-onc-007A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-007B",
@@ -39,18 +78,56 @@
         "type": "oncology_note",
         "text": "Prior paclitaxel infusion caused anaphylaxis with hypotension and wheezing. Paclitaxel listed as severe allergy."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-007B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-007B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-05-22",
+            "description": "Prior paclitaxel infusion caused anaphylaxis with hypotension and wheezing. Paclitaxel listed as severe allergy.",
+            "id": "note_20250522_chemo",
+            "subject": {
+              "reference": "Patient/syn-onc-007B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",
     "base_decision": "safe",
     "variant_decision": "unsafe",
     "required_citations": {
-      "base": ["note_20250522_chemo"],
-      "variant": ["note_20250522_chemo"]
+      "base": [
+        "note_20250522_chemo"
+      ],
+      "variant": [
+        "note_20250522_chemo"
+      ]
     },
     "forbidden_after_as_of": true
   },
   "clinical_rationale": "A severe paclitaxel reaction is the controlled contraindication-like change."
 }
-

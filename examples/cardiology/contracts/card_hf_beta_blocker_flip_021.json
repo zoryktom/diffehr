@@ -1,0 +1,153 @@
+{
+  "id": "card_hf_beta_blocker_flip_021",
+  "title": "Resolution of decompensation permits beta-blocker initiation",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "start",
+    "defer",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to start an evidence-based beta-blocker for HFrEF (start, defer, or insufficient).",
+  "base_patient": {
+    "id": "syn-card-021A",
+    "as_of": "2025-06-19",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250615_hf",
+        "date": "2025-06-15",
+        "type": "cardiology_note",
+        "text": "Acute decompensated heart failure with pulmonary edema, hypotension and inotropes, LVEF 28 percent."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-021A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-021A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Acute decompensated heart failure with pulmonary edema, hypotension and inotropes, LVEF 28 percent."
+            },
+            "recordedDate": "2025-06-15",
+            "id": "note_20250615_hf",
+            "subject": {
+              "reference": "Patient/syn-card-021A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-021B",
+    "as_of": "2025-06-19",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250615_hf",
+        "date": "2025-06-15",
+        "type": "cardiology_note",
+        "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-021B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-021B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+            },
+            "recordedDate": "2025-06-15",
+            "id": "note_20250615_hf",
+            "subject": {
+              "reference": "Patient/syn-card-021B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "defer",
+    "variant_decision": "start",
+    "required_citations": {
+      "base": [
+        "note_20250615_hf"
+      ],
+      "variant": [
+        "note_20250615_hf"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Once euvolemic and hemodynamically stable, guideline therapy can be initiated.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-06-19",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace acute decompensation with stable euvolemic status.",
+    "changed_fields": [
+      "record.hf.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

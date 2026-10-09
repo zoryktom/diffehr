@@ -31,7 +31,57 @@
         "type": "echocardiogram",
         "text": "Baseline LVEF 40 percent, below treatment threshold."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-016A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-016A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-12-01",
+            "valueString": "HER2 3+ positive by IHC.",
+            "id": "path_20251201_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-016A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-12-05",
+            "valueString": "Baseline LVEF 40 percent, below treatment threshold.",
+            "id": "echo_20251205_lvef_low",
+            "subject": {
+              "reference": "Patient/syn-onc-016A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-016B",
@@ -61,7 +111,72 @@
         "type": "echocardiogram",
         "text": "After the decision date, repeat echo shows LVEF recovered to 55 percent."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-016B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-016B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-12-01",
+            "valueString": "HER2 3+ positive by IHC.",
+            "id": "path_20251201_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-016B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-12-05",
+            "valueString": "Baseline LVEF 40 percent, below treatment threshold.",
+            "id": "echo_20251205_lvef_low",
+            "subject": {
+              "reference": "Patient/syn-onc-016B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-12-12",
+            "valueString": "After the decision date, repeat echo shows LVEF recovered to 55 percent.",
+            "id": "echo_20251212_future_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-016B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

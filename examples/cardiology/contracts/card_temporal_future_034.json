@@ -1,0 +1,175 @@
+{
+  "id": "card_temporal_future_034",
+  "title": "Post-decision stroke result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "recommended",
+    "contraindicated",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether anticoagulation is recommended for non-valvular atrial fibrillation (recommended, contraindicated, or insufficient).",
+  "base_patient": {
+    "id": "syn-card-034A",
+    "as_of": "2025-10-14",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250914_af",
+        "date": "2025-09-14",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4. Creatinine clearance 70 mL/min, no contraindication."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-034A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-034A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4. Creatinine clearance 70 mL/min, no contraindication."
+            },
+            "recordedDate": "2025-09-14",
+            "id": "note_20250914_af",
+            "subject": {
+              "reference": "Patient/syn-card-034A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-034B",
+    "as_of": "2025-10-14",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250914_af",
+        "date": "2025-09-14",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4. Creatinine clearance 70 mL/min, no contraindication."
+      },
+      {
+        "id": "note_20251028_future_stroke",
+        "date": "2025-10-28",
+        "type": "cardiology_note",
+        "text": "Embolic stroke documented after the decision date."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-034B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-034B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4. Creatinine clearance 70 mL/min, no contraindication."
+            },
+            "recordedDate": "2025-09-14",
+            "id": "note_20250914_af",
+            "subject": {
+              "reference": "Patient/syn-card-034B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Embolic stroke documented after the decision date."
+            },
+            "recordedDate": "2025-10-28",
+            "id": "note_20251028_future_stroke",
+            "subject": {
+              "reference": "Patient/syn-card-034B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "recommended",
+    "variant_decision": "recommended",
+    "required_citations": {
+      "base": [
+        "note_20250914_af"
+      ],
+      "variant": [
+        "note_20250914_af"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-10-14",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

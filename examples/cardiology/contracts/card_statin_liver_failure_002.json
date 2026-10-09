@@ -33,7 +33,57 @@
         "type": "laboratory",
         "text": "AST 32 U/L and ALT 28 U/L; no active liver failure."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-002A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-002A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 59, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "discharge_summary"
+            },
+            "date": "2025-04-01",
+            "description": "NSTEMI treated medically. Secondary prevention with high-intensity statin is indicated.",
+            "id": "card_note_20250401_mi",
+            "subject": {
+              "reference": "Patient/syn-card-002A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-04-03",
+            "valueString": "AST 32 U/L and ALT 28 U/L; no active liver failure.",
+            "id": "card_lab_20250403_lft",
+            "subject": {
+              "reference": "Patient/syn-card-002A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-002B",
@@ -59,7 +109,57 @@
         "type": "laboratory",
         "text": "Acute liver failure with AST 920 U/L and ALT 1100 U/L, active transaminitis."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-002B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-002B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 59, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "discharge_summary"
+            },
+            "date": "2025-04-01",
+            "description": "NSTEMI treated medically. Secondary prevention would otherwise call for high-intensity statin.",
+            "id": "card_note_20250401_mi",
+            "subject": {
+              "reference": "Patient/syn-card-002B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-04-03",
+            "valueString": "Acute liver failure with AST 920 U/L and ALT 1100 U/L, active transaminitis.",
+            "id": "card_lab_20250403_lft",
+            "subject": {
+              "reference": "Patient/syn-card-002B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

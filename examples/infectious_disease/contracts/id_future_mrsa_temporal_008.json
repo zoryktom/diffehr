@@ -26,7 +26,42 @@
         "type": "medication",
         "text": "Vancomycin started empirically for severe pneumonia with MRSA PCR pending."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-008A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-008A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 69, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Vancomycin started empirically for severe pneumonia with MRSA PCR pending."
+            },
+            "authoredOn": "2025-08-10",
+            "id": "id_abx_20250810_vanc",
+            "subject": {
+              "reference": "Patient/syn-id-008A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-008B",
@@ -51,7 +86,57 @@
         "type": "microbiology",
         "text": "After the decision date, MRSA nasal PCR returned negative."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-008B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-008B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 69, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Vancomycin started empirically for severe pneumonia with MRSA PCR pending."
+            },
+            "authoredOn": "2025-08-10",
+            "id": "id_abx_20250810_vanc",
+            "subject": {
+              "reference": "Patient/syn-id-008B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "microbiology"
+            },
+            "effectiveDateTime": "2025-08-13",
+            "valueString": "After the decision date, MRSA nasal PCR returned negative.",
+            "id": "id_lab_20250813_future_mrsa",
+            "subject": {
+              "reference": "Patient/syn-id-008B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

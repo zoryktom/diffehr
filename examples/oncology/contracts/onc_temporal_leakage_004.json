@@ -3,7 +3,11 @@
   "title": "Future progression note must not affect decision",
   "domain": "oncology",
   "contract_type": "temporal_validity",
-  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
   "task": "As of the decision date, determine eligibility for the STABLE-EGFR trial requiring EGFR-positive NSCLC, ECOG 0-1, and no documented progression before the decision date.",
   "base_patient": {
     "id": "syn-onc-004A",
@@ -33,7 +37,72 @@
         "type": "imaging",
         "text": "CT scan shows stable disease."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-004A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-004A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Hispanic\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-09",
+            "valueString": "EGFR exon 19 deletion positive.",
+            "id": "path_20250109_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-004A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-02-01",
+            "description": "ECOG 1. No new symptoms.",
+            "id": "note_20250201_ecog",
+            "subject": {
+              "reference": "Patient/syn-onc-004A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-10",
+            "valueString": "CT scan shows stable disease.",
+            "id": "img_20250210_stable",
+            "subject": {
+              "reference": "Patient/syn-onc-004A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-004B",
@@ -69,18 +138,103 @@
         "type": "imaging",
         "text": "CT scan performed after the decision date shows progressive disease."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-004B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-004B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Hispanic\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-09",
+            "valueString": "EGFR exon 19 deletion positive.",
+            "id": "path_20250109_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-004B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-02-01",
+            "description": "ECOG 1. No new symptoms.",
+            "id": "note_20250201_ecog",
+            "subject": {
+              "reference": "Patient/syn-onc-004B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-10",
+            "valueString": "CT scan shows stable disease.",
+            "id": "img_20250210_stable",
+            "subject": {
+              "reference": "Patient/syn-onc-004B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-03-01",
+            "valueString": "CT scan performed after the decision date shows progressive disease.",
+            "id": "img_20250301_future_progression",
+            "subject": {
+              "reference": "Patient/syn-onc-004B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",
     "base_decision": "eligible",
     "variant_decision": "eligible",
     "required_citations": {
-      "base": ["path_20250109_egfr", "img_20250210_stable"],
-      "variant": ["path_20250109_egfr", "img_20250210_stable"]
+      "base": [
+        "path_20250109_egfr",
+        "img_20250210_stable"
+      ],
+      "variant": [
+        "path_20250109_egfr",
+        "img_20250210_stable"
+      ]
     },
     "forbidden_after_as_of": true
   },
   "clinical_rationale": "The future progression note is unavailable on the decision date and must not change the decision."
 }
-

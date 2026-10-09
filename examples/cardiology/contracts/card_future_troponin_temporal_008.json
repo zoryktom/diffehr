@@ -27,7 +27,42 @@
         "type": "emergency_note",
         "text": "Chest pain evaluation. NSTEMI not confirmed; troponin pending."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-008A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-008A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "emergency_note"
+            },
+            "date": "2025-09-08",
+            "description": "Chest pain evaluation. NSTEMI not confirmed; troponin pending.",
+            "id": "card_note_20250908_chestpain",
+            "subject": {
+              "reference": "Patient/syn-card-008A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-008B",
@@ -53,7 +88,57 @@
         "type": "laboratory",
         "text": "Troponin I markedly elevated after the decision date, confirming NSTEMI."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-008B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-008B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "emergency_note"
+            },
+            "date": "2025-09-08",
+            "description": "Chest pain evaluation. NSTEMI not confirmed; troponin pending.",
+            "id": "card_note_20250908_chestpain",
+            "subject": {
+              "reference": "Patient/syn-card-008B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-09-12",
+            "valueString": "Troponin I markedly elevated after the decision date, confirming NSTEMI.",
+            "id": "card_lab_20250912_future_trop",
+            "subject": {
+              "reference": "Patient/syn-card-008B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

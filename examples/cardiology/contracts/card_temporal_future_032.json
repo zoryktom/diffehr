@@ -1,0 +1,213 @@
+{
+  "id": "card_temporal_future_032",
+  "title": "Post-decision creatinine result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "recommended",
+    "reduced_dose",
+    "contraindicated"
+  ],
+  "task": "As of the decision date, choose the anticoagulation plan for non-valvular atrial fibrillation (CHA2DS2-VASc 4): recommended standard-dose DOAC, reduced_dose DOAC for creatinine clearance 15-50 mL/min, or contraindicated when creatinine clearance is below 15 mL/min.",
+  "base_patient": {
+    "id": "syn-card-032A",
+    "as_of": "2025-09-26",
+    "attributes": {
+      "age": 68,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250728_af",
+        "date": "2025-07-28",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+      },
+      {
+        "id": "lab_20250923_crcl",
+        "date": "2025-09-23",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-032A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-032A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 68, \"insurance\": \"medicare\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+            },
+            "recordedDate": "2025-07-28",
+            "id": "note_20250728_af",
+            "subject": {
+              "reference": "Patient/syn-card-032A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+            },
+            "effectiveDateTime": "2025-09-23",
+            "id": "lab_20250923_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-032A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-032B",
+    "as_of": "2025-09-26",
+    "attributes": {
+      "age": 68,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250728_af",
+        "date": "2025-07-28",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+      },
+      {
+        "id": "lab_20250923_crcl",
+        "date": "2025-09-23",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+      },
+      {
+        "id": "lab_20251010_future_creatinine",
+        "date": "2025-10-10",
+        "type": "lab",
+        "text": "Creatinine clearance 11 mL/min measured after the decision date, below 15 mL/min."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-032B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-032B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 68, \"insurance\": \"medicare\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+            },
+            "recordedDate": "2025-07-28",
+            "id": "note_20250728_af",
+            "subject": {
+              "reference": "Patient/syn-card-032B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+            },
+            "effectiveDateTime": "2025-09-23",
+            "id": "lab_20250923_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-032B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance 11 mL/min measured after the decision date, below 15 mL/min."
+            },
+            "effectiveDateTime": "2025-10-10",
+            "id": "lab_20251010_future_creatinine",
+            "subject": {
+              "reference": "Patient/syn-card-032B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "recommended",
+    "variant_decision": "recommended",
+    "required_citations": {
+      "base": [
+        "lab_20250923_crcl"
+      ],
+      "variant": [
+        "lab_20250923_crcl"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-09-26",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

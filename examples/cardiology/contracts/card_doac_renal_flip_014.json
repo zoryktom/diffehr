@@ -1,0 +1,193 @@
+{
+  "id": "card_doac_renal_flip_014",
+  "title": "dabigatran renal boundary moves decision from recommended to reduced_dose",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "recommended",
+    "reduced_dose",
+    "contraindicated"
+  ],
+  "task": "As of the decision date, choose the anticoagulation plan for non-valvular atrial fibrillation (CHA2DS2-VASc 4): recommended standard-dose DOAC, reduced_dose DOAC for creatinine clearance 15-50 mL/min, or contraindicated when creatinine clearance is below 15 mL/min.",
+  "base_patient": {
+    "id": "syn-card-014A",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250216_af",
+        "date": "2025-02-16",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for dabigatran anticoagulation."
+      },
+      {
+        "id": "lab_20250414_crcl",
+        "date": "2025-04-14",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-014A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-014A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for dabigatran anticoagulation."
+            },
+            "recordedDate": "2025-02-16",
+            "id": "note_20250216_af",
+            "subject": {
+              "reference": "Patient/syn-card-014A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+            },
+            "effectiveDateTime": "2025-04-14",
+            "id": "lab_20250414_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-014A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-014B",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250216_af",
+        "date": "2025-02-16",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for dabigatran anticoagulation."
+      },
+      {
+        "id": "lab_20250414_crcl",
+        "date": "2025-04-14",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 28 mL/min, between 15 and 50 mL/min."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-014B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-014B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for dabigatran anticoagulation."
+            },
+            "recordedDate": "2025-02-16",
+            "id": "note_20250216_af",
+            "subject": {
+              "reference": "Patient/syn-card-014B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 28 mL/min, between 15 and 50 mL/min."
+            },
+            "effectiveDateTime": "2025-04-14",
+            "id": "lab_20250414_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-014B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "recommended",
+    "variant_decision": "reduced_dose",
+    "required_citations": {
+      "base": [
+        "lab_20250414_crcl"
+      ],
+      "variant": [
+        "lab_20250414_crcl"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "DOAC dosing and eligibility follow creatinine clearance bands (below 15, 15-50, above 50 mL/min).",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-04-17",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the creatinine clearance to the next band.",
+    "changed_fields": [
+      "record.crcl.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

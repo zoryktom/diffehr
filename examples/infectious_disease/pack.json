@@ -2,6 +2,7 @@
   "id": "diffehr-infectious_disease",
   "title": "DiffEHR Infectious Disease Contract Pack",
   "domain": "infectious_disease",
-  "n_contracts": 8,
-  "schema_version": "0.2"
+  "n_contracts": 40,
+  "schema_version": "0.2",
+  "description": "40 paired synthetic infectious disease EHR contracts for testing clinical counterfactual consistency."
 }

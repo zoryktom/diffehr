@@ -32,7 +32,57 @@
         "type": "echocardiogram",
         "text": "Baseline LVEF 60 percent."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-014A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-014A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-11-02",
+            "valueString": "HER2 3+ positive by IHC.",
+            "id": "path_20251102_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-014A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-11-07",
+            "valueString": "Baseline LVEF 60 percent.",
+            "id": "echo_20251107_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-014A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-014B",
@@ -57,7 +107,57 @@
         "type": "echocardiogram",
         "text": "Baseline LVEF 60 percent."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-014B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-014B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"primary_language\": \"Vietnamese\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-11-02",
+            "valueString": "HER2 3+ positive by IHC.",
+            "id": "path_20251102_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-014B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-11-07",
+            "valueString": "Baseline LVEF 60 percent.",
+            "id": "echo_20251107_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-014B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

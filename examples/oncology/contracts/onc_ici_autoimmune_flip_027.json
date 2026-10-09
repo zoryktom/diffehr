@@ -1,0 +1,199 @@
+{
+  "id": "onc_ici_autoimmune_flip_027",
+  "title": "Active myasthenia gravis flare flips checkpoint inhibitor eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for immune checkpoint inhibitor therapy for metastatic melanoma; active severe autoimmune disease is a contraindication.",
+  "base_patient": {
+    "id": "syn-onc-027A",
+    "as_of": "2025-06-01",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250502_mel",
+        "date": "2025-05-02",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250522_aid",
+        "date": "2025-05-22",
+        "type": "oncology_note",
+        "text": "History of myasthenia gravis, in remission on no immunosuppression. No active autoimmune flare."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-027A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-027A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-02",
+            "id": "note_20250502_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-027A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of myasthenia gravis, in remission on no immunosuppression. No active autoimmune flare."
+            },
+            "recordedDate": "2025-05-22",
+            "id": "note_20250522_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-027A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-027B",
+    "as_of": "2025-06-01",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250502_mel",
+        "date": "2025-05-02",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250522_aid",
+        "date": "2025-05-22",
+        "type": "oncology_note",
+        "text": "History of myasthenia gravis. Active severe autoimmune flare: myasthenia gravis exacerbation with bulbar weakness requiring prednisone 60 mg daily."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-027B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-027B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-02",
+            "id": "note_20250502_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-027B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of myasthenia gravis. Active severe autoimmune flare: myasthenia gravis exacerbation with bulbar weakness requiring prednisone 60 mg daily."
+            },
+            "recordedDate": "2025-05-22",
+            "id": "note_20250522_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-027B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "note_20250522_aid"
+      ],
+      "variant": [
+        "note_20250522_aid"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Active severe autoimmune disease is a contraindication to checkpoint inhibitor therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-06-01",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace quiescent myasthenia gravis with an active severe flare.",
+    "changed_fields": [
+      "record.aid.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not clear checkpoint inhibitor therapy during an active severe flare."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

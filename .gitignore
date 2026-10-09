@@ -13,13 +13,12 @@ evidence/runs/*
 evidence/reports/*
 !evidence/runs/.gitkeep
 !evidence/reports/.gitkeep
-!evidence/runs/oracle.json
-!evidence/runs/heuristic.json
-!evidence/runs/reckless.json
 !evidence/runs/full/
 !evidence/runs/full/*.json
+!evidence/runs/fuzz/
+!evidence/runs/fuzz/*.json
 !evidence/runs/fuzz_findings.json
 !evidence/runs/replayed_finding.json
-!evidence/reports/demo.md
 !evidence/reports/full_benchmark_report.md
 !evidence/reports/failure_analysis.md
+!evidence/reports/benchmark_summary.md

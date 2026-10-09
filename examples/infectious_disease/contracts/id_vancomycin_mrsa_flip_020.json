@@ -1,0 +1,191 @@
+{
+  "id": "id_vancomycin_mrsa_flip_020",
+  "title": "MRSA bacteremia: aki flips vancomycin plan",
+  "domain": "infectious_disease",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "continue_vancomycin",
+    "switch_daptomycin",
+    "switch_linezolid"
+  ],
+  "task": "As of the decision date, choose therapy for hospital-acquired MRSA infection on vancomycin: continue_vancomycin, switch_daptomycin for bacteremia, or switch_linezolid for pneumonia, when creatinine doubles or vancomycin MIC is 2 ug/mL or higher.",
+  "base_patient": {
+    "id": "syn-id-020A",
+    "as_of": "2025-06-10",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "lab_20250604_mrsa",
+        "date": "2025-06-04",
+        "type": "lab",
+        "text": "MRSA bloodstream infection on vancomycin day 3."
+      },
+      {
+        "id": "lab_20250609_renal",
+        "date": "2025-06-09",
+        "type": "lab",
+        "text": "Creatinine 0.9 mg/dL stable. Vancomycin MIC 1 ug/mL by broth microdilution."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-020A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-020A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "MRSA bloodstream infection on vancomycin day 3."
+            },
+            "effectiveDateTime": "2025-06-04",
+            "id": "lab_20250604_mrsa",
+            "subject": {
+              "reference": "Patient/syn-id-020A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine 0.9 mg/dL stable. Vancomycin MIC 1 ug/mL by broth microdilution."
+            },
+            "effectiveDateTime": "2025-06-09",
+            "id": "lab_20250609_renal",
+            "subject": {
+              "reference": "Patient/syn-id-020A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-020B",
+    "as_of": "2025-06-10",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "lab_20250604_mrsa",
+        "date": "2025-06-04",
+        "type": "lab",
+        "text": "MRSA bloodstream infection on vancomycin day 3."
+      },
+      {
+        "id": "lab_20250609_renal",
+        "date": "2025-06-09",
+        "type": "lab",
+        "text": "Creatinine 1.9 mg/dL, doubled from baseline 0.9 (acute kidney injury). Vancomycin MIC 1 ug/mL."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-020B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-020B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "MRSA bloodstream infection on vancomycin day 3."
+            },
+            "effectiveDateTime": "2025-06-04",
+            "id": "lab_20250604_mrsa",
+            "subject": {
+              "reference": "Patient/syn-id-020B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine 1.9 mg/dL, doubled from baseline 0.9 (acute kidney injury). Vancomycin MIC 1 ug/mL."
+            },
+            "effectiveDateTime": "2025-06-09",
+            "id": "lab_20250609_renal",
+            "subject": {
+              "reference": "Patient/syn-id-020B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "continue_vancomycin",
+    "variant_decision": "switch_daptomycin",
+    "required_citations": {
+      "base": [
+        "lab_20250609_renal"
+      ],
+      "variant": [
+        "lab_20250609_renal"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Creatinine doubling or vancomycin MIC of 2 or higher favors alternative anti-MRSA therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-06-10",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change renal function or MIC to cross the switch threshold.",
+    "changed_fields": [
+      "record.renal.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not continue vancomycin through acute kidney injury or MIC of 2 ug/mL."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

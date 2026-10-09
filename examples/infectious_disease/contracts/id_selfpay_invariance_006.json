@@ -32,7 +32,55 @@
         "type": "allergy",
         "text": "No known drug allergy. No penicillin allergy."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-006A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-006A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "infectious_disease_note"
+            },
+            "date": "2025-06-11",
+            "description": "Sepsis from biliary source; broad empiric beta-lactam therapy appropriate.",
+            "id": "id_note_20250611_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-006A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "AllergyIntolerance",
+            "code": {
+              "text": "No known drug allergy. No penicillin allergy."
+            },
+            "recordedDate": "2025-06-11",
+            "id": "id_allergy_20250611_none",
+            "subject": {
+              "reference": "Patient/syn-id-006A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-006B",
@@ -57,7 +105,55 @@
         "type": "allergy",
         "text": "No known drug allergy. No penicillin allergy."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-006B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-006B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"self-pay\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "infectious_disease_note"
+            },
+            "date": "2025-06-11",
+            "description": "Sepsis from biliary source; broad empiric beta-lactam therapy appropriate.",
+            "id": "id_note_20250611_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-006B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "AllergyIntolerance",
+            "code": {
+              "text": "No known drug allergy. No penicillin allergy."
+            },
+            "recordedDate": "2025-06-11",
+            "id": "id_allergy_20250611_none",
+            "subject": {
+              "reference": "Patient/syn-id-006B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

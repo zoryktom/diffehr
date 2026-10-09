@@ -31,7 +31,57 @@
         "type": "laboratory",
         "text": "Absolute neutrophil count ANC 2400/uL."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-013A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-013A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-11-01",
+            "description": "Adjuvant cytotoxic chemotherapy planned.",
+            "id": "note_20251101_chemo",
+            "subject": {
+              "reference": "Patient/syn-onc-013A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-11-03",
+            "valueString": "Absolute neutrophil count ANC 2400/uL.",
+            "id": "lab_20251103_anc",
+            "subject": {
+              "reference": "Patient/syn-onc-013A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-013B",
@@ -55,7 +105,57 @@
         "type": "laboratory",
         "text": "Severe neutropenia with absolute neutrophil count ANC 400/uL."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-013B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-013B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-11-01",
+            "description": "Adjuvant cytotoxic chemotherapy planned.",
+            "id": "note_20251101_chemo",
+            "subject": {
+              "reference": "Patient/syn-onc-013B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-11-03",
+            "valueString": "Severe neutropenia with absolute neutrophil count ANC 400/uL.",
+            "id": "lab_20251103_anc",
+            "subject": {
+              "reference": "Patient/syn-onc-013B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

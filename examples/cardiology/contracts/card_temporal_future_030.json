@@ -1,0 +1,173 @@
+{
+  "id": "card_temporal_future_030",
+  "title": "Post-decision lvef result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "start",
+    "defer",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to start an evidence-based beta-blocker for HFrEF (start, defer, or insufficient).",
+  "base_patient": {
+    "id": "syn-card-030A",
+    "as_of": "2025-09-08",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250904_hf",
+        "date": "2025-09-04",
+        "type": "cardiology_note",
+        "text": "Dyspnea on exertion, euvolemic. Echocardiogram pending."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-030A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-030A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Dyspnea on exertion, euvolemic. Echocardiogram pending."
+            },
+            "recordedDate": "2025-09-04",
+            "id": "note_20250904_hf",
+            "subject": {
+              "reference": "Patient/syn-card-030A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-030B",
+    "as_of": "2025-09-08",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250904_hf",
+        "date": "2025-09-04",
+        "type": "cardiology_note",
+        "text": "Dyspnea on exertion, euvolemic. Echocardiogram pending."
+      },
+      {
+        "id": "img_20250922_future_lvef",
+        "date": "2025-09-22",
+        "type": "imaging",
+        "text": "Echocardiogram after the decision date: LVEF 25 percent."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-030B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-030B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Dyspnea on exertion, euvolemic. Echocardiogram pending."
+            },
+            "recordedDate": "2025-09-04",
+            "id": "note_20250904_hf",
+            "subject": {
+              "reference": "Patient/syn-card-030B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Echocardiogram after the decision date: LVEF 25 percent."
+            },
+            "effectiveDateTime": "2025-09-22",
+            "id": "img_20250922_future_lvef",
+            "subject": {
+              "reference": "Patient/syn-card-030B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "insufficient",
+    "variant_decision": "insufficient",
+    "required_citations": {
+      "base": [
+        "note_20250904_hf"
+      ],
+      "variant": [
+        "note_20250904_hf"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-09-08",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

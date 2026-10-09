@@ -24,11 +24,13 @@ Do not claim clinician validation or guideline support unless that review or sou
 Run:
 
 ```bash
-python -m pip install -e '.[test]'
-PYTHONPATH=src pytest tests/ -q
-PYTHONPATH=src python -m diffehr manifest examples
-PYTHONPATH=src python -m diffehr validate examples
-scripts/run_all_benchmarks.sh
+python -m pip install -e '.[dev]'
+ruff check .
+mypy src/
+pytest -v
+python -m diffehr manifest examples
+python -m diffehr validate --manifest examples/manifest.json
+bash scripts/run_all_benchmarks.sh
 ```
 
 The manifest must match the checked-in dataset.

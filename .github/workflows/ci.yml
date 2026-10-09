@@ -12,14 +12,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Install package
-        run: python -m pip install -e '.[test]'
-      - name: Run tests
-        run: PYTHONPATH=src pytest tests/ -q
-      - name: Validate dataset
-        run: PYTHONPATH=src python -m diffehr validate examples
-      - name: Run deterministic benchmark
-        run: scripts/run_all_benchmarks.sh
+        run: python -m pip install -e '.[dev]'
+      - name: Lint
+        run: ruff check .
+      - name: Type check
+        run: mypy src/
+      - name: Unit and integration tests
+        run: pytest -v --cov=src/diffehr --cov-report=term-missing
+      - name: Validate dataset and run offline benchmark
+        run: bash scripts/run_all_benchmarks.sh
+      - name: Verify raw artifacts
+        run: |
+          test -s evidence/runs/fuzz_findings.json
+          test -s evidence/reports/full_benchmark_report.md
+          test -s evidence/reports/failure_analysis.md
       - name: Verify benchmark report consistency
         run: |
           PYTHONPATH=src python - <<'PY'

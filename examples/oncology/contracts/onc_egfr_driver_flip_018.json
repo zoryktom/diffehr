@@ -1,0 +1,195 @@
+{
+  "id": "onc_egfr_driver_flip_018",
+  "title": "EGFR driver class (l858r) flips trial eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the AURORA-EGFR trial requiring metastatic NSCLC, EGFR exon 19 deletion or L858R, ECOG 0-1, and no documented progression.",
+  "base_patient": {
+    "id": "syn-onc-018A",
+    "as_of": "2025-03-12",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250131_onc",
+        "date": "2025-01-31",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250212_egfr",
+        "date": "2025-02-12",
+        "type": "pathology",
+        "text": "EGFR exon 20 insertion detected. No exon 19 deletion or L858R detected."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-018A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-018A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-01-31",
+            "id": "note_20250131_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-018A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "EGFR exon 20 insertion detected. No exon 19 deletion or L858R detected."
+            },
+            "effectiveDateTime": "2025-02-12",
+            "id": "path_20250212_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-018A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-018B",
+    "as_of": "2025-03-12",
+    "attributes": {
+      "age": 71,
+      "sex": "male",
+      "race": "Black",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250131_onc",
+        "date": "2025-01-31",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250212_egfr",
+        "date": "2025-02-12",
+        "type": "pathology",
+        "text": "EGFR-positive (L858R point mutation). No exon 20 insertion detected."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-018B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-018B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 71, \"insurance\": \"medicare\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-01-31",
+            "id": "note_20250131_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-018B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "EGFR-positive (L858R point mutation). No exon 20 insertion detected."
+            },
+            "effectiveDateTime": "2025-02-12",
+            "id": "path_20250212_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-018B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250212_egfr"
+      ],
+      "variant": [
+        "path_20250212_egfr"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Only sensitizing EGFR exon 19 deletion or L858R qualifies; exon 20 insertions are excluded.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-03-12",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace the molecular result with a qualifying EGFR alteration.",
+    "changed_fields": [
+      "record.egfr.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not recommend an EGFR-directed trial for exon 20 insertion."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

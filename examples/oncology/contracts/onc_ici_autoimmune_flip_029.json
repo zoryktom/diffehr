@@ -1,0 +1,199 @@
+{
+  "id": "onc_ici_autoimmune_flip_029",
+  "title": "Active ulcerative colitis flare flips checkpoint inhibitor eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for immune checkpoint inhibitor therapy for metastatic melanoma; active severe autoimmune disease is a contraindication.",
+  "base_patient": {
+    "id": "syn-onc-029A",
+    "as_of": "2025-06-19",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250520_mel",
+        "date": "2025-05-20",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250609_aid",
+        "date": "2025-06-09",
+        "type": "oncology_note",
+        "text": "History of ulcerative colitis, in remission on no immunosuppression. No active autoimmune flare."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-029A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-029A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-20",
+            "id": "note_20250520_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-029A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of ulcerative colitis, in remission on no immunosuppression. No active autoimmune flare."
+            },
+            "recordedDate": "2025-06-09",
+            "id": "note_20250609_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-029A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-029B",
+    "as_of": "2025-06-19",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250520_mel",
+        "date": "2025-05-20",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250609_aid",
+        "date": "2025-06-09",
+        "type": "oncology_note",
+        "text": "History of ulcerative colitis. Active severe autoimmune flare: ulcerative colitis with 10 stools daily requiring prednisone 60 mg daily."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-029B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-029B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-20",
+            "id": "note_20250520_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-029B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of ulcerative colitis. Active severe autoimmune flare: ulcerative colitis with 10 stools daily requiring prednisone 60 mg daily."
+            },
+            "recordedDate": "2025-06-09",
+            "id": "note_20250609_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-029B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "note_20250609_aid"
+      ],
+      "variant": [
+        "note_20250609_aid"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Active severe autoimmune disease is a contraindication to checkpoint inhibitor therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-06-19",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace quiescent ulcerative colitis with an active severe flare.",
+    "changed_fields": [
+      "record.aid.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not clear checkpoint inhibitor therapy during an active severe flare."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

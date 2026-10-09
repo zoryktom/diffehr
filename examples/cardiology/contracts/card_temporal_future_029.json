@@ -1,0 +1,173 @@
+{
+  "id": "card_temporal_future_029",
+  "title": "Post-decision troponin result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "indicated",
+    "contraindicated",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to start a high-intensity statin for suspected NSTEMI (indicated, contraindicated, or insufficient).",
+  "base_patient": {
+    "id": "syn-card-029A",
+    "as_of": "2025-08-30",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250829_cp",
+        "date": "2025-08-29",
+        "type": "cardiology_note",
+        "text": "Chest pain. Troponin pending. NSTEMI not confirmed."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-029A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-029A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Chest pain. Troponin pending. NSTEMI not confirmed."
+            },
+            "recordedDate": "2025-08-29",
+            "id": "note_20250829_cp",
+            "subject": {
+              "reference": "Patient/syn-card-029A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-029B",
+    "as_of": "2025-08-30",
+    "attributes": {
+      "age": 73,
+      "sex": "female",
+      "race": "White",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250829_cp",
+        "date": "2025-08-29",
+        "type": "cardiology_note",
+        "text": "Chest pain. Troponin pending. NSTEMI not confirmed."
+      },
+      {
+        "id": "lab_20250913_future_troponin",
+        "date": "2025-09-13",
+        "type": "lab",
+        "text": "Troponin 12.4 ng/mL, markedly elevated confirming NSTEMI."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-029B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-029B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 73, \"insurance\": \"medicare\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Chest pain. Troponin pending. NSTEMI not confirmed."
+            },
+            "recordedDate": "2025-08-29",
+            "id": "note_20250829_cp",
+            "subject": {
+              "reference": "Patient/syn-card-029B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Troponin 12.4 ng/mL, markedly elevated confirming NSTEMI."
+            },
+            "effectiveDateTime": "2025-09-13",
+            "id": "lab_20250913_future_troponin",
+            "subject": {
+              "reference": "Patient/syn-card-029B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "insufficient",
+    "variant_decision": "insufficient",
+    "required_citations": {
+      "base": [
+        "note_20250829_cp"
+      ],
+      "variant": [
+        "note_20250829_cp"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-08-30",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

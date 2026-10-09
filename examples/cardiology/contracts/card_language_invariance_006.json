@@ -33,7 +33,57 @@
         "type": "laboratory",
         "text": "Creatinine clearance 55 mL/min; renal function permits DOAC therapy."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-006A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-006A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-07-02",
+            "description": "Non-valvular atrial fibrillation with CHA2DS2-VASc score 4.",
+            "id": "card_note_20250702_af",
+            "subject": {
+              "reference": "Patient/syn-card-006A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-07-03",
+            "valueString": "Creatinine clearance 55 mL/min; renal function permits DOAC therapy.",
+            "id": "card_lab_20250703_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-006A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-006B",
@@ -59,7 +109,57 @@
         "type": "laboratory",
         "text": "Creatinine clearance 55 mL/min; renal function permits DOAC therapy."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-006B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-006B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"Spanish\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-07-02",
+            "description": "Non-valvular atrial fibrillation with CHA2DS2-VASc score 4.",
+            "id": "card_note_20250702_af",
+            "subject": {
+              "reference": "Patient/syn-card-006B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-07-03",
+            "valueString": "Creatinine clearance 55 mL/min; renal function permits DOAC therapy.",
+            "id": "card_lab_20250703_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-006B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

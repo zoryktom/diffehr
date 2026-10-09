@@ -33,7 +33,56 @@
         "type": "genomics",
         "text": "CYP2C19 normal metabolizer. No loss-of-function allele detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-007A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-007A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed after acute coronary syndrome."
+            },
+            "performedDateTime": "2025-07-20",
+            "id": "card_proc_20250720_pci",
+            "subject": {
+              "reference": "Patient/syn-card-007A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "genomics"
+            },
+            "effectiveDateTime": "2025-07-21",
+            "valueString": "CYP2C19 normal metabolizer. No loss-of-function allele detected.",
+            "id": "card_gen_20250721_cyp",
+            "subject": {
+              "reference": "Patient/syn-card-007A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-007B",
@@ -59,7 +108,56 @@
         "type": "genomics",
         "text": "CYP2C19 normal metabolizer. No loss-of-function allele detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-007B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-007B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"rural\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed after acute coronary syndrome."
+            },
+            "performedDateTime": "2025-07-20",
+            "id": "card_proc_20250720_pci",
+            "subject": {
+              "reference": "Patient/syn-card-007B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "genomics"
+            },
+            "effectiveDateTime": "2025-07-21",
+            "valueString": "CYP2C19 normal metabolizer. No loss-of-function allele detected.",
+            "id": "card_gen_20250721_cyp",
+            "subject": {
+              "reference": "Patient/syn-card-007B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

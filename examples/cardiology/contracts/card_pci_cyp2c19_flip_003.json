@@ -33,7 +33,56 @@
         "type": "genomics",
         "text": "CYP2C19 normal metabolizer. No loss-of-function allele detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-003A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-003A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed in proximal LAD after acute coronary syndrome."
+            },
+            "performedDateTime": "2025-05-10",
+            "id": "card_proc_20250510_pci",
+            "subject": {
+              "reference": "Patient/syn-card-003A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "genomics"
+            },
+            "effectiveDateTime": "2025-05-12",
+            "valueString": "CYP2C19 normal metabolizer. No loss-of-function allele detected.",
+            "id": "card_gen_20250512_cyp",
+            "subject": {
+              "reference": "Patient/syn-card-003A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-003B",
@@ -59,7 +108,56 @@
         "type": "genomics",
         "text": "CYP2C19 loss-of-function allele detected, poor metabolizer phenotype."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-003B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-003B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed in proximal LAD after acute coronary syndrome."
+            },
+            "performedDateTime": "2025-05-10",
+            "id": "card_proc_20250510_pci",
+            "subject": {
+              "reference": "Patient/syn-card-003B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "genomics"
+            },
+            "effectiveDateTime": "2025-05-12",
+            "valueString": "CYP2C19 loss-of-function allele detected, poor metabolizer phenotype.",
+            "id": "card_gen_20250512_cyp",
+            "subject": {
+              "reference": "Patient/syn-card-003B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

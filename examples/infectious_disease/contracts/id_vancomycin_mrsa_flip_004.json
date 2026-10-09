@@ -32,7 +32,57 @@
         "type": "microbiology",
         "text": "MRSA nasal PCR negative."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-004A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-004A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 61, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Vancomycin started empirically for severe pneumonia."
+            },
+            "authoredOn": "2025-04-07",
+            "id": "id_abx_20250407_vanc",
+            "subject": {
+              "reference": "Patient/syn-id-004A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "microbiology"
+            },
+            "effectiveDateTime": "2025-04-09",
+            "valueString": "MRSA nasal PCR negative.",
+            "id": "id_lab_20250409_mrsa",
+            "subject": {
+              "reference": "Patient/syn-id-004A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-004B",
@@ -57,7 +107,57 @@
         "type": "microbiology",
         "text": "MRSA nasal PCR positive."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-004B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-004B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 61, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Vancomycin started empirically for severe pneumonia."
+            },
+            "authoredOn": "2025-04-07",
+            "id": "id_abx_20250407_vanc",
+            "subject": {
+              "reference": "Patient/syn-id-004B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "microbiology"
+            },
+            "effectiveDateTime": "2025-04-09",
+            "valueString": "MRSA nasal PCR positive.",
+            "id": "id_lab_20250409_mrsa",
+            "subject": {
+              "reference": "Patient/syn-id-004B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

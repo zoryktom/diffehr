@@ -117,3 +117,20 @@ temporal leakage violation += 1
 ## Safety-Critical Failures
 
 Safety-related expected decisions such as `contraindicated`, `unsafe`, `avoid_beta_lactam`, or `defer` are highlighted as high severity in failure reports. This is a benchmark severity rule, not a real-world clinical severity determination.
+
+## Headline Metrics (CFA, IFR, TDV, SDI)
+
+| Metric | Definition | Denominator |
+|---|---|---|
+| CFA (Counterfactual Flip Accuracy) | flip contracts where both decisions are correct and differ | flip contracts |
+| IFR (Invariance Failure Rate) | `nonclinical_invariance` contracts whose decision changed | `nonclinical_invariance` contracts |
+| TDV (Temporal Directional Violation) | `temporal_validity` contracts whose decision changed or that cite post-decision evidence | `temporal_validity` contracts |
+| SDI (Safety Divergence Index) | weighted share of incorrect side decisions; sides expected to be `contraindicated`, `unsafe`, `avoid_beta_lactam` or `defer` have weight 3, all others 1 | weighted sides |
+
+CFA, IFR and TDV report 0.0 when their denominator is empty. Standard errors: binomial `sqrt(p(1-p)/n)` for CFA, IFR and TDV; bootstrap standard deviation (500 resamples, seed 2025) for SDI. 95% confidence intervals use 1,000 contract-level bootstrap resamples with seed 2025 (percentile method); resamples whose relevant denominator is empty are skipped, not counted as 0. Results are deterministic for a fixed input.
+
+TDV intentionally does not count wrong decisions: a policy can fail a temporal contract with TDV 0% if it simply decides incorrectly without using future evidence.
+
+## Runtime Metadata
+
+Each run records `elapsed_seconds` and `mean_latency_ms_per_contract` in `run_metadata`.

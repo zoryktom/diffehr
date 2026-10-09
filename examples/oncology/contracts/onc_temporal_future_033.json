@@ -1,0 +1,255 @@
+{
+  "id": "onc_temporal_future_033",
+  "title": "Post-decision progression result must not alter decision",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the STABLE-EGFR trial requiring EGFR-positive NSCLC, ECOG 0-1, and no documented progression before the decision date.",
+  "base_patient": {
+    "id": "syn-onc-033A",
+    "as_of": "2025-07-25",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250615_egfr",
+        "date": "2025-06-15",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive."
+      },
+      {
+        "id": "note_20250705_ecog",
+        "date": "2025-07-05",
+        "type": "oncology_note",
+        "text": "ECOG 1. No progression documented."
+      },
+      {
+        "id": "img_20250719_ct",
+        "date": "2025-07-19",
+        "type": "imaging",
+        "text": "CT scan shows stable disease."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-033A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-033A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "EGFR exon 19 deletion positive."
+            },
+            "effectiveDateTime": "2025-06-15",
+            "id": "path_20250615_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-033A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-07-05",
+            "id": "note_20250705_ecog",
+            "subject": {
+              "reference": "Patient/syn-onc-033A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CT scan shows stable disease."
+            },
+            "effectiveDateTime": "2025-07-19",
+            "id": "img_20250719_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-033A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-033B",
+    "as_of": "2025-07-25",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250615_egfr",
+        "date": "2025-06-15",
+        "type": "pathology",
+        "text": "EGFR exon 19 deletion positive."
+      },
+      {
+        "id": "note_20250705_ecog",
+        "date": "2025-07-05",
+        "type": "oncology_note",
+        "text": "ECOG 1. No progression documented."
+      },
+      {
+        "id": "img_20250719_ct",
+        "date": "2025-07-19",
+        "type": "imaging",
+        "text": "CT scan shows stable disease."
+      },
+      {
+        "id": "img_20250815_future_progression",
+        "date": "2025-08-15",
+        "type": "imaging",
+        "text": "Post-chemotherapy imaging shows progressive disease."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-033B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-033B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "EGFR exon 19 deletion positive."
+            },
+            "effectiveDateTime": "2025-06-15",
+            "id": "path_20250615_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-033B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-07-05",
+            "id": "note_20250705_ecog",
+            "subject": {
+              "reference": "Patient/syn-onc-033B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CT scan shows stable disease."
+            },
+            "effectiveDateTime": "2025-07-19",
+            "id": "img_20250719_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-033B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Post-chemotherapy imaging shows progressive disease."
+            },
+            "effectiveDateTime": "2025-08-15",
+            "id": "img_20250815_future_progression",
+            "subject": {
+              "reference": "Patient/syn-onc-033B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "eligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250615_egfr",
+        "img_20250719_ct"
+      ],
+      "variant": [
+        "path_20250615_egfr",
+        "img_20250719_ct"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-07-25",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

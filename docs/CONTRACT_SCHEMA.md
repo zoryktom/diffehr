@@ -68,7 +68,10 @@ The loader rejects:
 - invalid ISO dates,
 - required citations absent from the relevant chart,
 - contradictory `same` or `flip` expectations,
-- bad FHIR JSON objects when optional FHIR resources are present.
+- bad FHIR JSON objects when optional FHIR resources are present,
+- FHIR Bundles with unsupported `resourceType`, duplicate `(resourceType, id)` pairs, `subject.reference` values of the form `Patient/x` that do not resolve to a Patient in the bundle, or a Patient id that differs from the chart id.
+
+All 120 shipped contracts embed a FHIR R4 Bundle on both charts. Loader errors name the file, and JSON syntax errors include line and column.
 
 Dataset-level validation additionally checks `examples/manifest.json` when present.
 

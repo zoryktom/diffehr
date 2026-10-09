@@ -1,13 +1,18 @@
 """Model adapters for clinical counterfactual contract evaluation."""
 
-from .base import ModelAdapter, ModelResponse, parse_model_response
+from .base import ClinicalPrediction, ModelAdapter, ModelResponse, build_clinical_prompt, parse_model_response
 from .heuristic import HeuristicAdapter
-from .local_hf import LocalHFAdapter
+from .local_hf import HuggingFaceAdapter, LocalHFAdapter
 from .openai import OpenAIAdapter
 from .oracle import OracleAdapter
-from .registry import make_model
+from .registry import ADAPTERS, make_adapter, make_model
 
 __all__ = [
+    "ADAPTERS",
+    "ClinicalPrediction",
+    "HuggingFaceAdapter",
+    "build_clinical_prompt",
+    "make_adapter",
     "HeuristicAdapter",
     "LocalHFAdapter",
     "ModelAdapter",

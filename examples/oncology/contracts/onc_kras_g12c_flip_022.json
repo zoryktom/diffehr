@@ -1,0 +1,235 @@
+{
+  "id": "onc_kras_g12c_flip_022",
+  "title": "KRAS G12C status flips targeted-trial eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the SOTO-KRAS trial requiring previously treated metastatic NSCLC with KRAS G12C mutation and ECOG 0-1.",
+  "base_patient": {
+    "id": "syn-onc-022A",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250308_onc",
+        "date": "2025-03-08",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250327_kras",
+        "date": "2025-03-27",
+        "type": "pathology",
+        "text": "KRAS G12V mutation detected. KRAS G12C not detected."
+      },
+      {
+        "id": "med_20250402_tx",
+        "date": "2025-04-02",
+        "type": "medication",
+        "text": "Completed platinum doublet plus pembrolizumab with progression."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-022A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-022A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-08",
+            "id": "note_20250308_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-022A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "KRAS G12V mutation detected. KRAS G12C not detected."
+            },
+            "effectiveDateTime": "2025-03-27",
+            "id": "path_20250327_kras",
+            "subject": {
+              "reference": "Patient/syn-onc-022A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Completed platinum doublet plus pembrolizumab with progression."
+            },
+            "authoredOn": "2025-04-02",
+            "id": "med_20250402_tx",
+            "subject": {
+              "reference": "Patient/syn-onc-022A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-022B",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250308_onc",
+        "date": "2025-03-08",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250327_kras",
+        "date": "2025-03-27",
+        "type": "pathology",
+        "text": "KRAS G12C mutation detected."
+      },
+      {
+        "id": "med_20250402_tx",
+        "date": "2025-04-02",
+        "type": "medication",
+        "text": "Completed platinum doublet plus pembrolizumab with progression."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-022B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-022B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-08",
+            "id": "note_20250308_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-022B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "KRAS G12C mutation detected."
+            },
+            "effectiveDateTime": "2025-03-27",
+            "id": "path_20250327_kras",
+            "subject": {
+              "reference": "Patient/syn-onc-022B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Completed platinum doublet plus pembrolizumab with progression."
+            },
+            "authoredOn": "2025-04-02",
+            "id": "med_20250402_tx",
+            "subject": {
+              "reference": "Patient/syn-onc-022B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250327_kras"
+      ],
+      "variant": [
+        "path_20250327_kras"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Only KRAS G12C qualifies for a G12C-specific inhibitor trial.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-04-17",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the KRAS result to G12C.",
+    "changed_fields": [
+      "record.kras.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

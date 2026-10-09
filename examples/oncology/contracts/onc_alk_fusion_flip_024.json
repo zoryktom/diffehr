@@ -1,0 +1,193 @@
+{
+  "id": "onc_alk_fusion_flip_024",
+  "title": "ALK fusion result flips trial eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the ALTA-ALK trial requiring ALK-positive metastatic NSCLC and ECOG 0-2.",
+  "base_patient": {
+    "id": "syn-onc-024A",
+    "as_of": "2025-05-05",
+    "attributes": {
+      "age": 68,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250326_onc",
+        "date": "2025-03-26",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250415_alk",
+        "date": "2025-04-15",
+        "type": "pathology",
+        "text": "ALK rearrangement negative by NGS panel."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-024A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-024A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 68, \"insurance\": \"medicare\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-26",
+            "id": "note_20250326_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-024A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "ALK rearrangement negative by NGS panel."
+            },
+            "effectiveDateTime": "2025-04-15",
+            "id": "path_20250415_alk",
+            "subject": {
+              "reference": "Patient/syn-onc-024A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-024B",
+    "as_of": "2025-05-05",
+    "attributes": {
+      "age": 68,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicare"
+    },
+    "record": [
+      {
+        "id": "note_20250326_onc",
+        "date": "2025-03-26",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250415_alk",
+        "date": "2025-04-15",
+        "type": "pathology",
+        "text": "ALK rearrangement positive by NGS panel (EML4-ALK variant 3)."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-024B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-024B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 68, \"insurance\": \"medicare\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-26",
+            "id": "note_20250326_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-024B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "ALK rearrangement positive by NGS panel (EML4-ALK variant 3)."
+            },
+            "effectiveDateTime": "2025-04-15",
+            "id": "path_20250415_alk",
+            "subject": {
+              "reference": "Patient/syn-onc-024B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250415_alk"
+      ],
+      "variant": [
+        "path_20250415_alk"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "ALK fusion is the controlled causal change for ALK-directed therapy eligibility.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-05-05",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the ALK result to positive.",
+    "changed_fields": [
+      "record.alk.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

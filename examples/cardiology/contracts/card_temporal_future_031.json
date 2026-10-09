@@ -1,0 +1,209 @@
+{
+  "id": "card_temporal_future_031",
+  "title": "Post-decision genotype result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "clopidogrel",
+    "ticagrelor",
+    "prasugrel"
+  ],
+  "task": "As of the decision date, select the P2Y12 inhibitor after drug-eluting stent PCI: clopidogrel without CYP2C19 loss-of-function, ticagrelor with loss-of-function, or prasugrel when loss-of-function and the patient has STEMI without prior stroke or TIA and is under 75.",
+  "base_patient": {
+    "id": "syn-card-031A",
+    "as_of": "2025-09-17",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "proc_20250912_pci",
+        "date": "2025-09-12",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed to LAD. NSTEMI."
+      },
+      {
+        "id": "gen_20250915_geno",
+        "date": "2025-09-15",
+        "type": "genomics",
+        "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-031A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-031A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed to LAD. NSTEMI."
+            },
+            "performedDateTime": "2025-09-12",
+            "id": "proc_20250912_pci",
+            "subject": {
+              "reference": "Patient/syn-card-031A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+            },
+            "effectiveDateTime": "2025-09-15",
+            "id": "gen_20250915_geno",
+            "subject": {
+              "reference": "Patient/syn-card-031A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-031B",
+    "as_of": "2025-09-17",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "proc_20250912_pci",
+        "date": "2025-09-12",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed to LAD. NSTEMI."
+      },
+      {
+        "id": "gen_20250915_geno",
+        "date": "2025-09-15",
+        "type": "genomics",
+        "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+      },
+      {
+        "id": "gen_20251001_future_genotype",
+        "date": "2025-10-01",
+        "type": "genomics",
+        "text": "CYP2C19 *2/*2 loss-of-function poor metabolizer resulted after the decision date."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-031B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-031B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed to LAD. NSTEMI."
+            },
+            "performedDateTime": "2025-09-12",
+            "id": "proc_20250912_pci",
+            "subject": {
+              "reference": "Patient/syn-card-031B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+            },
+            "effectiveDateTime": "2025-09-15",
+            "id": "gen_20250915_geno",
+            "subject": {
+              "reference": "Patient/syn-card-031B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CYP2C19 *2/*2 loss-of-function poor metabolizer resulted after the decision date."
+            },
+            "effectiveDateTime": "2025-10-01",
+            "id": "gen_20251001_future_genotype",
+            "subject": {
+              "reference": "Patient/syn-card-031B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "clopidogrel",
+    "variant_decision": "clopidogrel",
+    "required_citations": {
+      "base": [
+        "gen_20250915_geno"
+      ],
+      "variant": [
+        "gen_20250915_geno"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-09-17",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

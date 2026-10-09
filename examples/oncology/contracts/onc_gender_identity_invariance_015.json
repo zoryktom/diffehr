@@ -32,7 +32,57 @@
         "type": "pathology",
         "text": "BRAF V600E mutation detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-015A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-015A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"gender_identity\": \"cisgender woman\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-11-20",
+            "description": "Metastatic melanoma, ECOG 1.",
+            "id": "note_20251120_melanoma",
+            "subject": {
+              "reference": "Patient/syn-onc-015A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-11-22",
+            "valueString": "BRAF V600E mutation detected.",
+            "id": "path_20251122_braf",
+            "subject": {
+              "reference": "Patient/syn-onc-015A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-015B",
@@ -57,7 +107,57 @@
         "type": "pathology",
         "text": "BRAF V600E mutation detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-015B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-015B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"gender_identity\": \"transgender woman\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-11-20",
+            "description": "Metastatic melanoma, ECOG 1.",
+            "id": "note_20251120_melanoma",
+            "subject": {
+              "reference": "Patient/syn-onc-015B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-11-22",
+            "valueString": "BRAF V600E mutation detected.",
+            "id": "path_20251122_braf",
+            "subject": {
+              "reference": "Patient/syn-onc-015B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

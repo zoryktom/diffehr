@@ -1,0 +1,233 @@
+{
+  "id": "id_deescalation_pct_flip_027",
+  "title": "Procalcitonin clearance with sterile cultures permits stopping antibiotics",
+  "domain": "infectious_disease",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "continue_broad_spectrum",
+    "stop_antibiotics"
+  ],
+  "task": "As of the decision date, decide whether to continue_broad_spectrum antibiotics or stop_antibiotics; stop when procalcitonin is below 0.25 ug/L and blood cultures are sterile at 48 hours.",
+  "base_patient": {
+    "id": "syn-id-027A",
+    "as_of": "2025-08-12",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "med_20250809_abx",
+        "date": "2025-08-09",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam and vancomycin for suspected sepsis; clinically improved."
+      },
+      {
+        "id": "lab_20250811_pct",
+        "date": "2025-08-11",
+        "type": "lab",
+        "text": "Procalcitonin 2.6 ug/L, still elevated."
+      },
+      {
+        "id": "lab_20250811_cx",
+        "date": "2025-08-11",
+        "type": "lab",
+        "text": "Blood cultures: Gram-negative rods growing at 48 hours."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-027A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-027A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam and vancomycin for suspected sepsis; clinically improved."
+            },
+            "authoredOn": "2025-08-09",
+            "id": "med_20250809_abx",
+            "subject": {
+              "reference": "Patient/syn-id-027A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Procalcitonin 2.6 ug/L, still elevated."
+            },
+            "effectiveDateTime": "2025-08-11",
+            "id": "lab_20250811_pct",
+            "subject": {
+              "reference": "Patient/syn-id-027A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Blood cultures: Gram-negative rods growing at 48 hours."
+            },
+            "effectiveDateTime": "2025-08-11",
+            "id": "lab_20250811_cx",
+            "subject": {
+              "reference": "Patient/syn-id-027A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-027B",
+    "as_of": "2025-08-12",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "med_20250809_abx",
+        "date": "2025-08-09",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam and vancomycin for suspected sepsis; clinically improved."
+      },
+      {
+        "id": "lab_20250811_pct",
+        "date": "2025-08-11",
+        "type": "lab",
+        "text": "Procalcitonin 0.12 ug/L, below 0.25 ug/L."
+      },
+      {
+        "id": "lab_20250811_cx",
+        "date": "2025-08-11",
+        "type": "lab",
+        "text": "Blood cultures: no growth, sterile at 48 hours."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-027B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-027B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam and vancomycin for suspected sepsis; clinically improved."
+            },
+            "authoredOn": "2025-08-09",
+            "id": "med_20250809_abx",
+            "subject": {
+              "reference": "Patient/syn-id-027B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Procalcitonin 0.12 ug/L, below 0.25 ug/L."
+            },
+            "effectiveDateTime": "2025-08-11",
+            "id": "lab_20250811_pct",
+            "subject": {
+              "reference": "Patient/syn-id-027B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Blood cultures: no growth, sterile at 48 hours."
+            },
+            "effectiveDateTime": "2025-08-11",
+            "id": "lab_20250811_cx",
+            "subject": {
+              "reference": "Patient/syn-id-027B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "continue_broad_spectrum",
+    "variant_decision": "stop_antibiotics",
+    "required_citations": {
+      "base": [
+        "lab_20250811_pct",
+        "lab_20250811_cx"
+      ],
+      "variant": [
+        "lab_20250811_pct",
+        "lab_20250811_cx"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Procalcitonin below 0.25 ug/L with sterile cultures supports cessation of empiric broad-spectrum therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-08-12",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change procalcitonin and culture results to the stop criteria.",
+    "changed_fields": [
+      "record.pct.text",
+      "record.cx.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

@@ -1,10 +1,9 @@
+import json
 import subprocess
 import sys
 import tempfile
 import unittest
-import json
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,7 +25,7 @@ class CliTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Validated 16", result.stdout)
+        self.assertIn("Validated 40", result.stdout)
 
     def test_validate_all_examples_command(self):
         result = subprocess.run(
@@ -44,7 +43,7 @@ class CliTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Validated 32", result.stdout)
+        self.assertIn("Validated 120", result.stdout)
 
     def test_evaluate_command_writes_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:

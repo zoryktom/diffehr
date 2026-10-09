@@ -32,7 +32,55 @@
         "type": "allergy",
         "text": "No known drug allergy. No penicillin allergy documented."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-001A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-001A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "infectious_disease_note"
+            },
+            "date": "2025-01-17",
+            "description": "Septic shock suspected from urinary source. Broad empiric beta-lactam therapy appropriate.",
+            "id": "id_note_20250117_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-001A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "AllergyIntolerance",
+            "code": {
+              "text": "No known drug allergy. No penicillin allergy documented."
+            },
+            "recordedDate": "2025-01-17",
+            "id": "id_allergy_20250117_pcn",
+            "subject": {
+              "reference": "Patient/syn-id-001A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-001B",
@@ -57,7 +105,55 @@
         "type": "allergy",
         "text": "Penicillin allergy with anaphylaxis and airway swelling documented."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-001B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-001B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "infectious_disease_note"
+            },
+            "date": "2025-01-17",
+            "description": "Septic shock suspected from urinary source. Broad empiric beta-lactam therapy would otherwise be appropriate.",
+            "id": "id_note_20250117_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-001B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "AllergyIntolerance",
+            "code": {
+              "text": "Penicillin allergy with anaphylaxis and airway swelling documented."
+            },
+            "recordedDate": "2025-01-17",
+            "id": "id_allergy_20250117_pcn",
+            "subject": {
+              "reference": "Patient/syn-id-001B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

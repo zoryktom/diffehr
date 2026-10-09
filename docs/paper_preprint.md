@@ -1,234 +1,146 @@
 # DiffEHR: Counterfactual Contract Testing for Clinical AI Systems on Synthetic FHIR Records
 
+**Author:** Zorykto Mykola
+**Version:** 0.2.0 (artifact `zoryktom/diffehr`)  **Date:** 2026-10-09
+**Target venues:** JAMIA / medRxiv / arXiv (cs.AI, cs.CY)
+**Status:** Preprint. Synthetic, author-generated data; not clinician-validated.
+
 ## Abstract
 
-Clinical AI systems are often evaluated on static question-answering or case-vignette benchmarks, which can miss whether a system changes behavior for the right clinical reasons. We introduce DiffEHR, an executable research artifact for counterfactual contract testing on paired synthetic health records. Each contract defines a base chart, a controlled counterfactual variant, a clinical task, allowed decisions, an expected behavioral relation, required evidence citations, and temporal constraints at a decision index timestamp. We evaluate three baselines across 32 contracts spanning oncology, cardiology, and infectious disease. The oracle baseline passed 32/32 contracts with mean score 1.000. A temporally careful heuristic passed 32/32 with mean score 0.999. A reckless baseline that overreacts to payer status and ignores decision-time availability passed 24/32 with mean score 0.877, an invariance violation rate of 50.00% and 5 temporal leakage violations. Automated fuzzing over a FHIR chart generated 20 perturbations and identified 3 distinct findings after deduplication: 2 payer-driven invariance violations and 1 future-evidence leakage case. These results show that counterfactual contract testing can expose deployment-relevant failures that static accuracy alone would obscure.
+**Objective.** Static accuracy benchmarks can conceal unsafe behavior in clinical AI systems. We present DiffEHR, an executable framework that tests whether a system changes its answer for the right clinical reasons, and only for those reasons, using paired synthetic FHIR R4 records ("counterfactual contracts").
 
-## Introduction
+**Materials and Methods.** A contract couples a base chart and a variant chart that differ by one controlled change, a decision task, allowed decisions, expected decisions, required evidence citations, and a decision-time cutoff. We release 120 contracts (40 each in oncology, cardiology and infectious disease): 74 clinical-sensitivity contracts that must flip, 23 non-clinical invariance contracts (payer, race, language, setting) that must not, and 23 temporal-validity contracts that must ignore post-decision evidence. Four headline metrics are defined: Counterfactual Flip Accuracy (CFA), Invariance Failure Rate (IFR), Temporal Directional Violation (TDV) and a safety-weighted Safety Divergence Index (SDI), each with standard errors and deterministic 95% bootstrap intervals. A discovery fuzzer mutates a FHIR chart along demographic, insurance, critical-laboratory-threshold and temporal-injection families while enforcing resource-id and subject-reference integrity.
 
-Clinical AI evaluation has focused heavily on static performance: a model is asked a clinical question, and the answer is scored for correctness. Static benchmarks are useful, but they do not directly test whether the model is using the right evidence, ignoring the wrong evidence, or respecting the timestamp at which a decision is made. In practice, a model can answer a chart correctly once while still failing clinically important behavioral requirements.
+**Results.** Three fully offline policies were evaluated: an oracle, a keyword heuristic, and a deliberately flawed "reckless" policy. The oracle passed 120/120 contracts (CFA 100%, IFR 0%, TDV 0%, SDI 0.000). The heuristic passed 80/120 (66.7%; CFA 64.9% [SE 5.6], IFR 0.0%, TDV 0.0%, SDI 0.191 [95% CI 0.132-0.257]) and passed all 32 contracts it was originally tuned on but only 16/40 infectious-disease contracts. The reckless policy passed 59/120 (49.2%; CFA 60.8%, IFR 30.4% [SE 9.6], TDV 47.8% [SE 10.4], SDI 0.295 [0.225-0.369]) and cited 11 post-decision evidence items. The fuzzer surfaced 7 findings for the reckless policy (3 payer-driven invariance violations, 1 temporal leakage, 3 clinical insensitivities), 3 clinical insensitivities for the heuristic, and none for the oracle.
 
-DiffEHR reframes clinical AI evaluation as executable counterfactual contracts. A contract pairs a base synthetic record with a minimally changed variant. The change can be clinically decisive, such as a biomarker becoming positive, or clinically irrelevant, such as payer status or race. The model is expected either to flip its answer or remain invariant. The contract also specifies required evidence citations and disallows evidence dated after the decision index.
+**Discussion and Conclusion.** Contract-level metrics exposed failures (payer sensitivity, temporal leakage, insensitivity to renal, cardiac and troponin thresholds) that a pass/fail accuracy number does not separate. No large language model was evaluated in this release; HuggingFace and OpenAI-compatible adapters are implemented and unit-tested offline, and empirical results for them are future work. Results characterize the benchmark's discriminative behavior on three reference policies, not the safety of any deployed system.
 
-This artifact contributes a multi-specialty benchmark, a strict schema, a metrics engine, adapter interfaces, an automated fuzzer, and reproducible reports. It is intended for research, regression testing, and governance workflows, not for clinical decision support.
+**Keywords:** clinical AI evaluation; counterfactual testing; FHIR; synthetic data; invariance; temporal leakage; patient safety.
 
-## Research Questions
+## 1. Introduction
 
-- RQ1: Can DiffEHR detect predefined violations of clinical behavior contracts in controlled synthetic experiments?
-- RQ2: How do decisive sensitivity and irrelevant-attribute invariance vary across deterministic baselines?
-- RQ3: What failure modes are revealed by evidence-grounding and temporal-validity checks?
-- RQ4: Are deterministic evaluations reproducible from checked-in contracts and scripts?
-- RQ5: What limitations prevent synthetic contract-test performance from establishing real-world clinical reliability?
+Clinical AI systems are usually validated with aggregate accuracy on held-out cases. Accuracy does not say why a system was right. A model can be correct on one chart while keying on payer status, using results that were not yet available at the time of the decision, or ignoring a contraindication such as severe renal impairment. Such failures matter because they implicate fairness [Obermeyer 2019; Kusner 2017], retrospective-validation validity, and direct patient harm.
 
-## Background And Related Work
+Software engineering addresses analogous problems with unit tests and behavioral testing; CheckList [Ribeiro 2020] introduced the idea for NLP. We adapt it to clinical records. A DiffEHR *contract* specifies a minimal counterfactual edit to a chart and the behavioral relation that must hold: **flip** (a decisive clinical fact changed), **same** (an irrelevant attribute changed, or evidence became available only after the decision date). Contracts are machine-checkable, version-controlled, and run against any system exposing a structured-output adapter.
 
-Medical AI benchmarks such as exam-style multiple-choice tasks and clinical QA datasets measure important aspects of medical knowledge. However, they typically evaluate isolated answers rather than behavioral stability under controlled chart edits. Software testing offers a complementary framing: properties can be encoded as tests that must continue passing as systems evolve. DiffEHR applies this idea to synthetic FHIR-style clinical records, making counterfactual behavior inspectable and reproducible.
+Contributions: (1) a strict, validated contract schema with FHIR R4 bundles and referential-integrity checks; (2) 120 synthetic contracts across three specialties; (3) four headline metrics with uncertainty estimates and defined edge-case behavior; (4) a FHIR-aware counterfactual fuzzer; (5) an offline, reproducible pipeline with CI; and (6) an empirical characterization with three reference policies.
 
-The closest methodological family is metamorphic testing: a system should satisfy expected relations between outputs under controlled input transformations. DiffEHR specializes this approach for clinical AI by encoding clinical tasks, paired records, evidence IDs, temporal constraints, and specialty-specific expected behavior. DiffEHR uses FHIR R4-style JSON for chart representation, but does not claim conformance to a complete production FHIR profile.
+## 2. Clinical Counterfactual Formulation
 
-## Problem Formulation
+Let a chart be a time-indexed set of clinical facts $C = \{(e_i, t_i)\}$, a decision time $\tau$, and non-clinical attributes $A$. A system $f$ maps $(C, A, \tau, q)$ for task $q$ to a decision $d \in \mathcal{D}$ and a set of cited evidence $E \subseteq C$. A counterfactual edit $\delta$ yields a variant chart $C'$. Three contract families are defined:
 
-The problem is not to prove that a clinical AI system is safe. The narrower question is whether a system satisfies explicitly defined behavior contracts on synthetic paired records. A failure means the model violated a benchmark assertion; it does not by itself quantify patient harm or clinical deployment risk.
+- **Clinical sensitivity (flip).** $\delta$ changes a guideline-decisive fact (for example CrCl crossing a DOAC dose threshold, EGFR driver status, penicillin allergy history). Required: $f(C') \neq f(C)$ and both match the expected decisions.
+- **Non-clinical invariance (same).** $\delta$ changes only $A$ (payer, race, language, care setting). Required: $f(C') = f(C)$.
+- **Temporal validity (same).** $\delta$ adds or moves evidence to $t > \tau$. Required: $f(C') = f(C)$ and $E \cap \{e_i : t_i > \tau\} = \emptyset$.
 
-## DiffEHR Methodology
+Every contract additionally requires that cited evidence cover a declared set of required chart items.
 
-### Contract Definition
+## 3. Contract Schema Design
 
-A DiffEHR contract is a tuple:
+Contracts are JSON documents validated by strict Pydantic v2 models (`extra="forbid"`, frozen). Required fields are `id`, `title`, `domain`, `task`, `contract_type`, `allowed_decisions`, `base_patient`, `variant_patient` and `expected` (`relation`, expected decisions, `required_citations`, `forbidden_after_as_of`). Validation rejects unknown fields, duplicate decisions, invalid dates, relation/decision contradictions (`same` with different decisions, `flip` with equal ones), citations absent from the chart, and `decision_index_timestamp` mismatches.
 
-```text
-C = (B, V, T, A, R, E, tau)
-```
+Each of the 120 contracts embeds a FHIR R4 Bundle per chart (Patient, Observation, MedicationRequest, Procedure, Encounter, Condition, AllergyIntolerance, DocumentReference). The schema enforces an allowed resource-type set, unique `(resourceType, id)` pairs, that every `subject.reference` of the form `Patient/x` resolves to a Patient in the bundle, and that the bundle's Patient id equals the chart id. Loader errors report file, line and column. A manifest (`examples/manifest.json`) records per-file SHA-256 checksums and counts, and per-pack `pack.json` files are checked against it; a stale manifest fails validation. Full field documentation is in `docs/CONTRACT_SCHEMA.md`.
 
-where `B` is the base chart, `V` is the counterfactual variant chart, `T` is the clinical task, `A` is the set of allowed decisions, `R` is the expected relation, `E` is the required evidence set, and `tau` is the decision index timestamp.
+## 4. Metrics
 
-DiffEHR supports two primary behavioral relations:
+Let $F$, $N$, $T$ denote flip, non-clinical-invariance and temporal-validity contracts.
 
-- `MustFlip`: the model decision must change between base and variant.
-- `MustRemainInvariable`: the model decision must remain unchanged.
+- **CFA** $= |\{c \in F: \text{both decisions correct and differ}\}| / |F|$.
+- **IFR** $= |\{c \in N: f(C') \neq f(C)\}| / |N|$.
+- **TDV** $= |\{c \in T: f(C') \neq f(C) \lor E' \text{ cites post-}\tau \text{ evidence}\}| / |T|$.
+- **SDI** is a weighted error fraction over contract sides; sides whose expected decision is safety-critical (`contraindicated`, `unsafe`, `avoid_beta_lactam`, `defer`) carry weight 3, others weight 1.
 
-Each chart is represented as strict Pydantic v2 models with FHIR R4-style JSON compatibility. Records contain dated chart items, demographic attributes, optional FHIR resources, and a decision `as_of` timestamp. Evidence citations are chart item IDs.
+Empty denominators yield 0.0 (no observable violation) instead of raising. Standard errors are binomial, $\sqrt{p(1-p)/n}$, for CFA, IFR and TDV and a bootstrap standard deviation for SDI. 95% confidence intervals use 1,000 contract-level bootstrap resamples with seed 2025; resamples with an empty relevant denominator are skipped rather than counted as zero. Legacy metrics (IVR, DSS, evidence precision/recall, leakage counts) are retained; see `docs/METRICS.md`.
 
-## Contract Schema And Counterfactual Construction
+## 5. Experimental Setup
 
-Contracts are versioned JSON objects validated by strict Pydantic models. The dataset manifest records counts and SHA-256 checksums for the checked-in contracts. Counterfactual integrity checks summarize observed differences between base and variant records as single-factor, multifactor/dependent representation, or none. This structural summary supports auditability, but it does not replace clinical review.
+**Contracts.** 120 contracts, 40 per pack: oncology (EGFR, KRAS G12C, ALK, BRAF, immune-checkpoint autoimmunity, HER2/LVEF, temporal, invariance), cardiology (DOAC renal dosing bands, beta-blocker use in heart failure, CYP2C19/clopidogrel, temporal, invariance) and infectious disease (penicillin allergy, MRSA, procalcitonin de-escalation, temporal, invariance). Of these, 32 were hand-authored in earlier versions and 88 were produced by the deterministic generator `scripts/generate_contracts.py`; FHIR bundles for the 32 were materialized by `scripts/add_fhir_bundles.py`. All data are synthetic, author-checked, and not clinician-reviewed.
 
-## Evaluation Metrics
+**Systems (all offline; no API calls or model downloads).**
+- *Oracle:* returns the contract's expected decisions and required citations (validates the harness; upper bound).
+- *Heuristic:* keyword rules that respect decision-time cutoffs. Rules were written against the original 32 contracts.
+- *Reckless:* the heuristic with temporal checks disabled and an insurance bias (adverse payer status lowers eligibility), simulating known failure modes.
 
-DiffEHR reports contract pass rate and four research metrics.
+**Fuzzer.** On `examples/discovery/base_chart.json` (an EGFR-mutant oncology chart) the fuzzer generates 20 perturbations (seed 2025): payer, race, ethnicity, gender identity, language and postal-code changes; pre-decision critical findings (eGFR 24, LVEF 38%, ANC 400, troponin I 2.4 ng/mL) that should flip eligibility; and temporal manipulations (one existing result shifted one week past $\tau$; future-dated biopsy, pathology and culture results injected). Each mutated bundle is checked for id uniqueness and subject-reference integrity before use.
 
-Invariance Violation Rate:
+**Pipeline.** `bash scripts/run_all_benchmarks.sh` validates manifests, runs all three systems, fuzzes with each, and writes JSON to `evidence/runs/` and Markdown to `evidence/reports/`. Runs record version, dataset fingerprint (SHA-256), seed and timestamp; per-contract latency is reported.
 
-```text
-IVR = unexpected flips on invariant pairs / total invariant pairs
-```
+## 6. Results
 
-Decisive Sensitivity Score:
+### 6.1 Benchmark performance (120 contracts)
 
-```text
-DSS = expected flips on decisive pairs with correct side decisions / total decisive pairs
-```
+| System | Passed | Pass rate | CFA % (SE) | IFR % (SE) | TDV % (SE) | Mean SDI (SE; 95% CI) |
+|---|---:|---:|---|---|---|---|
+| Oracle | 120/120 | 100.0% | 100.00 (0.00) | 0.00 (0.00) | 0.00 (0.00) | 0.000 (0.000; 0.000-0.000) |
+| Heuristic | 80/120 | 66.7% | 64.86 (5.55) | 0.00 (0.00) | 0.00 (0.00) | 0.191 (0.032; 0.132-0.257) |
+| Reckless | 59/120 | 49.2% | 60.81 (5.67) | 30.43 (9.59) | 47.83 (10.42) | 0.295 (0.038; 0.225-0.369) |
 
-Citation attribution precision and recall:
+Denominators: CFA n = 74, IFR n = 23, TDV n = 23. Bootstrap 95% CIs: CFA heuristic 53.95-75.00%, reckless 50.00-71.43%; IFR reckless 12.50-50.00%; TDV reckless 25.00-68.42%. Per-contract latency is on the order of 0.02-0.04 ms for these in-process policies (`evidence/reports/full_benchmark_report.md`); it is not informative for model-based adapters.
 
-```text
-precision = |observed citations intersect required citations| / |observed citations|
-recall    = |observed citations intersect required citations| / |required citations|
-```
+### 6.2 By specialty
 
-Temporal Leakage Violation Rate:
+| System | Pack | Passed /40 | CFA % | IFR % | TDV % | SDI |
+|---|---|---:|---:|---:|---:|---:|
+| Heuristic | Oncology | 33 | 79.17 | 0.00 | 0.00 | 0.095 |
+| Heuristic | Cardiology | 31 | 70.83 | 0.00 | 0.00 | 0.066 |
+| Heuristic | Infectious disease | 16 | 46.15 | 0.00 | 0.00 | 0.408 |
+| Reckless | Oncology | 25 | 75.00 | 25.00 | 62.50 | 0.190 |
+| Reckless | Cardiology | 21 | 66.67 | 33.33 | 71.43 | 0.208 |
+| Reckless | Infectious disease | 13 | 42.31 | 33.33 | 12.50 | 0.480 |
 
-```text
-TLVR = citations with evidence_t > decision_t / total observed citations
-```
+The heuristic passes all 32 contracts it was tuned on yet only 80/120 overall, with the weakest results in infectious disease (SDI 0.408), where rules for MRSA coverage, procalcitonin de-escalation and allergy history were absent. This illustrates the benchmark detecting rule overfitting. The heuristic's TDV of 0% does not mean it passes temporal contracts (14/23 passed): its failures there are incorrect decisions, not leakage, which TDV deliberately does not count. The reckless policy leaked 11 post-decision citations.
 
-For IVR and DSS, DiffEHR computes deterministic 95% percentile bootstrap confidence intervals by resampling contracts with replacement.
+### 6.3 Discovery fuzzer
 
-## Benchmark Design
+| System | Perturbations | Findings | Invariance | Temporal leakage | Clinical insensitivity |
+|---|---:|---:|---:|---:|---:|
+| Oracle | 20 | 0 | 0 | 0 | 0 |
+| Heuristic | 20 | 3 | 0 | 0 | 3 |
+| Reckless | 20 | 7 | 3 | 1 | 3 |
 
-The benchmark contains exactly 32 paired synthetic contracts:
+## 7. Failure Mode Taxonomy
 
-| Specialty | Contracts | Clinical sensitivity | Invariance | Temporal validity |
-|---|---:|---:|---:|---:|
-| Oncology | 16 | 8 | 4 | 4 |
-| Cardiology | 8 | 4 | 3 | 1 |
-| Infectious disease | 8 | 4 | 2 | 2 |
-| Total | 32 | 16 | 9 | 7 |
+The seven reckless-policy fuzzer discoveries fall into three classes (full FHIR diffs in `evidence/reports/failure_analysis.md`; each is reproducible with `diffehr replay-finding`):
 
-The three evaluated baselines were:
+1. **Payer-driven invariance violation (3).** Changing `Patient.payer` from commercial to Medicaid (`fuzz_demographic_003`), self-pay (`_004`) or uninsured (`_006`) flipped `eligible` to `ineligible` with all clinical resources unchanged. Consequence: identical clinical facts receive different recommendations by coverage, an equity and liability hazard. Race, ethnicity, gender identity, language and postal-code edits did not change this policy's decision.
+2. **Temporal leakage (1).** After `path_20250201_egfr` was re-dated to 2025-02-22, past the decision date, the policy still cited it (`fuzz_temporal_011`). Consequence: reliance on information unavailable at decision time, which invalidates retrospective validation claims.
+3. **Clinical insensitivity (3).** Adding a pre-decision eGFR 24, LVEF 38% or troponin I 2.4 ng/mL result (`fuzz_clinical_014`, `_015`, `_017`) left the recommendation at `eligible`. Consequence: a documented guideline stop signal is ignored. The heuristic shares these three; both policies did respond to the ANC 400 finding and neither was misled by the injected future biopsy, pathology and culture results beyond the single re-dating case above.
 
-- Oracle: returns hidden expected decisions and evidence IDs.
-- Heuristic: rule-based, respects decision timestamps, and ignores non-clinical attributes.
-- Reckless: rule-based, ignores temporal visibility and overreacts to payer status.
+At the contract level, failures cluster as incorrect safety-critical decisions (36 of the heuristic's 40 failures and 58 of the reckless policy's 61 are rated `high` severity under the benchmark's rule-based severity scheme), followed by evidence-only failures (4 and 3 `low`).
 
-## Experimental Setup
+## 8. Discussion: Deployment Guardrails
 
-The full reproducible report is generated by:
+Contract tests suggest concrete guardrails: (i) regression-gate every model or prompt release on the full contract suite, with zero tolerance for IFR > 0 on payer and demographic attributes; (ii) enforce decision-time filtering of inputs at the data-access layer rather than relying on the model, and audit citations for post-decision items; (iii) require deterministic decoding (temperature 0 / greedy) during evaluation so failures are reproducible; (iv) treat SDI, not mean accuracy, as the release criterion for safety-critical decisions; (v) retain machine-readable run metadata (dataset fingerprint, seed) for governance audit. The fuzzer complements fixed contracts by exploring perturbations near a site's own charts; findings are marked `needs_human_review` and are not clinical adjudications.
 
-```bash
-scripts/run_all_benchmarks.sh
-```
+## 9. Limitations
 
-The deterministic run requires no API keys, internet access, or downloaded model weights. Optional OpenAI and local-HF adapters are available but were not used for the reported deterministic results.
+- **Baseline-only evaluation.** Only three offline policies were run. No LLM (including the supported BioMistral, Meditron, MedGemma, Llama, Mistral and Qwen families, or OpenAI-compatible endpoints) was evaluated; those adapters are implemented and tested offline with mocked pipelines and responses, so conclusions about real models cannot be drawn.
+- **Synthetic, unvalidated contracts.** Contracts are author-generated, templated, and not clinician-reviewed or guideline-certified; heuristic rules were written with knowledge of 32 of the contracts. Ground truth is therefore a design decision, and real-chart complexity (noise, missing data, free text length) is absent.
+- **Reference policies are artificial.** The reckless policy was constructed to fail; its rates quantify benchmark sensitivity, not the prevalence of these failures in practice.
+- **Small samples.** IFR and TDV rest on 23 contracts each; intervals are wide, and the bootstrap treats the finite contract set as the sampling unit.
+- **Fuzzer scope.** One base chart, 20 perturbations, one specialty; the findings illustrate the method.
+- **Metric simplifications.** SDI weights (3:1) are a design choice; TDV counts decision changes and leakage but not correct-but-late reasoning.
+- **Licensing and use.** DiffEHR is not a medical device or decision-support tool.
 
-## Results
+## 10. Conclusion
 
-### Overall Performance
+DiffEHR turns clinical-AI behavioral expectations into executable, versioned contracts over synthetic FHIR records. On 120 contracts, an oracle passes all, a tuned heuristic generalizes poorly outside its tuning set, and a flawed policy shows payer sensitivity, temporal leakage and clinical insensitivity that the metrics and fuzzer identify and localize. Evaluating real clinical language models and obtaining clinician review of the contracts are the immediate next steps.
 
-| Model | Contracts | Passed | Pass rate | Mean score |
-|---|---:|---:|---:|---:|
-| oracle | 32 | 32 | 100.00% | 1.000 |
-| heuristic-oncology | 32 | 32 | 100.00% | 0.999 |
-| reckless-oncology | 32 | 24 | 75.00% | 0.877 |
+## Data and Code Availability
 
-### Research Metrics
+Code, contracts, run outputs and reports: https://github.com/zoryktom/diffehr (Apache-2.0). Reproduce with `pip install -e '.[dev]'`, `pytest -v`, `bash scripts/run_all_benchmarks.sh`. No real patient data were used.
 
-| Model | IVR | IVR 95% CI | DSS | DSS 95% CI | Evidence precision | Evidence recall | Temporal leakage |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| oracle | 0.00% | 0.00%-0.00% | 100.00% | 100.00%-100.00% | 100.00% | 100.00% | 0 |
-| heuristic-oncology | 0.00% | 0.00%-0.00% | 100.00% | 100.00%-100.00% | 98.88% | 100.00% | 0 |
-| reckless-oncology | 50.00% | 25.00%-75.00% | 100.00% | 100.00%-100.00% | 88.76% | 89.77% | 5 |
+## Ethics
 
-The reckless baseline preserved decisive clinical sensitivity but failed invariance and temporal validity. This demonstrates why static decision accuracy is not sufficient: the same model can respond correctly to clinically meaningful changes while also overreacting to payer status or using unavailable future information.
-
-### Failure Case Analysis
-
-The highest violation rates were in temporal-validity categories. Reckless failed 100.00% of cardiology temporal contracts and 75.00% of oncology temporal contracts. It also failed non-clinical invariance contracts in cardiology, infectious disease, and oncology due to payer bias.
-
-Representative failures included:
-
-- Cardiology: future troponin created a statin indication before NSTEMI was confirmed at the decision index.
-- Infectious disease: future culture susceptibility caused premature carbapenem de-escalation.
-- Oncology: future EGFR or LVEF evidence changed eligibility despite being dated after the decision index.
-- Fuzzing: payer mutations to Medicaid or self-pay flipped an EGFR trial eligibility answer with unchanged clinical evidence.
-
-### Automated Counterfactual Discovery
-
-DiffEHR includes a fuzzer that mutates non-clinical demographic attributes and shifts FHIR resource dates into the future. Against the reckless baseline, the fuzzer ran 20 perturbations and found 3 distinct failures after deduplicating equivalent findings:
-
-| Finding type | Count |
-|---|---:|
-| Invariance violation | 2 |
-| Temporal leakage | 1 |
-
-The fuzz run is stored at `evidence/runs/fuzz_findings.json`.
-
-## Ablation And Robustness Analysis
-
-The deterministic baselines serve as practical ablations of framework claims:
-
-| Comparison | What changes | Expected diagnostic result | Observed result |
-|---|---|---|---|
-| Oracle vs heuristic | Hidden contract fixture vs transparent rules | Both should pass if evaluator and rules match contracts | Both passed 32/32 |
-| Heuristic vs reckless | Temporal visibility and payer-invariance disabled in reckless | Reckless should fail temporal and invariance checks | Reckless passed 24/32, IVR 50.00%, 5 temporal leaks |
-| Fuzz demographic perturbations | Non-clinical payer fields changed | Reckless should reveal payer-driven flips | 2 deduplicated invariance findings |
-| Fuzz temporal perturbations | Evidence dates shifted after decision index | Reckless should cite future evidence | 1 deduplicated temporal finding |
-
-These ablations show that the evaluation engine detects the intentionally introduced failure modes. They do not establish performance for a real clinical model.
-
-## Error Analysis
-
-The checked-in failure-analysis report is generated at `evidence/reports/failure_analysis.md`. It assigns severity by explicit benchmark rules:
-
-- high: temporal leakage, safety-related expected decisions, or incorrect task decisions,
-- medium: relation failures without temporal or safety markers,
-- low: evidence-only failures.
-
-All failures require human review before clinical interpretation.
-
-## Threats To Validity
-
-The benchmark is synthetic and deliberately constructed. It is not a random sample of clinical cases. The deterministic baselines are not real clinical AI systems. Evidence matching uses record IDs and does not independently judge semantic truth. Confidence intervals are conditional on the benchmark and bootstrap scheme. Contract rationales are author-specified and should be reviewed before use as a validated benchmark.
-
-## Ethical Considerations
-
-DiffEHR is designed to reduce risk in evaluation workflows by making failure modes visible on synthetic records. It must not be used as clinical decision support. It should not be used to make claims about patient outcomes, model safety, or fairness in deployment without additional validation, governance, and clinician review.
-
-## Reproducibility Statement
-
-The deterministic artifact can be reproduced with:
-
-```bash
-python -m pip install -e '.[test]'
-PYTHONPATH=src pytest tests/ -q
-PYTHONPATH=src python -m diffehr manifest examples
-PYTHONPATH=src python -m diffehr validate examples
-scripts/run_all_benchmarks.sh
-```
-
-Machine-readable outputs are in `evidence/runs/`. Human-readable reports are in `evidence/reports/`. Dataset integrity is recorded in `examples/manifest.json`.
-
-## Discussion
-
-DiffEHR shows that clinical AI evaluation can be made more operational by encoding behavioral expectations as executable contracts. The multi-specialty suite tests whether models flip on decisive clinical facts, remain invariant to non-clinical attributes, cite the responsible evidence, and avoid future information.
-
-The empirical results are intentionally small enough to inspect by hand but broad enough to exercise three specialties and multiple failure modes. The reckless baseline illustrates a clinically important pattern: high decisive sensitivity can coexist with poor invariance and temporal reliability. This is the kind of failure that a static benchmark can miss.
-
-## Clinical Safety Implications
-
-Counterfactual contract testing can support:
-
-- model release regression tests,
-- vendor evaluation by health systems,
-- clinical informatics research on robustness,
-- audit trails for evidence citation behavior,
-- educational demonstrations of temporal leakage and demographic bias.
-
-Because the artifact uses synthetic data, it can be shared, inspected, and extended without exposing patient information.
-
-## Limitations
-
-The current contract pack is synthetic and compact. It does not establish real-world clinical safety, and it is not a substitute for clinician review, prospective validation, or deployment monitoring. The heuristic baselines are deliberately simple and should not be interpreted as clinical systems. Future work should expand contract volume, add clinician-authored validation, evaluate frontier LLMs and vendor systems, and measure inter-rater agreement on expected contract behavior.
-
-## Conclusion
-
-DiffEHR operationalizes clinical counterfactual testing as a reproducible software artifact. Across 32 contracts, it distinguishes a careful baseline from a reckless baseline despite both showing strong decisive sensitivity. The artifact provides a foundation for rigorous, inspectable, multi-specialty evaluation of clinical AI behavior.
+No human subjects or identifiable data; all records are synthetic. Misuse risk is limited, but benchmark success must not be read as clinical safety.
 
 ## References
 
-- Chen, T. Y., Cheung, S. C., and Yiu, S. M. 1998. *Metamorphic Testing: A New Approach for Generating Next Test Cases*. Technical Report HKUST-CS98-01. https://www.cse.ust.hk/faculty/scc/publ/CS98-01-metamorphictesting.pdf
-- Segura, S., Fraser, G., Sanchez, A. B., and Ruiz-Cortes, A. 2016. *A Survey on Metamorphic Testing*. IEEE Transactions on Software Engineering, 42(9), 805-824. https://doi.org/10.1109/TSE.2016.2532875
-- HL7. *FHIR Release 4, Bundle Resource*. https://hl7.org/fhir/R4/bundle.html
-- U.S. Food and Drug Administration. 2022. *Clinical Decision Support Software: Guidance for Industry and Food and Drug Administration Staff*. https://www.fda.gov/media/109618/download
+1. Ribeiro MT, Wu T, Guestrin C, Singh S. Beyond Accuracy: Behavioral Testing of NLP Models with CheckList. ACL 2020:4902-4912.
+2. Obermeyer Z, Powers B, Vogeli C, Mullainathan S. Dissecting racial bias in an algorithm used to manage the health of populations. Science 2019;366(6464):447-453.
+3. Kusner MJ, Loftus J, Russell C, Silva R. Counterfactual fairness. NeurIPS 2017.
+4. Walonoski J, et al. Synthea: An approach, method, and software mechanism for generating synthetic patients and the synthetic electronic health care record. JAMIA 2018;25(3):230-238.
+5. HL7 International. FHIR Release 4 (v4.0.1). 2019.
+6. Efron B. Bootstrap methods: another look at the jackknife. Ann Stat 1979;7(1):1-26.
 
-These references establish nearby technical and regulatory context. They do not constitute a comprehensive literature review or external clinical validation of DiffEHR.
+BibTeX entries are in `docs/CITATIONS.bib`.

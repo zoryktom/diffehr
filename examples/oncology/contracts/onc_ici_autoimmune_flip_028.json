@@ -1,0 +1,199 @@
+{
+  "id": "onc_ici_autoimmune_flip_028",
+  "title": "Active Crohn's disease flare flips checkpoint inhibitor eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for immune checkpoint inhibitor therapy for metastatic melanoma; active severe autoimmune disease is a contraindication.",
+  "base_patient": {
+    "id": "syn-onc-028A",
+    "as_of": "2025-06-10",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "note_20250511_mel",
+        "date": "2025-05-11",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250531_aid",
+        "date": "2025-05-31",
+        "type": "oncology_note",
+        "text": "History of Crohn's disease, in remission on no immunosuppression. No active autoimmune flare."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-028A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-028A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-11",
+            "id": "note_20250511_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-028A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of Crohn's disease, in remission on no immunosuppression. No active autoimmune flare."
+            },
+            "recordedDate": "2025-05-31",
+            "id": "note_20250531_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-028A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-028B",
+    "as_of": "2025-06-10",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "note_20250511_mel",
+        "date": "2025-05-11",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+      },
+      {
+        "id": "note_20250531_aid",
+        "date": "2025-05-31",
+        "type": "oncology_note",
+        "text": "History of Crohn's disease. Active severe autoimmune flare: Crohn's disease with bloody diarrhea requiring prednisone 60 mg daily."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-028B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-028B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic melanoma, BRAF wild type, ECOG 1."
+            },
+            "recordedDate": "2025-05-11",
+            "id": "note_20250511_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-028B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "History of Crohn's disease. Active severe autoimmune flare: Crohn's disease with bloody diarrhea requiring prednisone 60 mg daily."
+            },
+            "recordedDate": "2025-05-31",
+            "id": "note_20250531_aid",
+            "subject": {
+              "reference": "Patient/syn-onc-028B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "note_20250531_aid"
+      ],
+      "variant": [
+        "note_20250531_aid"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Active severe autoimmune disease is a contraindication to checkpoint inhibitor therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-06-10",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace quiescent Crohn's disease with an active severe flare.",
+    "changed_fields": [
+      "record.aid.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not clear checkpoint inhibitor therapy during an active severe flare."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

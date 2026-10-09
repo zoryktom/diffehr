@@ -1,0 +1,175 @@
+{
+  "id": "card_temporal_future_033",
+  "title": "Post-decision shock result must not alter decision",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "start",
+    "defer",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to start an evidence-based beta-blocker for HFrEF (start, defer, or insufficient).",
+  "base_patient": {
+    "id": "syn-card-033A",
+    "as_of": "2025-10-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251001_hf",
+        "date": "2025-10-01",
+        "type": "cardiology_note",
+        "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-033A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-033A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+            },
+            "recordedDate": "2025-10-01",
+            "id": "note_20251001_hf",
+            "subject": {
+              "reference": "Patient/syn-card-033A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-033B",
+    "as_of": "2025-10-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251001_hf",
+        "date": "2025-10-01",
+        "type": "cardiology_note",
+        "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+      },
+      {
+        "id": "note_20251019_future_shock",
+        "date": "2025-10-19",
+        "type": "cardiology_note",
+        "text": "Admission after the decision date for cardiogenic shock requiring inotropes."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-033B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-033B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Stable outpatient HFrEF, euvolemic, LVEF 30 percent, blood pressure 118/72."
+            },
+            "recordedDate": "2025-10-01",
+            "id": "note_20251001_hf",
+            "subject": {
+              "reference": "Patient/syn-card-033B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Admission after the decision date for cardiogenic shock requiring inotropes."
+            },
+            "recordedDate": "2025-10-19",
+            "id": "note_20251019_future_shock",
+            "subject": {
+              "reference": "Patient/syn-card-033B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "start",
+    "variant_decision": "start",
+    "required_citations": {
+      "base": [
+        "note_20251001_hf"
+      ],
+      "variant": [
+        "note_20251001_hf"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-10-05",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

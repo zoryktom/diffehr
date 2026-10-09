@@ -2,6 +2,7 @@
   "id": "diffehr-cardiology",
   "title": "DiffEHR Cardiology Contract Pack",
   "domain": "cardiology",
-  "n_contracts": 8,
-  "schema_version": "0.2"
+  "n_contracts": 40,
+  "schema_version": "0.2",
+  "description": "40 paired synthetic cardiology EHR contracts for testing clinical counterfactual consistency."
 }

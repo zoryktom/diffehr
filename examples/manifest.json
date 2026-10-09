@@ -2,16 +2,16 @@
   "dataset_id": "diffehr-multispecialty",
   "dataset_version": "0.2.0",
   "schema_version": "0.2",
-  "contract_count": 32,
+  "contract_count": 120,
   "domain_counts": {
-    "cardiology": 8,
-    "infectious_disease": 8,
-    "oncology": 16
+    "cardiology": 40,
+    "infectious_disease": 40,
+    "oncology": 40
   },
   "category_counts": {
-    "clinical_sensitivity": 16,
-    "nonclinical_invariance": 9,
-    "temporal_validity": 7
+    "clinical_sensitivity": 74,
+    "nonclinical_invariance": 23,
+    "temporal_validity": 23
   },
   "review_status": "synthetic_author_checked",
   "provenance": {
@@ -31,7 +31,7 @@
   "contracts": [
     {
       "path": "cardiology/contracts/card_af_doac_renal_flip_001.json",
-      "sha256": "c655724ae7b79adcb1bf9dcf7c1c7268b04f6752e64e9647ceaed29a2467245a",
+      "sha256": "7370483e7cba1a27d161a32ad69d47f27757d04ae7e32f9ee9e24d789c338eb6",
       "id": "card_af_doac_renal_flip_001",
       "domain": "cardiology",
       "category": "clinical_sensitivity",
@@ -40,8 +40,88 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "cardiology/contracts/card_doac_renal_flip_009.json",
+      "sha256": "bee7c5ef5060c6fa02da4c3b9675197b0cb88954b870b997f26a114e2c92401e",
+      "id": "card_doac_renal_flip_009",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_010.json",
+      "sha256": "a1887ea53de04f63ab8d6c5860eaf6e888d8dbf91dc4129a1d6a2e966a7809d9",
+      "id": "card_doac_renal_flip_010",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_011.json",
+      "sha256": "380255a3e2368333ecca60a07f7e9cdedff8579540f46cd0b480240ee72cd0ce",
+      "id": "card_doac_renal_flip_011",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_012.json",
+      "sha256": "34c23d0083e0f08cb5f2edf73bccf1efafac1d971760b0b0c527b86a724e19d3",
+      "id": "card_doac_renal_flip_012",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_013.json",
+      "sha256": "d5734ce6b0df707e74a4ae3136ead5d9fa72e9b148ee960fdccba5e9a6bc3292",
+      "id": "card_doac_renal_flip_013",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_014.json",
+      "sha256": "b3e3b89d3fe7a3353812ce5aa1886075ca87e72e6b358a13999564d982026ed7",
+      "id": "card_doac_renal_flip_014",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_015.json",
+      "sha256": "3fecba572a9bca970f52937d15f267a33c5b6afa16fda924c3a69206e904e482",
+      "id": "card_doac_renal_flip_015",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_doac_renal_flip_016.json",
+      "sha256": "e54ed9fe29b0d57da1ae0cdc1e593f6a364ee8ca4991e177ab6ab743d6fe0214",
+      "id": "card_doac_renal_flip_016",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "cardiology/contracts/card_future_troponin_temporal_008.json",
-      "sha256": "3742b5a24668c9bd57b8ae86755516080d19d3968c432927ca796a93fd495e0d",
+      "sha256": "a06e9ccf0679db77b9a162e32353158fff03308b571032c62bbeb6aafa69e82a",
       "id": "card_future_troponin_temporal_008",
       "domain": "cardiology",
       "category": "temporal_validity",
@@ -51,7 +131,7 @@
     },
     {
       "path": "cardiology/contracts/card_hf_beta_blocker_decomp_004.json",
-      "sha256": "2bd0807945f9be17d2961589a42b606ae1c2de6adc9b4af2be8b27a3e3dbe5b8",
+      "sha256": "64d9bb87c07b3a64055233ed20fed7c20b3d367b723536729e2560418244d88f",
       "id": "card_hf_beta_blocker_decomp_004",
       "domain": "cardiology",
       "category": "clinical_sensitivity",
@@ -60,8 +140,68 @@
       "counterfactual_difference": "multifactor_or_dependent_representation"
     },
     {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_017.json",
+      "sha256": "8f62638572a9a18502121ab237efd6166dcdd7d83fcdd9a1ee93729da0bced7f",
+      "id": "card_hf_beta_blocker_flip_017",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_018.json",
+      "sha256": "15c5bd560f75220ecbfa4bfa2494bc6c9130f86564f8e035119e640293612b71",
+      "id": "card_hf_beta_blocker_flip_018",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_019.json",
+      "sha256": "91ffe00ea1620708ae1e0d8ac1eb5c9a14ce8ec01037014c27ca6858a4b07ccd",
+      "id": "card_hf_beta_blocker_flip_019",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_020.json",
+      "sha256": "462e273c982a214ec6435912af8fbfecf030ad537024f353dfbc0db088b81af0",
+      "id": "card_hf_beta_blocker_flip_020",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_021.json",
+      "sha256": "7fc66f39f3b82f23b7689c51a0010408d704974a27863a852abeb1e7fc84d0fb",
+      "id": "card_hf_beta_blocker_flip_021",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_hf_beta_blocker_flip_022.json",
+      "sha256": "a1d490b67b9e4b9feec545f6a103e1a741fce0fe0efa0f8a008cfc8d779a0ad2",
+      "id": "card_hf_beta_blocker_flip_022",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "cardiology/contracts/card_insurance_invariance_005.json",
-      "sha256": "621d02370564e1932754a3e0927f10c56dc8ed48d27a644f4bb549ed36ccdff3",
+      "sha256": "2cb3c32d745d31bc83f68dac10ff432551ca278cd5b3e61a53b14421dc02db77",
       "id": "card_insurance_invariance_005",
       "domain": "cardiology",
       "category": "nonclinical_invariance",
@@ -71,7 +211,7 @@
     },
     {
       "path": "cardiology/contracts/card_language_invariance_006.json",
-      "sha256": "ac6bf86d090cb02b629d42c481ecf48f521457a579eab99a3d9e0dbae22e11b2",
+      "sha256": "faecf22aba50790b23073a6933ed084fd7812e0674bf343bad5a82ecd4eb75e3",
       "id": "card_language_invariance_006",
       "domain": "cardiology",
       "category": "nonclinical_invariance",
@@ -80,8 +220,68 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "cardiology/contracts/card_nonclinical_invariance_035.json",
+      "sha256": "e22d5a1f4e571b21329aa06670b2267f248dc18d5ffd7df9efac34c09d855db7",
+      "id": "card_nonclinical_invariance_035",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_nonclinical_invariance_036.json",
+      "sha256": "8cb759fe269ed37bff4bb36ec25747d5243faf215721313370a187a995712863",
+      "id": "card_nonclinical_invariance_036",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_nonclinical_invariance_037.json",
+      "sha256": "ca8ba39af91c8aa66d9d6b92a3a63f4dea07b2c53a427fbb5b24d957f41c6830",
+      "id": "card_nonclinical_invariance_037",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_nonclinical_invariance_038.json",
+      "sha256": "73b5a9842ec127c63c54ae4fce37dd7ac5afd07b15085859d8019c6f2a6db948",
+      "id": "card_nonclinical_invariance_038",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_nonclinical_invariance_039.json",
+      "sha256": "3429a8c13ea90a702b53c1fc861b6da4898a03f381956f87df841e138939dc8f",
+      "id": "card_nonclinical_invariance_039",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_nonclinical_invariance_040.json",
+      "sha256": "8ba61a02fa970a142df199f5b87018ed79872522a84efdd2a8d15e42ce5dd73d",
+      "id": "card_nonclinical_invariance_040",
+      "domain": "cardiology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "cardiology/contracts/card_pci_cyp2c19_flip_003.json",
-      "sha256": "b5547154e061a128b71ec546792c2e46f3143c4170a44463b17cd9cff2f3c551",
+      "sha256": "7ec7c49bbb98d61674424dccc9e901f95840609cb87b05a0f9d6f4a1f3cc623a",
       "id": "card_pci_cyp2c19_flip_003",
       "domain": "cardiology",
       "category": "clinical_sensitivity",
@@ -90,8 +290,68 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_023.json",
+      "sha256": "1a4e4dbdd858a74ee59c7e266719e6bd0cd58fb819cafd95e02e8a73dd657035",
+      "id": "card_pci_cyp2c19_flip_023",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_024.json",
+      "sha256": "88cf598bd6c348d0bd42c09ee3ca7b9763305a4defccc6b619ac67378ec90d6b",
+      "id": "card_pci_cyp2c19_flip_024",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_025.json",
+      "sha256": "9d89dda46ac0b8f44963e3df9cf82f6f3fc3fe0b98aea8a5d273ab94663c7460",
+      "id": "card_pci_cyp2c19_flip_025",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_026.json",
+      "sha256": "2dabd7237abf5dd4ad4748de78d1616fe494520f7f7f7c9a847d3967b8cdc6b5",
+      "id": "card_pci_cyp2c19_flip_026",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_027.json",
+      "sha256": "a243933261c8e8675c4e2346fc5267e9f9a16f23cf5ec7b8baad8a239b607b50",
+      "id": "card_pci_cyp2c19_flip_027",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_pci_cyp2c19_flip_028.json",
+      "sha256": "3dcb2db62c88d5770350463983082556375e7bb147018ba0b00ac02adba0bcee",
+      "id": "card_pci_cyp2c19_flip_028",
+      "domain": "cardiology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "cardiology/contracts/card_rural_invariance_007.json",
-      "sha256": "4240bc31cd9ba13231aa4e1402836ca377f36bb52b3379ee9b5d00885cccbe16",
+      "sha256": "d6efa838a8b7286e8b0839df8e51e669729271eced92d5c1bc489989c3a58b4f",
       "id": "card_rural_invariance_007",
       "domain": "cardiology",
       "category": "nonclinical_invariance",
@@ -101,7 +361,7 @@
     },
     {
       "path": "cardiology/contracts/card_statin_liver_failure_002.json",
-      "sha256": "2a210198dc3a97898090c6c226688c80e4755b8287c28e42baa12388bd7fd269",
+      "sha256": "ad005a84e468df38ab3b51d1ad5a4bf7f2ee0c0d8514e8ca506df7cefbaf6b35",
       "id": "card_statin_liver_failure_002",
       "domain": "cardiology",
       "category": "clinical_sensitivity",
@@ -110,8 +370,68 @@
       "counterfactual_difference": "multifactor_or_dependent_representation"
     },
     {
+      "path": "cardiology/contracts/card_temporal_future_029.json",
+      "sha256": "e2b4f5be8ec0465e1ea776498d7cc9adb714a7934098763fd1dc4da4561554ae",
+      "id": "card_temporal_future_029",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_temporal_future_030.json",
+      "sha256": "6508d1d0115da4f01475fb92f80cf8e9679da56cdc58ce6d163598d8c509d891",
+      "id": "card_temporal_future_030",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_temporal_future_031.json",
+      "sha256": "a343611c7c0133f3d53ff6578fa705fb8f320900095ae056398bfaf4ec35dd8f",
+      "id": "card_temporal_future_031",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_temporal_future_032.json",
+      "sha256": "0bb924f2c2f09de2965be9d398df06ef993f67c9d9d5cc3fd0df9eca8606c6c0",
+      "id": "card_temporal_future_032",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_temporal_future_033.json",
+      "sha256": "17f57e346dc25164eb27b8923c62c066059280b055e5bdb4bfebc901a6538e44",
+      "id": "card_temporal_future_033",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "cardiology/contracts/card_temporal_future_034.json",
+      "sha256": "05d952e869c3a21fbc44d3f49eec2e672ea32ade9e0a3e647a22abb8ff4fd2d9",
+      "id": "card_temporal_future_034",
+      "domain": "cardiology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "infectious_disease/contracts/id_cap_stepdown_stability_002.json",
-      "sha256": "816e5f040993c07ba151f63295172978414b930ea8509e39bc5d52d62b5f2887",
+      "sha256": "49010bab39f1c661b5d6432ed8209beb65114e600c71082efd69b3af39f89a33",
       "id": "id_cap_stepdown_stability_002",
       "domain": "infectious_disease",
       "category": "clinical_sensitivity",
@@ -121,7 +441,7 @@
     },
     {
       "path": "infectious_disease/contracts/id_carbapenem_deescalation_003.json",
-      "sha256": "f8d34f20628882c846d82492d9d61112a1caf7c6b12b6d425dbfd539afaa7b45",
+      "sha256": "748db8010cd3f005c380be426823ba91c0e2bfec9d12625404337ebd598b4566",
       "id": "id_carbapenem_deescalation_003",
       "domain": "infectious_disease",
       "category": "clinical_sensitivity",
@@ -130,8 +450,68 @@
       "counterfactual_difference": "multifactor_or_dependent_representation"
     },
     {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_025.json",
+      "sha256": "79c8efd802ad57676a695b90dfbfb72973e0fe2efd76c629153bb7ed1c020f84",
+      "id": "id_deescalation_pct_flip_025",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_026.json",
+      "sha256": "cdf56864541e90f536049b1b4fe41abffb5c39c63d2282c2fbba2cfef4f06c05",
+      "id": "id_deescalation_pct_flip_026",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_027.json",
+      "sha256": "c9c282f2f349658c2a75d99c92412f277a7f288b1c35959edf9b22cf670d077c",
+      "id": "id_deescalation_pct_flip_027",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_028.json",
+      "sha256": "c871cd41732960b05da8bd2d8597a40aef65a4af90b41d3da0f96f7f6bf44c60",
+      "id": "id_deescalation_pct_flip_028",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_029.json",
+      "sha256": "a72aa4833c92f9bdfd21c06be042ec7822ae38d5c2fa22b7bba946a5f4b8aca5",
+      "id": "id_deescalation_pct_flip_029",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
+      "path": "infectious_disease/contracts/id_deescalation_pct_flip_030.json",
+      "sha256": "589b2691a42623adbe1746512b4a70177227cf6304197ac52fe79e9d40388406",
+      "id": "id_deescalation_pct_flip_030",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "multifactor_or_dependent_representation"
+    },
+    {
       "path": "infectious_disease/contracts/id_future_culture_temporal_007.json",
-      "sha256": "f00dbb12b174db5c57854d75968b487484b189b7b15abf99684c35c117d84317",
+      "sha256": "1a445b1fac3cab0b8de2594d818ad476064381d6bcb17e94fd4f7933a138b8b8",
       "id": "id_future_culture_temporal_007",
       "domain": "infectious_disease",
       "category": "temporal_validity",
@@ -141,7 +521,7 @@
     },
     {
       "path": "infectious_disease/contracts/id_future_mrsa_temporal_008.json",
-      "sha256": "1b99168114d75bf4659bff094bc48debee70031d597363f2b23f1bbd2f3f9823",
+      "sha256": "3fd3f518e0b09ed20e7d500fc7e766ec730c9cb8b39cc12b1f582113930f6b24",
       "id": "id_future_mrsa_temporal_008",
       "domain": "infectious_disease",
       "category": "temporal_validity",
@@ -150,8 +530,48 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "infectious_disease/contracts/id_nonclinical_invariance_037.json",
+      "sha256": "6b9007b10396e771bebb9432072dbc27c3113fcacfd70c00efa8a245030d470f",
+      "id": "id_nonclinical_invariance_037",
+      "domain": "infectious_disease",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_nonclinical_invariance_038.json",
+      "sha256": "0ed4f555d9c483f1699b41ae18895115b6f210211ec1711eb5b664ff9e686d75",
+      "id": "id_nonclinical_invariance_038",
+      "domain": "infectious_disease",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_nonclinical_invariance_039.json",
+      "sha256": "0f2e56b74d221d5c4c456eb0e686a7cbb006f0450cc9273fb9d06562e6fad9d7",
+      "id": "id_nonclinical_invariance_039",
+      "domain": "infectious_disease",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_nonclinical_invariance_040.json",
+      "sha256": "7ea61821a1a14f9216354e3509343ba0d052fb0b7d17f99198a101616a6abc7e",
+      "id": "id_nonclinical_invariance_040",
+      "domain": "infectious_disease",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "infectious_disease/contracts/id_race_invariance_005.json",
-      "sha256": "14d72ba898e0dfd633515883e2997ef2584c0026728bc89d0b1ca54e6d1a5be8",
+      "sha256": "eac2ca4c37c96df10a3d50e4a040ecbab184cdf488158d9898accc583ee345b0",
       "id": "id_race_invariance_005",
       "domain": "infectious_disease",
       "category": "nonclinical_invariance",
@@ -161,7 +581,7 @@
     },
     {
       "path": "infectious_disease/contracts/id_selfpay_invariance_006.json",
-      "sha256": "cb78a771cb18fea59c5c88951ed0173ca3832ef80657c9578cac01c862bf3da6",
+      "sha256": "54ab41719ae00c01d512f9b3ddfdb02d96ba53a6c81ee9cfbe181938d13209e9",
       "id": "id_selfpay_invariance_006",
       "domain": "infectious_disease",
       "category": "nonclinical_invariance",
@@ -171,7 +591,7 @@
     },
     {
       "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_001.json",
-      "sha256": "d54bf45709ec446c14b3f7d38e469f3430e2886804db927d9ecd91a09e0d21d8",
+      "sha256": "a07d4de0a0a4859ff0a70750fce2874ecb781442cb919691ee808fff9ebf2fb0",
       "id": "id_sepsis_pcn_allergy_001",
       "domain": "infectious_disease",
       "category": "clinical_sensitivity",
@@ -180,8 +600,148 @@
       "counterfactual_difference": "multifactor_or_dependent_representation"
     },
     {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_009.json",
+      "sha256": "ae6d9dda6f13e50f516f5be95092e0f5e69926bd88cf92bdea6764bcdf6989a1",
+      "id": "id_sepsis_pcn_allergy_flip_009",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_010.json",
+      "sha256": "67dd10d04d3e4c821346db833f5fefdc17cfd8288154f1994437776020ddc2c8",
+      "id": "id_sepsis_pcn_allergy_flip_010",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_011.json",
+      "sha256": "79a331771967b698d64c994066d944c83906f397ca3d2e65e2f98ef0cb36ea34",
+      "id": "id_sepsis_pcn_allergy_flip_011",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_012.json",
+      "sha256": "82140db19c61cde8e0e53ee4433faa2bab600cd385fc24b1f9e1c9a158d10511",
+      "id": "id_sepsis_pcn_allergy_flip_012",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_013.json",
+      "sha256": "80a490142dc1e51afab665f8231e52c6887f9c3e3db78e2e07c0e547ebaf238e",
+      "id": "id_sepsis_pcn_allergy_flip_013",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_014.json",
+      "sha256": "2cfb79924f14499d4e65479f3112e1da9b7f2a126020c8b764ef537aed2267fe",
+      "id": "id_sepsis_pcn_allergy_flip_014",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_015.json",
+      "sha256": "4d79cb99085e5734a1237d03e5561d9365025ef281c56fefc4a38e985bbde910",
+      "id": "id_sepsis_pcn_allergy_flip_015",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_sepsis_pcn_allergy_flip_016.json",
+      "sha256": "6fe9fa6a13fcb8c947027b44382e75481cafab0d7823aa66f9bde77e364671a4",
+      "id": "id_sepsis_pcn_allergy_flip_016",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_031.json",
+      "sha256": "7405935ab5589f10afe7eaf5c31a892806343667e0e657c91b39dd3d729d760c",
+      "id": "id_temporal_future_031",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_032.json",
+      "sha256": "157e4df0050d859d310bddc26d1349afe4ee57d22ec2715bd40663788262d69a",
+      "id": "id_temporal_future_032",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_033.json",
+      "sha256": "237bfbb9ccd8862b3a634420475a787eaa7337c0506b2def4e3b4e2ab3ae8b4e",
+      "id": "id_temporal_future_033",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_034.json",
+      "sha256": "7ac459a67634ed59c575faeecb6f07edd48d9c092f873bea4e9dcdd281817c87",
+      "id": "id_temporal_future_034",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_035.json",
+      "sha256": "7e7239fdb21a94de7bdff9eccd3db4a08bb8cb5474336198f6350635b29c91e8",
+      "id": "id_temporal_future_035",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_temporal_future_036.json",
+      "sha256": "f4372caf1ade2855c9e06c8b5b17b7aebdaef32ea2b376e9087af110b3f89595",
+      "id": "id_temporal_future_036",
+      "domain": "infectious_disease",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_004.json",
-      "sha256": "cdd660d1b9b350f884af860f64286e16b0e06299fae6c6ad70cd95a43d7bae66",
+      "sha256": "d4fe71538e47baa94d0860e880d547d6aa86de489fe6eadf5f71cca335dced97",
       "id": "id_vancomycin_mrsa_flip_004",
       "domain": "infectious_disease",
       "category": "clinical_sensitivity",
@@ -190,8 +750,108 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_017.json",
+      "sha256": "89bce1c5bb8f8fb836cf634d531841c669e898f7dc126678b90a556c1d5ae459",
+      "id": "id_vancomycin_mrsa_flip_017",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_018.json",
+      "sha256": "8ab201291e31cca41e6a907c419748f1abb145e10508209963c8905b3e0d970f",
+      "id": "id_vancomycin_mrsa_flip_018",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_019.json",
+      "sha256": "a772fde180c5dd4d40d0c264f53aeac54ece7f0c14c0b453fd45e3cd491e15cb",
+      "id": "id_vancomycin_mrsa_flip_019",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_020.json",
+      "sha256": "6f2d6fc9ed5cdfe90dcfcfcdbbcdee6a70d2db8257f685a347e886634575e7c1",
+      "id": "id_vancomycin_mrsa_flip_020",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_021.json",
+      "sha256": "d1fa7d070b53324fe4ea3b31b96989bef432d5d1a169da6e410e366b438ff707",
+      "id": "id_vancomycin_mrsa_flip_021",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_022.json",
+      "sha256": "e9f12c5902678a8d01de30395fad740894a52a10fb32f61bb5da6ebfd63174ba",
+      "id": "id_vancomycin_mrsa_flip_022",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_023.json",
+      "sha256": "789b5802e8ce9bd7e3f77a5bfc400e0f1f555e826f0441b388c69ec58e39f5d7",
+      "id": "id_vancomycin_mrsa_flip_023",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "infectious_disease/contracts/id_vancomycin_mrsa_flip_024.json",
+      "sha256": "2f3f83678965581e49e85906c089ad990b9d7ddaaf1488ae333476d67f7e3557",
+      "id": "id_vancomycin_mrsa_flip_024",
+      "domain": "infectious_disease",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_alk_fusion_flip_023.json",
+      "sha256": "b8d843d91c0219a224f2a88e0f48a3a35074322e10d1bd41de455b684f213cf0",
+      "id": "onc_alk_fusion_flip_023",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_alk_fusion_flip_024.json",
+      "sha256": "1f05d765df02e135aa118a679c0a2d012e420473f32f1d8d24fc7d858eae373f",
+      "id": "onc_alk_fusion_flip_024",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_alk_missing_flip_005.json",
-      "sha256": "0bc2f17e9a58a450471f3bde9f0c9ae722f2ab176c3c046ed8fc4e3326a2f2f1",
+      "sha256": "36040b47950d6d86c0b7e79cc7e3c807e5437e38d862c61a20a3e0e940d181ed",
       "id": "onc_alk_missing_flip_005",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -201,7 +861,7 @@
     },
     {
       "path": "oncology/contracts/onc_braf_melanoma_flip_012.json",
-      "sha256": "433e26da1f43128d15e9f82af69b79a0415a916e00c5abe5e687d4f6514fcb08",
+      "sha256": "96b15d060ddcb8a1d6b0a0ab21ec1c2e6f74b56834db006df64cba0228f55fb4",
       "id": "onc_braf_melanoma_flip_012",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -210,8 +870,28 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_braf_v600e_flip_025.json",
+      "sha256": "2fe270e3f939e9736260c45ae5f4f35d3638565e5aedfe98e9c8a9f0050f2e4b",
+      "id": "onc_braf_v600e_flip_025",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_braf_v600e_flip_026.json",
+      "sha256": "1db958d53f0c192b80ad587009b29522a6a00d573e1fcf1d00fa49dcb07568a6",
+      "id": "onc_braf_v600e_flip_026",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_ecog_trial_flip_003.json",
-      "sha256": "1172872cb0c1980f03e4d33067da3cf81f46a5c21e6ed3cefd9051e0249e36a0",
+      "sha256": "9d014f89932a2f7315ab1be057f5d9f62d88951467497d8915e537887d5edfaa",
       "id": "onc_ecog_trial_flip_003",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -220,8 +900,38 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_egfr_driver_flip_017.json",
+      "sha256": "b23df728d2004adf7251ceada3ccb9a45cb512349cbe76a4b95c812b88e3e369",
+      "id": "onc_egfr_driver_flip_017",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_egfr_driver_flip_018.json",
+      "sha256": "de0df10fd467e6dbbf357306eb88505f0e31d6fde78dacc3f75314b6feee545f",
+      "id": "onc_egfr_driver_flip_018",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_egfr_driver_flip_019.json",
+      "sha256": "a7264e5e72fc121b83de6ea95ba1f2b1d11f079b90aab4f84a766974afdde0c0",
+      "id": "onc_egfr_driver_flip_019",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_egfr_trial_flip_001.json",
-      "sha256": "1bc40bbc0a08c56b371892e09d5b279c450f0e84ee21f294ab41be28516bbc47",
+      "sha256": "87fc1d2c5e4f9f5971eafe62ea25f5d56445287e84a1b5512a9af6d55fed553b",
       "id": "onc_egfr_trial_flip_001",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -231,7 +941,7 @@
     },
     {
       "path": "oncology/contracts/onc_future_biomarker_008.json",
-      "sha256": "9401adaf47261d60cca1156d542d68dc810f7fae82124dc273de718b81413746",
+      "sha256": "d8e78723798520a12cd59657d251e2212a78b79f00d043bc8dd0fb00b3c5a6e1",
       "id": "onc_future_biomarker_008",
       "domain": "oncology",
       "category": "temporal_validity",
@@ -241,7 +951,7 @@
     },
     {
       "path": "oncology/contracts/onc_future_biopsy_temporal_011.json",
-      "sha256": "546cd64c3b7835352fe409e85a5ff7e0a026a3d1473660c9440d966e1b51f82d",
+      "sha256": "da4c7cf1a72050040b0d60b6f9809f9d4aa3139241dbc63f378ab5e53ad8c614",
       "id": "onc_future_biopsy_temporal_011",
       "domain": "oncology",
       "category": "temporal_validity",
@@ -251,7 +961,7 @@
     },
     {
       "path": "oncology/contracts/onc_future_lvef_temporal_016.json",
-      "sha256": "6660c867221a9d7e3007b23f8ab9f9475268ff25ab7190725668c106d1d505dd",
+      "sha256": "52f19671657420be082fc39d66401511b750ab744ca726650321c9ba648daeee",
       "id": "onc_future_lvef_temporal_016",
       "domain": "oncology",
       "category": "temporal_validity",
@@ -261,7 +971,7 @@
     },
     {
       "path": "oncology/contracts/onc_gender_identity_invariance_015.json",
-      "sha256": "f978e993b712c65f353e1051a6673943971a3b28445ded75e022d49f52298f62",
+      "sha256": "74e937f47cb341ab02aa683f914b7555770119aabe6b8ad51c0d79bc8a649967",
       "id": "onc_gender_identity_invariance_015",
       "domain": "oncology",
       "category": "nonclinical_invariance",
@@ -271,7 +981,7 @@
     },
     {
       "path": "oncology/contracts/onc_her2_lvef_flip_009.json",
-      "sha256": "7f5c9c59fea1cc3c3f4c3f32da70e4996c358ab006af1fbee4b0e94b11b716cc",
+      "sha256": "1c92bd36db6e197d061682da7662a79552dc6b71c4e345ef93658c797708fe8e",
       "id": "onc_her2_lvef_flip_009",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -280,8 +990,38 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_her2_lvef_flip_030.json",
+      "sha256": "2d36fe2dace055843cd2bbc4031dc3dee3acff4cb3169b1e47fa41fe7a0b5a4d",
+      "id": "onc_her2_lvef_flip_030",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_her2_lvef_flip_031.json",
+      "sha256": "9e5e320a2446b838962503e09840c461f21bacc6ceab2174b88d39b61c21a702",
+      "id": "onc_her2_lvef_flip_031",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_her2_lvef_flip_032.json",
+      "sha256": "d2d10c93c1ce98564af3a2da5554c6126f5beb72c1c5ec0993fa6264dbc3064c",
+      "id": "onc_her2_lvef_flip_032",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_ici_autoimmune_flip_010.json",
-      "sha256": "f56732862104d673a6202ab4419e565497ad18b174c013339168e7d583cffea3",
+      "sha256": "74a3df56f9addab8504891ace0adc26df73b12a14eae594dc23be9561427f7a3",
       "id": "onc_ici_autoimmune_flip_010",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -290,8 +1030,38 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_ici_autoimmune_flip_027.json",
+      "sha256": "f32aa6438db3fd0750bbda83b0a4e8d4aa8c972f6fd0c1494f403f95091aae6e",
+      "id": "onc_ici_autoimmune_flip_027",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_ici_autoimmune_flip_028.json",
+      "sha256": "b593edac86537d17a047027b871b23aeed1251a31b02b2d337acaf02a0c5f4c3",
+      "id": "onc_ici_autoimmune_flip_028",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_ici_autoimmune_flip_029.json",
+      "sha256": "2b2c5b044169b2c6af190d0e0be0e08c87acf8602ff5b0eaae27859543a4e66e",
+      "id": "onc_ici_autoimmune_flip_029",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_insurance_invariance_002.json",
-      "sha256": "3278b6b43e8de9bc0307584ec4b190520bc0e625e3e6c7f40ceb221c2f8bbd2d",
+      "sha256": "81a438a04e7a05e3e35a8300f738761a4b9e012498cfa109a27ecc90f30dc37d",
       "id": "onc_insurance_invariance_002",
       "domain": "oncology",
       "category": "nonclinical_invariance",
@@ -300,8 +1070,38 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_kras_g12c_flip_020.json",
+      "sha256": "3483ed4a780482b818643b692e8b6f0e33b04e7b9538b76b207ae53e71f0b20a",
+      "id": "onc_kras_g12c_flip_020",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_kras_g12c_flip_021.json",
+      "sha256": "713949752d32279f40887960127ef622a3afdc93ee19bc28590078f81f8e0138",
+      "id": "onc_kras_g12c_flip_021",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_kras_g12c_flip_022.json",
+      "sha256": "9dae2ad4cc91f61731d4af836418e545e1bb8b69de19d855e007efa9d0fb4bc7",
+      "id": "onc_kras_g12c_flip_022",
+      "domain": "oncology",
+      "category": "clinical_sensitivity",
+      "relation": "flip",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_language_invariance_014.json",
-      "sha256": "a380507fa2ec83385ac3b27e0629834c5cc1e04357cfc0f929df1cfe920b8042",
+      "sha256": "dc85fd0e54e9526e2a2afa8e2c8a282139994539b1b6207a3e9f8d1bd6088275",
       "id": "onc_language_invariance_014",
       "domain": "oncology",
       "category": "nonclinical_invariance",
@@ -311,7 +1111,7 @@
     },
     {
       "path": "oncology/contracts/onc_neutropenia_chemo_flip_013.json",
-      "sha256": "a06de5b91262218a4251641b958e3d8c85fc9258cbb8a54e2221a05e20d27738",
+      "sha256": "879e9165a480a83d4884c4d03e5afbedae6f1cb1ea9d0659b6b71cfc5d6df2ff",
       "id": "onc_neutropenia_chemo_flip_013",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -320,8 +1120,48 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_nonclinical_invariance_037.json",
+      "sha256": "b9ad78ffbb39944010fd21ad5e3ee63a0eacd2a453a3912c91c2ee7baa94f58a",
+      "id": "onc_nonclinical_invariance_037",
+      "domain": "oncology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_nonclinical_invariance_038.json",
+      "sha256": "b3852bd1465f2ea154a61cf91f8bd102bf7942a16c1627882b491620d8c84c70",
+      "id": "onc_nonclinical_invariance_038",
+      "domain": "oncology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_nonclinical_invariance_039.json",
+      "sha256": "acd0ac02ce6d3ebb451cf73e0255d66e027b5340d4d5d223590d69ed049720ec",
+      "id": "onc_nonclinical_invariance_039",
+      "domain": "oncology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_nonclinical_invariance_040.json",
+      "sha256": "bd62d698f27bfaf9e7af37cfeb82b4675cbb25f958f1435989d82518486c4f0e",
+      "id": "onc_nonclinical_invariance_040",
+      "domain": "oncology",
+      "category": "nonclinical_invariance",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_paclitaxel_allergy_007.json",
-      "sha256": "8e0876e2f15811fe144a0a0ac606027173d4f1c8835792e1e8dae7130d660c57",
+      "sha256": "3c955cdba7c2a156ea2966411bf9fa320cd2f92f61eee4d438afcc3cba5037ef",
       "id": "onc_paclitaxel_allergy_007",
       "domain": "oncology",
       "category": "clinical_sensitivity",
@@ -331,7 +1171,7 @@
     },
     {
       "path": "oncology/contracts/onc_race_invariance_006.json",
-      "sha256": "055b222a6b5437421ed62e334e7b8913fbd9af50c9743880498763bae299300f",
+      "sha256": "d6bd23729bf45fc37476e12e10d92e760a13de649d2da19daac4b3cd9ff71c48",
       "id": "onc_race_invariance_006",
       "domain": "oncology",
       "category": "nonclinical_invariance",
@@ -340,8 +1180,48 @@
       "counterfactual_difference": "single_factor"
     },
     {
+      "path": "oncology/contracts/onc_temporal_future_033.json",
+      "sha256": "8ec2dc4059fdfe2eeba4df8ccc7c8202cbfb75dae9f1e10e434ba24c81bd9986",
+      "id": "onc_temporal_future_033",
+      "domain": "oncology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_temporal_future_034.json",
+      "sha256": "35859d55ea218cd90d079114f12aef861ab91207dd0a2cde0336f3b5ef2048ff",
+      "id": "onc_temporal_future_034",
+      "domain": "oncology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_temporal_future_035.json",
+      "sha256": "cbb3b1df9f4d8996cc2f2827d6851bc5f0f50c05c5600cbfe3907519560a0cfb",
+      "id": "onc_temporal_future_035",
+      "domain": "oncology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
+      "path": "oncology/contracts/onc_temporal_future_036.json",
+      "sha256": "196d8a4b76d89b35a99a442a710b3277ac01db7838fdab25b637ed7d309e0be2",
+      "id": "onc_temporal_future_036",
+      "domain": "oncology",
+      "category": "temporal_validity",
+      "relation": "same",
+      "review_status": "synthetic_author_checked",
+      "counterfactual_difference": "single_factor"
+    },
+    {
       "path": "oncology/contracts/onc_temporal_leakage_004.json",
-      "sha256": "a5c41161f5d9eb197d4a90466a1f2cf231fdc3fac385dff1f65a0f0606264132",
+      "sha256": "937d6c4dfae07cf2589fe4c611d430b9b813a15cff79b9e979e3283f10b672ae",
       "id": "onc_temporal_leakage_004",
       "domain": "oncology",
       "category": "temporal_validity",

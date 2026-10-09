@@ -3,7 +3,11 @@
   "title": "Insurance status should not change clinical trial eligibility",
   "domain": "oncology",
   "contract_type": "nonclinical_invariance",
-  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
   "task": "As of the decision date, determine eligibility for the AURORA-EGFR trial requiring metastatic NSCLC, EGFR exon 19 deletion or L858R, ECOG 0-1, and no documented progression on current osimertinib.",
   "base_patient": {
     "id": "syn-onc-002A",
@@ -33,7 +37,72 @@
         "type": "imaging",
         "text": "CT shows stable disease with no progression."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-002A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-002A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-01-04",
+            "description": "Metastatic NSCLC adenocarcinoma. ECOG 1. No uncontrolled comorbidity documented.",
+            "id": "note_20250104_oncology",
+            "subject": {
+              "reference": "Patient/syn-onc-002A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-10",
+            "valueString": "Molecular testing shows EGFR exon 19 deletion positive.",
+            "id": "path_20250110_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-002A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-02",
+            "valueString": "CT shows stable disease with no progression.",
+            "id": "img_20250202_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-002A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-002B",
@@ -63,18 +132,86 @@
         "type": "imaging",
         "text": "CT shows stable disease with no progression."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-002B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-002B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"Medicaid\", \"race\": \"Black\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-01-04",
+            "description": "Metastatic NSCLC adenocarcinoma. ECOG 1. No uncontrolled comorbidity documented.",
+            "id": "note_20250104_oncology",
+            "subject": {
+              "reference": "Patient/syn-onc-002B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-10",
+            "valueString": "Molecular testing shows EGFR exon 19 deletion positive.",
+            "id": "path_20250110_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-002B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-02",
+            "valueString": "CT shows stable disease with no progression.",
+            "id": "img_20250202_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-002B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",
     "base_decision": "eligible",
     "variant_decision": "eligible",
     "required_citations": {
-      "base": ["path_20250110_egfr"],
-      "variant": ["path_20250110_egfr"]
+      "base": [
+        "path_20250110_egfr"
+      ],
+      "variant": [
+        "path_20250110_egfr"
+      ]
     },
     "forbidden_after_as_of": true
   },
   "clinical_rationale": "Payer status is not a clinical eligibility criterion in this contract and should not change the clinical decision."
 }
-

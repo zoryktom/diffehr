@@ -32,7 +32,57 @@
         "type": "vitals",
         "text": "Hemodynamically stable, afebrile, room air oxygen saturation 97 percent, tolerating oral intake."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-005A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-005A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "hospital_note"
+            },
+            "date": "2025-05-04",
+            "description": "Community-acquired pneumonia improving after IV antibiotics.",
+            "id": "id_note_20250504_cap",
+            "subject": {
+              "reference": "Patient/syn-id-005A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "vitals"
+            },
+            "effectiveDateTime": "2025-05-05",
+            "valueString": "Hemodynamically stable, afebrile, room air oxygen saturation 97 percent, tolerating oral intake.",
+            "id": "id_vitals_20250505_stable",
+            "subject": {
+              "reference": "Patient/syn-id-005A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-005B",
@@ -57,7 +107,57 @@
         "type": "vitals",
         "text": "Hemodynamically stable, afebrile, room air oxygen saturation 97 percent, tolerating oral intake."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-005B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-005B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "hospital_note"
+            },
+            "date": "2025-05-04",
+            "description": "Community-acquired pneumonia improving after IV antibiotics.",
+            "id": "id_note_20250504_cap",
+            "subject": {
+              "reference": "Patient/syn-id-005B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "vitals"
+            },
+            "effectiveDateTime": "2025-05-05",
+            "valueString": "Hemodynamically stable, afebrile, room air oxygen saturation 97 percent, tolerating oral intake.",
+            "id": "id_vitals_20250505_stable",
+            "subject": {
+              "reference": "Patient/syn-id-005B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

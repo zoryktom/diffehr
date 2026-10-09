@@ -33,7 +33,57 @@
         "type": "cardiology_note",
         "text": "Euvolemic and hemodynamically stable; no acute decompensated heart failure."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-004A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-004A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 64, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-06-01",
+            "valueString": "Left ventricular ejection fraction 30 percent, chronic HFrEF.",
+            "id": "card_echo_20250601_lvef",
+            "subject": {
+              "reference": "Patient/syn-card-004A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-06-06",
+            "description": "Euvolemic and hemodynamically stable; no acute decompensated heart failure.",
+            "id": "card_note_20250606_stable",
+            "subject": {
+              "reference": "Patient/syn-card-004A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-004B",
@@ -59,7 +109,57 @@
         "type": "cardiology_note",
         "text": "Acute decompensated heart failure with cardiogenic shock requiring IV inotropes."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-004B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-004B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 64, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-06-01",
+            "valueString": "Left ventricular ejection fraction 30 percent, chronic HFrEF.",
+            "id": "card_echo_20250601_lvef",
+            "subject": {
+              "reference": "Patient/syn-card-004B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "cardiology_note"
+            },
+            "date": "2025-06-06",
+            "description": "Acute decompensated heart failure with cardiogenic shock requiring IV inotropes.",
+            "id": "card_note_20250606_shock",
+            "subject": {
+              "reference": "Patient/syn-card-004B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

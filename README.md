@@ -54,125 +54,181 @@ Expected: base=ineligible, variant=eligible
 
 ## Quick Start
 
+Requires Python 3.11+.
+
 ```bash
-cd diffehr
-python -m pip install -e '.[test]'
-PYTHONPATH=src python3 -m pytest tests/ -q
-PYTHONPATH=src python3 -m diffehr validate examples/oncology/contracts
-PYTHONPATH=src python3 -m diffehr manifest examples
-PYTHONPATH=src python3 -m diffehr validate examples
-PYTHONPATH=src python3 -m diffehr evaluate examples --model oracle --out evidence/runs/oracle.json
-PYTHONPATH=src python3 -m diffehr evaluate examples --model reckless-oncology --out evidence/runs/reckless.json
-PYTHONPATH=src python3 -m diffehr fuzz --input examples/discovery/base_chart.json --perturbations 20 --model reckless-oncology --out evidence/runs/fuzz_findings.json
-PYTHONPATH=src python3 -m diffehr failures evidence/runs/reckless.json --out evidence/reports/failure_analysis.md
-scripts/run_all_benchmarks.sh
+pip install -e '.[dev]'                 # package + pytest, ruff, mypy
+pytest -v                                # unit and integration tests
+python -m diffehr validate --manifest examples/manifest.json
+python -m diffehr run --adapter oracle --pack examples/oncology --output /tmp/oracle.json
+bash scripts/run_all_benchmarks.sh       # validate, benchmark, fuzz, report
 ```
 
 The deterministic workflow does not call external APIs or download model
-weights. Optional OpenAI and local-HF adapters are available for separate
-experiments.
+weights. Optional OpenAI-compatible and local Hugging Face adapters exist for
+separate experiments and have only been exercised offline with mocks.
+
+## Architecture
+
+```text
+ examples/{oncology,cardiology,infectious_disease}/contracts/*.json   (120 contracts, FHIR R4 bundles)
+ examples/manifest.json + */pack.json                                  (counts, SHA-256 checksums)
+                  |
+                  v
+        core.loader / core.schema  --- strict Pydantic v2 validation, FHIR integrity checks
+                  |
+                  v
+  +------------------------- adapters (registry) --------------------------+
+  | oracle | heuristic | reckless | openai (OpenAI-compatible) | local_hf   |
+  +---------------------------------+--------------------------------------+
+                                    |  ModelResponse (decision, citations, confidence)
+                                    v
+ metrics.computation: per-contract scoring -> CFA, IFR, TDV, SDI (+SE, bootstrap CI), latency
+                                    |
+        +---------------------------+---------------------------+
+        v                                                       v
+ evidence/runs/full/*.json                          discovery.fuzzer (demographic, payer,
+ (raw results)                                      critical labs, temporal injection;
+        |                                           id + subject-ref integrity)
+        |                                                       |
+        +--------------------------+----------------------------+
+                                   v                 evidence/runs/fuzz/*.json, fuzz_findings.json
+                      report.py -> evidence/reports/full_benchmark_report.md
+                                   evidence/reports/failure_analysis.md
+```
+
+## CLI
+
+| Command | Purpose |
+|---|---|
+| `validate [path] [--manifest M]` | Validate contracts and the dataset manifest |
+| `manifest <root>` | Regenerate `manifest.json` and pack files |
+| `run --adapter A [--model M] --pack P --output O` | Evaluate one adapter on a pack |
+| `benchmark --manifest M --adapters a,b,c --output-dir D` | Evaluate several adapters |
+| `fuzz --input chart.json --model NAME --out O` | Counterfactual discovery fuzzer |
+| `replay-finding --input O --finding-id ID --model NAME` | Replay a recorded finding |
+| `report --input-dir D [--fuzz-dir F] --output-dir R` | Write the benchmark report and failure analysis |
+
+Failures return a non-zero exit code (2 for contract/manifest errors, 1 otherwise) with an
+informative message on stderr.
+
+## Contract Packs
+
+Each pack under `examples/<domain>/` has a `pack.json` (id, domain, `n_contracts`, version,
+schema version) and 40 contracts in `contracts/`. A contract requires `id`, `title`,
+`domain`, `task`, `contract_type` (`clinical_sensitivity`, `nonclinical_invariance` or
+`temporal_validity`), `allowed_decisions`, `base_patient`, `variant_patient` and `expected`
+(`relation` `flip`/`same`, expected decisions, `required_citations`). Each chart carries
+dated record items plus a FHIR R4 Bundle. Unknown fields are rejected, and a stale manifest
+fails validation. See [`docs/CONTRACT_SCHEMA.md`](docs/CONTRACT_SCHEMA.md).
+
+## Discovery Fuzzer
+
+```bash
+python -m diffehr fuzz --input examples/discovery/base_chart.json --perturbations 20 \
+  --seed 2025 --model reckless --out evidence/runs/fuzz_findings.json
+python -m diffehr replay-finding --input evidence/runs/fuzz_findings.json \
+  --finding-id fuzz_demographic_003 --model reckless --out evidence/runs/replayed_finding.json
+```
+
+Mutation families: demographics (race, ethnicity, gender identity, language, postal code),
+insurance (Medicaid, Medicare, self-pay, uninsured), critical laboratory findings
+(eGFR &lt; 30, LVEF &lt; 50%, ANC &lt; 500, troponin elevation) that must change the decision, and
+temporal manipulations (re-dating results past the decision date, injecting future
+biopsy/pathology/culture results). Findings: `invariance_violation`, `temporal_leakage`,
+`clinical_insensitivity`. Mutations preserve FHIR resource-id uniqueness and subject references.
 
 ## How Scoring Works
 
-DiffEHR separates several behaviors that static accuracy tends to collapse:
+A contract passes when both decisions, the base/variant relation, evidence citations and
+temporal checks all pass. Headline metrics:
 
-- **Contract pass rate**: fraction of contracts where both decisions, the
-  base/variant relation, evidence citations, and temporal checks all pass.
-- **DSS**: decisive sensitivity score, the fraction of `flip` contracts where
-  the model changes decision for the expected clinical reason.
-- **IVR**: invariance violation rate, the fraction of `same` contracts where
-  the model unexpectedly changes decision.
-- **Evidence precision/recall**: whether cited record IDs match required
-  evidence IDs.
-- **Temporal leakage**: cited evidence whose chart date is after the decision
-  index timestamp.
+- **CFA**: share of `flip` contracts where both decisions are correct and differ.
+- **IFR**: share of `nonclinical_invariance` contracts whose decision changed.
+- **TDV**: share of `temporal_validity` contracts whose decision changed or that cite
+  post-decision evidence.
+- **SDI**: weighted share of incorrect decisions, with safety-critical expected decisions
+  weighted 3.
 
-See [`docs/METRICS.md`](docs/METRICS.md) for formulas, denominators, and edge
-case behavior.
+Standard errors and 95% bootstrap confidence intervals (seed 2025) are reported; empty
+denominators yield 0.0. See [`docs/METRICS.md`](docs/METRICS.md).
 
 ## Baseline Evidence
 
-The multi-specialty artifact includes 32 contracts across oncology,
-cardiology, and infectious disease. It covers biomarker sensitivity, ECOG
-eligibility, payer/race/language/setting invariance, cardiology medication
-selection, antimicrobial stewardship, medication safety, and temporal validity.
+The artifact has 120 synthetic contracts (40 each in oncology, cardiology and infectious
+disease): 74 `flip`, 23 `nonclinical_invariance` and 23 `temporal_validity`. All baselines are
+deterministic and offline; no real language-model results are reported.
 
-| Model | Contracts | Passed | Pass rate | Mean score |
-|---|---:|---:|---:|---:|
-| oracle | 32 | 32 | 100.00% | 1.000 |
-| heuristic-oncology | 32 | 32 | 100.00% | 0.999 |
-| reckless-oncology | 32 | 24 | 75.00% | 0.877 |
+| Model | Contracts | Passed | Pass rate | CFA % | IFR % | TDV % | Mean SDI (95% CI) | Fuzz findings |
+|---|---:|---:|---:|---:|---:|---:|---|---:|
+| oracle | 120 | 120 | 100.00% | 100.00 | 0.00 | 0.00 | 0.000 (0.000-0.000) | 0 |
+| heuristic | 120 | 80 | 66.67% | 64.86 | 0.00 | 0.00 | 0.191 (0.132-0.257) | 3 |
+| reckless | 120 | 59 | 49.17% | 60.81 | 30.43 | 47.83 | 0.295 (0.225-0.369) | 7 |
 
-The run JSON also reports invariance violation rate (IVR), decisive
-sensitivity score (DSS), evidence citation precision/recall, temporal leakage
-counts, and 95% bootstrap confidence intervals for IVR and DSS. The reckless
-baseline reaches IVR 50.00% and 5 temporal leakage violations on the 32-contract
-suite.
+CFA = Counterfactual Flip Accuracy, IFR = Invariance Failure Rate, TDV = Temporal Directional
+Violation, SDI = Safety Divergence Index. The heuristic fails clinically sensitive contracts
+(CFA 64.86%) without any invariance violation; the reckless policy additionally changes
+decisions on payer/demographic changes and leaks post-decision evidence. The fuzzer finds
+3 clinical-insensitivity findings for the heuristic (eGFR, LVEF, troponin) and 7 for reckless
+(3 payer invariance, 1 temporal leakage, 3 clinical insensitivity); the oracle has none.
 
-See [`evidence/reports/full_benchmark_report.md`](evidence/reports/full_benchmark_report.md)
-and [`docs/paper_preprint.md`](docs/paper_preprint.md).
+See [`evidence/reports/full_benchmark_report.md`](evidence/reports/full_benchmark_report.md),
+[`evidence/reports/failure_analysis.md`](evidence/reports/failure_analysis.md) and
+[`docs/paper_preprint.md`](docs/paper_preprint.md).
 
 ## Reproduce The Full Benchmark
 
 ```bash
-python -m pip install -e '.[test]'
-PYTHONPATH=src python3 -m pytest tests/ -q
-scripts/run_all_benchmarks.sh
+pip install -e '.[dev]'
+pytest
+bash scripts/run_all_benchmarks.sh
 ```
 
-The script validates all contract packs, refreshes `examples/manifest.json`,
-runs deterministic baselines, writes JSON results under `evidence/runs/full/`,
-generates `evidence/reports/full_benchmark_report.md`, generates
-`evidence/reports/failure_analysis.md`, runs bounded fuzzing, and replays one
-recorded finding. Run metadata includes the DiffEHR version, Python version,
-adapter, contract IDs, dataset version, dataset fingerprint, timestamp, and
-bootstrap seed.
+The script (`set -euo pipefail`) refreshes and validates `examples/manifest.json`, evaluates the
+`oracle`, `heuristic` and `reckless` baselines on all 120 contracts into `evidence/runs/full/`,
+fuzzes `examples/discovery/base_chart.json` with each baseline into `evidence/runs/fuzz/`
+(the reckless output is also copied to `evidence/runs/fuzz_findings.json`), replays a recorded
+finding, and writes `evidence/reports/full_benchmark_report.md` and `failure_analysis.md`.
+Latency figures vary between runs; all other values are deterministic.
 
 ## Reproducing A Failure
 
-Run the benchmark, then inspect or replay a recorded finding:
-
 ```bash
-scripts/run_all_benchmarks.sh
-PYTHONPATH=src python3 -m diffehr replay-finding --input evidence/runs/fuzz_findings.json --finding-id fuzz_demographic_003 --model reckless-oncology --out evidence/runs/replayed_finding.json
+python -m diffehr replay-finding --input evidence/runs/fuzz_findings.json \
+  --finding-id fuzz_demographic_003 --model reckless --out evidence/runs/replayed_finding.json
 ```
 
-Failure-analysis reports use explicit benchmark severity rules and mark clinical interpretation as requiring human review.
+Failure-analysis reports use explicit benchmark severity rules and mark clinical
+interpretation as requiring human review.
 
-## Test A Live OpenAI Model
+## Test A Live Model (optional)
 
-DiffEHR includes an OpenAI Responses API adapter. Set an API key and use any
-model available to your account:
+The `openai` adapter speaks the OpenAI-compatible `/chat/completions` API (temperature 0) and
+honors `OPENAI_BASE_URL` for compatible servers; `local_hf` runs a local Hugging Face model with
+greedy decoding. Neither is used by the benchmark script or CI, and neither has been run
+against a real model for the reported results.
 
 ```bash
 export OPENAI_API_KEY="..."
-PYTHONPATH=src python3 -m diffehr evaluate examples --model openai:gpt-5-mini --out evidence/runs/openai-gpt-5-mini.json
-PYTHONPATH=src python3 -m diffehr report evidence/runs/openai-gpt-5-mini.json --out evidence/reports/openai-gpt-5-mini.md
+python -m diffehr run --adapter openai --model gpt-5-mini --pack examples/oncology \
+  --output evidence/runs/openai.json
 ```
 
-If `gpt-5-mini` is not available in your account, replace it with another model
-identifier.
-
-External-model results are not part of the deterministic baseline evidence in
-this repository. If provider credentials, dependencies, network access, or model
-loading fail, DiffEHR reports the invocation failure instead of treating it as a
-successful evaluation.
+If credentials, dependencies, network access or model loading fail, DiffEHR reports the failure
+rather than scoring it.
 
 ## Add A Contract
 
-1. Copy an existing JSON file from `examples/*/contracts/`.
-2. Give it a unique `id`, clear `task`, and explicit `allowed_decisions`.
-3. Define `base_patient` and `variant_patient` with dated record items and an
-   `as_of` decision date.
-4. Set `expected.relation` to `flip` or `same`, expected decisions, and required
-   citation IDs.
-5. Add provenance, known limitations, and safety-critical notes where relevant.
-6. Run:
+1. Copy a JSON file from `examples/*/contracts/` (or extend `scripts/generate_contracts.py`).
+2. Give it a unique `id`, clear `task` and explicit `allowed_decisions`.
+3. Define `base_patient` and `variant_patient` with dated record items, a FHIR bundle and `as_of`.
+4. Set `expected.relation` to `flip` or `same`, expected decisions and required citations.
+5. Run:
 
 ```bash
-PYTHONPATH=src python3 -m diffehr manifest examples
-PYTHONPATH=src python3 -m diffehr validate examples
-PYTHONPATH=src python3 -m pytest tests/ -q
+python -m diffehr manifest examples
+python -m diffehr validate --manifest examples/manifest.json
+pytest
 ```
 
 Schema details are in [`docs/CONTRACT_SCHEMA.md`](docs/CONTRACT_SCHEMA.md).
@@ -226,7 +282,7 @@ diagnostic tool, or substitute for clinician judgment.
 
 ## Reproducibility And Citation
 
-Use `CITATION.cff` when citing this artifact. The synthetic dataset manifest
+Use `CITATION.cff` or `docs/CITATIONS.bib` when citing this artifact. Licensed under Apache-2.0. The synthetic dataset manifest
 records counts and SHA-256 checksums in `examples/manifest.json`. The current
 contract pack is author-checked synthetic data, not clinician-validated data.
 No real-patient records are included.
@@ -235,13 +291,13 @@ No real-patient records are included.
 
 ```text
 src/diffehr/core             Strict Pydantic contract schema and loaders
-src/diffehr/metrics          IVR, DSS, evidence, and temporal metrics
-src/diffehr/adapters         Oracle, heuristic, OpenAI, and local HF adapters
+src/diffehr/metrics          CFA, IFR, TDV, SDI, evidence and temporal metrics
+src/diffehr/adapters         Oracle, heuristic, reckless, OpenAI-compatible, local HF
 src/diffehr/discovery        Automated counterfactual fuzzer
 src/diffehr/cli.py           Command-line interface
 examples/*/contracts         Oncology, cardiology, and infectious disease contracts
 examples/discovery           FHIR chart for fuzzing
-evidence/runs                Reproducible evaluation JSON
+evidence/runs                Raw evaluation and fuzz JSON
 evidence/reports             Markdown reports
 docs                         Research and startup notes
 scripts/run_all_benchmarks.sh Full artifact reproduction script

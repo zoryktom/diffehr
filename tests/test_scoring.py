@@ -5,7 +5,6 @@ from diffehr.contracts import load_contracts
 from diffehr.models import ModelResponse, make_model
 from diffehr.scoring import citation_precision_recall, compute_run_metrics, run_evaluation, score_side
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -26,14 +25,19 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(payload["metrics"]["confidence_intervals"]["decisive_sensitivity_score"], [1.0, 1.0])
         metadata = payload["run_metadata"]
         self.assertEqual(metadata["dataset_version"], "0.2.0")
-        self.assertEqual(metadata["contract_count"], 32)
+        self.assertEqual(metadata["contract_count"], 120)
         self.assertEqual(len(metadata["dataset_fingerprint_sha256"]), 64)
         self.assertFalse(metadata["external_model"])
 
-    def test_heuristic_passes_full_multispecialty_suite(self):
-        payload = run_evaluation(self.contracts, make_model("heuristic-oncology"))
+    def test_heuristic_passes_original_suite_and_is_imperfect_on_expansion(self):
+        limits = {"oncology": 16, "cardiology": 8, "infectious_disease": 8}
+        original = [c for c in self.contracts if int(c.id.rsplit("_", 1)[1]) <= limits[c.domain]]
+        self.assertEqual(len(original), 32)
+        payload = run_evaluation(original, make_model("heuristic-oncology"))
         self.assertEqual(payload["passed"], 32)
-        self.assertEqual(payload["n_contracts"], 32)
+        full = run_evaluation(self.contracts, make_model("heuristic-oncology"))
+        self.assertEqual(full["n_contracts"], 120)
+        self.assertLess(full["passed"], 120)
 
     def test_reckless_fails_at_least_one_contract(self):
         payload = run_evaluation(self.contracts, make_model("reckless"))

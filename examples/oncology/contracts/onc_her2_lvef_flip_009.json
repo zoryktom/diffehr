@@ -31,7 +31,57 @@
         "type": "echocardiogram",
         "text": "Baseline LVEF 58 percent."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-009A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-009A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-07-20",
+            "valueString": "Breast cancer pathology HER2 3+ positive by IHC.",
+            "id": "path_20250720_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-009A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-07-25",
+            "valueString": "Baseline LVEF 58 percent.",
+            "id": "echo_20250725_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-009A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-009B",
@@ -55,7 +105,57 @@
         "type": "echocardiogram",
         "text": "Baseline LVEF 38 percent, below 45 percent."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-009B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-009B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-07-20",
+            "valueString": "Breast cancer pathology HER2 3+ positive by IHC.",
+            "id": "path_20250720_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-009B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "echocardiogram"
+            },
+            "effectiveDateTime": "2025-07-25",
+            "valueString": "Baseline LVEF 38 percent, below 45 percent.",
+            "id": "echo_20250725_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-009B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

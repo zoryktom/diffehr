@@ -33,7 +33,57 @@
         "type": "laboratory",
         "text": "AST 24 U/L and ALT 30 U/L. No active liver failure."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-005A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-005A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"commercial\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "discharge_summary"
+            },
+            "date": "2025-06-20",
+            "description": "Recent NSTEMI. High-intensity statin indicated for secondary prevention.",
+            "id": "card_note_20250620_mi",
+            "subject": {
+              "reference": "Patient/syn-card-005A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-06-21",
+            "valueString": "AST 24 U/L and ALT 30 U/L. No active liver failure.",
+            "id": "card_lab_20250621_lft",
+            "subject": {
+              "reference": "Patient/syn-card-005A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-card-005B",
@@ -59,7 +109,57 @@
         "type": "laboratory",
         "text": "AST 24 U/L and ALT 30 U/L. No active liver failure."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-005B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-005B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 78, \"clinic_setting\": \"urban\", \"insurance\": \"Medicaid\", \"primary_language\": \"English\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "discharge_summary"
+            },
+            "date": "2025-06-20",
+            "description": "Recent NSTEMI. High-intensity statin indicated for secondary prevention.",
+            "id": "card_note_20250620_mi",
+            "subject": {
+              "reference": "Patient/syn-card-005B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "laboratory"
+            },
+            "effectiveDateTime": "2025-06-21",
+            "valueString": "AST 24 U/L and ALT 30 U/L. No active liver failure.",
+            "id": "card_lab_20250621_lft",
+            "subject": {
+              "reference": "Patient/syn-card-005B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "same",

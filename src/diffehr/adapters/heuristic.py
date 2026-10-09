@@ -29,7 +29,12 @@ class HeuristicAdapter(ModelAdapter):
 
         if self.insurance_bias:
             insurance = str(patient.attributes.get("insurance", patient.attributes.get("payer", ""))).lower()
-            if "medicaid" in insurance or "uninsured" in insurance or "self-pay" in insurance or "self pay" in insurance:
+            if (
+                "medicaid" in insurance
+                or "uninsured" in insurance
+                or "self-pay" in insurance
+                or "self pay" in insurance
+            ):
                 return self._response(
                     contract,
                     "ineligible",
@@ -91,9 +96,7 @@ class HeuristicAdapter(ModelAdapter):
 
         return self._response(contract, decision, citations, rationale)
 
-    def _answer_cardiology(
-        self, contract: Contract, items: list[RecordItem], full: str
-    ) -> tuple[str, list[str], str]:
+    def _answer_cardiology(self, contract: Contract, items: list[RecordItem], full: str) -> tuple[str, list[str], str]:
         task = contract.task.lower()
         if "doac" in task or "anticoagulation" in task:
             if re.search(r"crcl|creatinine clearance", full) and re.search(r"\b1[0-4]\b|below 15|severe renal", full):
@@ -305,17 +308,17 @@ class HeuristicAdapter(ModelAdapter):
                     "ANC is above the chemotherapy threshold.",
                 )
         if "egfr negative" in full or "egfr wild type" in full or "no exon 19 deletion" in full:
-                decision = "ineligible"
-                rationale = "EGFR sensitizing mutation is not documented."
-                citations = self._find(items, ["egfr"])
+            decision = "ineligible"
+            rationale = "EGFR sensitizing mutation is not documented."
+            citations = self._find(items, ["egfr"])
         elif "egfr exon 19 deletion positive" in full or "egfr-positive" in full:
-                decision = "eligible"
-                rationale = "EGFR sensitizing mutation is documented."
-                citations = self._find(items, ["egfr"])
+            decision = "eligible"
+            rationale = "EGFR sensitizing mutation is documented."
+            citations = self._find(items, ["egfr"])
         elif "egfr pending" in full or "molecular testing pending" in full:
-                decision = "insufficient"
-                rationale = "Molecular eligibility evidence is pending."
-                citations = self._find(items, ["pending", "molecular"])
+            decision = "insufficient"
+            rationale = "Molecular eligibility evidence is pending."
+            citations = self._find(items, ["pending", "molecular"])
         else:
             decision = "insufficient"
             rationale = "No decisive oncology evidence found."

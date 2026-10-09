@@ -1,0 +1,193 @@
+{
+  "id": "onc_alk_fusion_flip_023",
+  "title": "ALK fusion result flips trial eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the ALTA-ALK trial requiring ALK-positive metastatic NSCLC and ECOG 0-2.",
+  "base_patient": {
+    "id": "syn-onc-023A",
+    "as_of": "2025-04-26",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250317_onc",
+        "date": "2025-03-17",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250406_alk",
+        "date": "2025-04-06",
+        "type": "pathology",
+        "text": "ALK rearrangement negative by FISH."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-023A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-023A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-17",
+            "id": "note_20250317_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-023A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "ALK rearrangement negative by FISH."
+            },
+            "effectiveDateTime": "2025-04-06",
+            "id": "path_20250406_alk",
+            "subject": {
+              "reference": "Patient/syn-onc-023A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-023B",
+    "as_of": "2025-04-26",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250317_onc",
+        "date": "2025-03-17",
+        "type": "oncology_note",
+        "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+      },
+      {
+        "id": "path_20250406_alk",
+        "date": "2025-04-06",
+        "type": "pathology",
+        "text": "ALK rearrangement positive by FISH (EML4-ALK fusion)."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-023B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-023B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. No progression documented."
+            },
+            "recordedDate": "2025-03-17",
+            "id": "note_20250317_onc",
+            "subject": {
+              "reference": "Patient/syn-onc-023B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "ALK rearrangement positive by FISH (EML4-ALK fusion)."
+            },
+            "effectiveDateTime": "2025-04-06",
+            "id": "path_20250406_alk",
+            "subject": {
+              "reference": "Patient/syn-onc-023B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250406_alk"
+      ],
+      "variant": [
+        "path_20250406_alk"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "ALK fusion is the controlled causal change for ALK-directed therapy eligibility.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-04-26",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the ALK result to positive.",
+    "changed_fields": [
+      "record.alk.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

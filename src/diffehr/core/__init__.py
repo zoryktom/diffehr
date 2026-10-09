@@ -1,5 +1,6 @@
 """Core contract schema and loaders for DiffEHR."""
 
+from .loader import contract_from_dict, load_contract, load_contracts, validate_contract
 from .schema import (
     BehavioralRelation,
     ClinicalTask,
@@ -14,7 +15,6 @@ from .schema import (
     RequiredEvidenceCitations,
     TemporalConstraints,
 )
-from .loader import contract_from_dict, load_contract, load_contracts, validate_contract
 
 __all__ = [
     "BehavioralRelation",

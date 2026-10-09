@@ -1,0 +1,189 @@
+{
+  "id": "card_pci_cyp2c19_flip_028",
+  "title": "*2/*3 genotype flips P2Y12 choice to prasugrel",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "clopidogrel",
+    "ticagrelor",
+    "prasugrel"
+  ],
+  "task": "As of the decision date, select the P2Y12 inhibitor after drug-eluting stent PCI: clopidogrel without CYP2C19 loss-of-function, ticagrelor with loss-of-function, or prasugrel when loss-of-function and the patient has STEMI without prior stroke or TIA and is under 75.",
+  "base_patient": {
+    "id": "syn-card-028A",
+    "as_of": "2025-08-21",
+    "attributes": {
+      "age": 58,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "proc_20250816_pci",
+        "date": "2025-08-16",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed to LAD. STEMI. No prior stroke or TIA."
+      },
+      {
+        "id": "gen_20250819_geno",
+        "date": "2025-08-19",
+        "type": "genomics",
+        "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-028A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-028A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed to LAD. STEMI. No prior stroke or TIA."
+            },
+            "performedDateTime": "2025-08-16",
+            "id": "proc_20250816_pci",
+            "subject": {
+              "reference": "Patient/syn-card-028A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CYP2C19 normal metabolizer, no loss-of-function allele."
+            },
+            "effectiveDateTime": "2025-08-19",
+            "id": "gen_20250819_geno",
+            "subject": {
+              "reference": "Patient/syn-card-028A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-028B",
+    "as_of": "2025-08-21",
+    "attributes": {
+      "age": 58,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "proc_20250816_pci",
+        "date": "2025-08-16",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed to LAD. STEMI. No prior stroke or TIA."
+      },
+      {
+        "id": "gen_20250819_geno",
+        "date": "2025-08-19",
+        "type": "genomics",
+        "text": "CYP2C19 *2/*3 loss-of-function poor metabolizer."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-028B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-028B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Procedure",
+            "status": "completed",
+            "code": {
+              "text": "Drug-eluting stent placed to LAD. STEMI. No prior stroke or TIA."
+            },
+            "performedDateTime": "2025-08-16",
+            "id": "proc_20250816_pci",
+            "subject": {
+              "reference": "Patient/syn-card-028B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "CYP2C19 *2/*3 loss-of-function poor metabolizer."
+            },
+            "effectiveDateTime": "2025-08-19",
+            "id": "gen_20250819_geno",
+            "subject": {
+              "reference": "Patient/syn-card-028B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "clopidogrel",
+    "variant_decision": "prasugrel",
+    "required_citations": {
+      "base": [
+        "gen_20250819_geno"
+      ],
+      "variant": [
+        "gen_20250819_geno"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "CYP2C19 loss-of-function reduces clopidogrel activation; alternatives are selected by clinical context.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-08-21",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the CYP2C19 genotype to loss-of-function.",
+    "changed_fields": [
+      "record.geno.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

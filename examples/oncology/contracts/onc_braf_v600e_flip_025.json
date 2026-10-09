@@ -1,0 +1,193 @@
+{
+  "id": "onc_braf_v600e_flip_025",
+  "title": "BRAF V600E versus wild type flips BRAF-trial eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for the BRAF-MEL trial requiring unresectable melanoma with a BRAF V600 mutation.",
+  "base_patient": {
+    "id": "syn-onc-025A",
+    "as_of": "2025-05-14",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250409_mel",
+        "date": "2025-04-09",
+        "type": "oncology_note",
+        "text": "Unresectable stage IIIC melanoma. ECOG 0."
+      },
+      {
+        "id": "path_20250422_braf",
+        "date": "2025-04-22",
+        "type": "pathology",
+        "text": "BRAF wild type. No V600 mutation detected."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-025A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-025A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Unresectable stage IIIC melanoma. ECOG 0."
+            },
+            "recordedDate": "2025-04-09",
+            "id": "note_20250409_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-025A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "BRAF wild type. No V600 mutation detected."
+            },
+            "effectiveDateTime": "2025-04-22",
+            "id": "path_20250422_braf",
+            "subject": {
+              "reference": "Patient/syn-onc-025A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-025B",
+    "as_of": "2025-05-14",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250409_mel",
+        "date": "2025-04-09",
+        "type": "oncology_note",
+        "text": "Unresectable stage IIIC melanoma. ECOG 0."
+      },
+      {
+        "id": "path_20250422_braf",
+        "date": "2025-04-22",
+        "type": "pathology",
+        "text": "BRAF V600E mutation detected."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-025B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-025B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Unresectable stage IIIC melanoma. ECOG 0."
+            },
+            "recordedDate": "2025-04-09",
+            "id": "note_20250409_mel",
+            "subject": {
+              "reference": "Patient/syn-onc-025B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "BRAF V600E mutation detected."
+            },
+            "effectiveDateTime": "2025-04-22",
+            "id": "path_20250422_braf",
+            "subject": {
+              "reference": "Patient/syn-onc-025B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250422_braf"
+      ],
+      "variant": [
+        "path_20250422_braf"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "BRAF V600 mutation status determines BRAF/MEK inhibitor trial eligibility.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-05-14",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the BRAF result to V600E.",
+    "changed_fields": [
+      "record.braf.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

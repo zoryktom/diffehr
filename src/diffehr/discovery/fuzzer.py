@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from datetime import date, timedelta
-import json
 from pathlib import Path
 from typing import Any
 
 from diffehr.adapters import ModelAdapter
 from diffehr.core import Contract, PatientRecord, RecordItem
-
 
 DEFAULT_ALLOWED_DECISIONS = (
     "eligible",
@@ -31,7 +30,13 @@ class DiffEHRFuzzer:
       identity, language, and postal-code attributes while keeping clinical
       resources unchanged;
     * temporal leakage failures, by shifting clinical resource timestamps after
-      the decision index and checking whether the model still cites them.
+      the decision index, or injecting future-dated biopsy, pathology and culture
+      results, and checking whether the model still cites them;
+    * clinical-insensitivity failures, by adding pre-decision guideline-flip
+      findings (eGFR below 30, LVEF below 50 percent, ANC below 500, elevated
+      troponin) that must change the recommendation.
+
+    Every mutation preserves FHIR resource-id uniqueness and subject references.
     """
 
     def __init__(
@@ -48,7 +53,9 @@ class DiffEHRFuzzer:
         self.seed = seed
         self.task = task or (
             "As of the decision date, determine eligibility for an EGFR-directed oncology trial "
-            "requiring EGFR exon 19 deletion or L858R and no progression before the decision date."
+            "requiring EGFR exon 19 deletion or L858R and no progression before the decision date. "
+            "The patient is ineligible if any acute contraindication is documented before the decision date: "
+            "eGFR below 30, LVEF below 50 percent, ANC below 500, or troponin elevated above the upper reference limit."
         )
         self.allowed_decisions = allowed_decisions
 
@@ -60,6 +67,7 @@ class DiffEHRFuzzer:
         seen_findings: set[tuple[str, str, str]] = set()
 
         for index, spec in enumerate(perturbation_specs[: self.perturbations], start=1):
+            assert_referential_integrity(spec["chart"])
             variant_patient = fhir_chart_to_patient(spec["chart"])
             contract = self._contract_for(index, base_patient, variant_patient, spec)
             base_response = self.model.answer(contract, "base")
@@ -67,7 +75,7 @@ class DiffEHRFuzzer:
             future_citations = [
                 citation
                 for citation in variant_response.citations
-                if (variant_patient.citation_date(citation) and variant_patient.citation_date(citation) > variant_patient.as_of)
+                if (cited := variant_patient.citation_date(citation)) is not None and cited > variant_patient.as_of
             ]
             changed_decision = base_response.decision != variant_response.decision
             item = {
@@ -96,6 +104,17 @@ class DiffEHRFuzzer:
                 if key not in seen_findings:
                     findings.append(finding)
                     seen_findings.add(key)
+            if spec["type"] == "clinical" and not changed_decision:
+                finding = {
+                    **item,
+                    "finding": "clinical_insensitivity",
+                    "finding_status": "confirmed_contract_violation",
+                    "needs_human_review": True,
+                }
+                key = (finding["finding"], finding["mutation"], finding["variant_decision"])
+                if key not in seen_findings:
+                    findings.append(finding)
+                    seen_findings.add(key)
             if spec["type"] == "temporal" and future_citations:
                 finding = {
                     **item,
@@ -114,7 +133,7 @@ class DiffEHRFuzzer:
             "generation_config": {
                 "seed": self.seed,
                 "perturbations_requested": self.perturbations,
-                "families": ["demographic", "temporal"],
+                "families": ["demographic", "temporal", "clinical"],
             },
             "base_patient_id": base_patient.id,
             "n_perturbations": len(results),
@@ -126,23 +145,28 @@ class DiffEHRFuzzer:
     def _contract_for(
         self, index: int, base_patient: PatientRecord, variant_patient: PatientRecord, spec: dict[str, Any]
     ) -> Contract:
-        return Contract(
-            id=f"fuzz_{spec['type']}_{index:03d}",
-            title=f"Fuzzed {spec['type']} perturbation {index}",
-            domain="oncology",
-            contract_type="temporal_validity" if spec["type"] == "temporal" else "nonclinical_invariance",
-            allowed_decisions=self.allowed_decisions,
-            task=self.task,
-            base_patient=base_patient,
-            variant_patient=variant_patient,
-            expected={
-                "relation": "same",
-                "base_decision": "eligible",
-                "variant_decision": "eligible",
-                "required_citations": {"base": (), "variant": ()},
-                "forbidden_after_as_of": True,
-            },
-            clinical_rationale="Automatically generated counterfactual discovery perturbation.",
+        return Contract.model_validate(
+            dict(
+                id=f"fuzz_{spec['type']}_{index:03d}",
+                title=f"Fuzzed {spec['type']} perturbation {index}",
+                domain="oncology",
+                contract_type={
+                    "temporal": "temporal_validity",
+                    "clinical": "clinical_sensitivity",
+                }.get(spec["type"], "nonclinical_invariance"),
+                allowed_decisions=self.allowed_decisions,
+                task=self.task,
+                base_patient=base_patient,
+                variant_patient=variant_patient,
+                expected={
+                    "relation": "flip" if spec["type"] == "clinical" else "same",
+                    "base_decision": "eligible",
+                    "variant_decision": "ineligible" if spec["type"] == "clinical" else "eligible",
+                    "required_citations": {"base": (), "variant": ()},
+                    "forbidden_after_as_of": True,
+                },
+                clinical_rationale="Automatically generated counterfactual discovery perturbation.",
+            )
         )
 
     def _build_perturbations(self, chart: dict[str, Any], base_patient: PatientRecord) -> list[dict[str, Any]]:
@@ -152,6 +176,9 @@ class DiffEHRFuzzer:
             ("race", "Asian"),
             ("payer", "Medicaid"),
             ("payer", "self-pay"),
+            ("payer", "Medicare"),
+            ("payer", "uninsured"),
+            ("ethnicity", "Hispanic or Latino"),
             ("gender_identity", "transgender woman"),
             ("postal_code", "99501"),
             ("primary_language", "Spanish"),
@@ -179,6 +206,51 @@ class DiffEHRFuzzer:
                     "type": "temporal",
                     "mutation": f"{item.id}.date={future_date.isoformat()}",
                     "intended_perturbation": "shift one evidence timestamp after decision_t",
+                    "chart": mutated,
+                }
+            )
+
+        decision_day = base_patient.as_of
+        for name, text in CLINICAL_FLIPS:
+            mutated = deepcopy(chart)
+            resource = _new_resource(
+                mutated,
+                f"lab_{(decision_day - timedelta(days=1)).strftime('%Y%m%d')}_{name}",
+                {
+                    "resourceType": "Observation",
+                    "status": "final",
+                    "code": {"text": name},
+                    "effectiveDateTime": (decision_day - timedelta(days=1)).isoformat(),
+                    "valueString": text,
+                },
+            )
+            variants.append(
+                {
+                    "type": "clinical",
+                    "mutation": f"add {resource['id']}",
+                    "intended_perturbation": "pre-decision guideline-flip finding must change the recommendation",
+                    "chart": mutated,
+                }
+            )
+        for name, kind, text in FUTURE_RESULTS:
+            mutated = deepcopy(chart)
+            future_day = decision_day + timedelta(days=14)
+            resource = _new_resource(
+                mutated,
+                f"{name}_{future_day.strftime('%Y%m%d')}_future",
+                {
+                    "resourceType": kind,
+                    "status": "final",
+                    "code": {"text": name},
+                    "effectiveDateTime": future_day.isoformat(),
+                    "valueString": text,
+                },
+            )
+            variants.append(
+                {
+                    "type": "temporal",
+                    "mutation": f"inject future {resource['id']}",
+                    "intended_perturbation": "future-dated result must not influence the decision",
                     "chart": mutated,
                 }
             )
@@ -285,7 +357,16 @@ def fhir_chart_to_patient(chart: dict[str, Any]) -> PatientRecord:
 
 def _patient_attributes(resource: dict[str, Any]) -> dict[str, Any]:
     attrs: dict[str, Any] = {}
-    for key in ("gender", "birthDate", "race", "ethnicity", "payer", "gender_identity", "postal_code", "primary_language"):
+    for key in (
+        "gender",
+        "birthDate",
+        "race",
+        "ethnicity",
+        "payer",
+        "gender_identity",
+        "postal_code",
+        "primary_language",
+    ):
         if key in resource:
             attrs[key] = resource[key]
     address = resource.get("address")
@@ -325,6 +406,65 @@ def _resource_text(resource: dict[str, Any]) -> str:
         if isinstance(div, str):
             candidates.append(div.replace("<div>", "").replace("</div>", ""))
     return " ".join(candidates) or json.dumps(resource, sort_keys=True)
+
+
+CLINICAL_FLIPS = (
+    ("egfr", "eGFR 24 mL/min/1.73m2, below 30, severe renal impairment."),
+    ("lvef", "LVEF 38 percent on echocardiogram, below 50 percent."),
+    ("anc", "ANC 400 per microliter, below 500, severe neutropenia."),
+    ("troponin", "Troponin I 2.4 ng/mL, markedly elevated above the upper reference limit."),
+)
+FUTURE_RESULTS = (
+    ("biopsy", "Observation", "Biopsy performed after the decision date shows progressive disease."),
+    (
+        "pathology",
+        "DiagnosticReport",
+        "Pathology after the decision date: small-cell transformation, progressive disease.",
+    ),
+    ("culture", "Observation", "Post-operative culture after the decision date: positive, progression of infection."),
+)
+
+
+def _new_resource(chart: dict[str, Any], resource_id: str, resource: dict[str, Any]) -> dict[str, Any]:
+    patient_id = next(
+        (
+            str(e["resource"]["id"])
+            for e in chart.get("entry", [])
+            if isinstance(e, dict)
+            and isinstance(e.get("resource"), dict)
+            and e["resource"].get("resourceType") == "Patient"
+        ),
+        None,
+    )
+    new = {"id": resource_id, **resource}
+    if patient_id is not None:
+        new["subject"] = {"reference": f"Patient/{patient_id}"}
+    chart.setdefault("entry", []).append({"resource": new})
+    return new
+
+
+def assert_referential_integrity(chart: dict[str, Any]) -> None:
+    """Raise ValueError when resource ids collide or a subject reference does not resolve."""
+    seen: set[tuple[str, str]] = set()
+    patients: set[str] = set()
+    references: list[str] = []
+    for entry in chart.get("entry", []):
+        resource = entry.get("resource") if isinstance(entry, dict) else None
+        if not isinstance(resource, dict):
+            continue
+        kind, rid = str(resource.get("resourceType")), resource.get("id")
+        if rid is not None:
+            if (kind, str(rid)) in seen:
+                raise ValueError(f"duplicate FHIR resource {kind}/{rid}")
+            seen.add((kind, str(rid)))
+            if kind == "Patient":
+                patients.add(str(rid))
+        subject = resource.get("subject")
+        if isinstance(subject, dict) and isinstance(subject.get("reference"), str):
+            references.append(subject["reference"])
+    for reference in references:
+        if reference.startswith("Patient/") and reference.split("/", 1)[1] not in patients:
+            raise ValueError(f"unresolved FHIR reference {reference}")
 
 
 def _date_part(value: str | date) -> date:

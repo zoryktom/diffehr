@@ -4,6 +4,10 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .core import Contract
+from .dataset import summarize_counterfactual_differences
+from .metrics.computation import ContractResult, headline_metrics
+
 
 def load_results(path: str | Path) -> dict[str, Any]:
     with Path(path).open("r", encoding="utf-8") as handle:
@@ -28,8 +32,74 @@ def render_markdown(result_sets: list[dict[str, Any]], title: str = "DiffEHR Eva
             f"| {payload['model']} | {payload['n_contracts']} | {payload['passed']} | "
             f"{payload['pass_rate']:.2%} | {payload['mean_score']:.3f} |"
         )
+    lines.extend(["", "## Executive Summary", ""])
+    lines.append("| Adapter/Model | Total Contracts | CFA % | IFR % | TDV % | Mean SDI |")
+    lines.append("|---|---:|---:|---:|---:|---:|")
+    for payload in result_sets:
+        metrics = payload.get("metrics", {})
+        errors = metrics.get("standard_errors", {})
+        intervals = metrics.get("confidence_intervals", {})
+        lines.append(
+            f"| {payload['model']} | {payload['n_contracts']} | "
+            f"{_fmt_with_error(metrics.get('counterfactual_flip_accuracy'), errors.get('counterfactual_flip_accuracy'))} | "
+            f"{_fmt_with_error(metrics.get('invariance_failure_rate'), errors.get('invariance_failure_rate'))} | "
+            f"{_fmt_with_error(metrics.get('temporal_directional_violation'), errors.get('temporal_directional_violation'))} | "
+            f"{float(metrics.get('safety_divergence_index', 0.0)):.3f} "
+            f"(SE {float(errors.get('safety_divergence_index', 0.0)):.3f}, "
+            f"95% CI {_fmt_decimal_interval(intervals.get('safety_divergence_index'))}) |"
+        )
+    lines.extend(
+        [
+            "",
+            "Values are percentages with binomial standard error (SE) in parentheses; SDI is a weighted error "
+            "fraction (lower is safer) with bootstrap SE and 95% CI. See `docs/METRICS.md`.",
+            "",
+        ]
+    )
+    lines.extend(["## Contracts Per Pack And Runtime", ""])
+    lines.append(
+        "| Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |"
+    )
+    lines.append("|---|---|---:|---:|---:|---:|---:|---:|")
+    for payload in result_sets:
+        counts: dict[str, int] = {}
+        for item in payload["results"]:
+            counts[item.get("domain", "unknown")] = counts.get(item.get("domain", "unknown"), 0) + 1
+        meta = payload.get("run_metadata", {})
+        lines.append(
+            f"| {payload['model']} | {meta.get('adapter', 'unknown')} | {counts.get('oncology', 0)} | "
+            f"{counts.get('cardiology', 0)} | {counts.get('infectious_disease', 0)} | {payload['n_contracts']} | "
+            f"{float(meta.get('elapsed_seconds', 0.0)):.3f} | {float(meta.get('mean_latency_ms_per_contract', 0.0)):.3f} |"
+        )
+    lines.append("")
+    lines.extend(["## Metric 95% Bootstrap Confidence Intervals", ""])
+    lines.append("| Model | CFA | IFR | TDV |")
+    lines.append("|---|---:|---:|---:|")
+    for payload in result_sets:
+        intervals = payload.get("metrics", {}).get("confidence_intervals", {})
+        lines.append(
+            f"| {payload['model']} | {_fmt_interval(intervals.get('counterfactual_flip_accuracy'))} | "
+            f"{_fmt_interval(intervals.get('invariance_failure_rate'))} | "
+            f"{_fmt_interval(intervals.get('temporal_directional_violation'))} |"
+        )
+    lines.extend(["", "## Breakdown By Domain", ""])
+    lines.append("| Model | Domain | Contracts | Passed | CFA % | IFR % | TDV % | Mean SDI |")
+    lines.append("|---|---|---:|---:|---:|---:|---:|---:|")
+    for payload in result_sets:
+        by_domain: dict[str, list[dict[str, Any]]] = {}
+        for item in payload["results"]:
+            by_domain.setdefault(item.get("domain", "unknown"), []).append(item)
+        for domain, items in sorted(by_domain.items()):
+            values = headline_metrics([ContractResult.model_validate(item) for item in items])
+            lines.append(
+                f"| {payload['model']} | {domain} | {len(items)} | {sum(1 for i in items if i['passed'])} | "
+                f"{_fmt_rate(values['counterfactual_flip_accuracy'])} | {_fmt_rate(values['invariance_failure_rate'])} | "
+                f"{_fmt_rate(values['temporal_directional_violation'])} | {values['safety_divergence_index']:.3f} |"
+            )
     lines.extend(["", "## Research Metrics", ""])
-    lines.append("| Model | IVR | IVR 95% CI | DSS | DSS 95% CI | Evidence precision | Evidence recall | Temporal leakage |")
+    lines.append(
+        "| Model | IVR | IVR 95% CI | DSS | DSS 95% CI | Evidence precision | Evidence recall | Temporal leakage |"
+    )
     lines.append("|---|---:|---:|---:|---:|---:|---:|---:|")
     for payload in result_sets:
         metrics = payload.get("metrics", {})
@@ -106,7 +176,12 @@ def render_markdown(result_sets: list[dict[str, Any]], title: str = "DiffEHR Eva
     return "\n".join(lines) + "\n"
 
 
-def render_failure_analysis(result_sets: list[dict[str, Any]], title: str = "DiffEHR Failure Analysis") -> str:
+def render_failure_analysis(
+    result_sets: list[dict[str, Any]],
+    title: str = "DiffEHR Failure Analysis",
+    contracts: list[Contract] | None = None,
+    max_details_per_model: int = 12,
+) -> str:
     lines = [
         f"# {title}",
         "",
@@ -129,7 +204,9 @@ def render_failure_analysis(result_sets: list[dict[str, Any]], title: str = "Dif
         )
 
     lines.extend(["", "## Case-Level Failures", ""])
-    lines.append("| Model | Contract | Domain | Category | Failed assertion | Severity | Expected | Observed | Evidence issue | Reproduce |")
+    lines.append(
+        "| Model | Contract | Domain | Category | Failed assertion | Severity | Expected | Observed | Evidence issue | Reproduce |"
+    )
     lines.append("|---|---|---|---|---|---|---|---|---|---|")
     for row in all_rows:
         lines.append(
@@ -139,6 +216,21 @@ def render_failure_analysis(result_sets: list[dict[str, Any]], title: str = "Dif
         )
     if not all_rows:
         lines.append("| none | none | none | none | none | none | none | none | none | none |")
+    by_id = {contract.id: contract for contract in contracts or []}
+    if by_id:
+        lines.extend(["", "## Counterfactual Deltas For Failed Contracts", ""])
+        lines.append(
+            f"Up to {max_details_per_model} highest-severity failures per model are shown with the exact chart delta, "
+            "the expected clinical pivot, and the model's recommendation."
+        )
+        for payload in result_sets:
+            rows = [_failure_row(payload, item) for item in payload.get("results", []) if not item.get("passed", False)]
+            rows.sort(key=lambda row: {"high": 0, "medium": 1, "low": 2}[row["severity"]])
+            for row in rows[:max_details_per_model]:
+                contract = by_id.get(row["contract_id"])
+                if contract is None:
+                    continue
+                lines.extend(_failure_detail(payload["model"], row, contract))
     lines.extend(
         [
             "",
@@ -152,6 +244,113 @@ def render_failure_analysis(result_sets: list[dict[str, Any]], title: str = "Dif
         ]
     )
     return "\n".join(lines) + "\n"
+
+
+SAFETY_CONSEQUENCES = {
+    "invariance_violation": (
+        "A non-clinical attribute changed the recommendation; identical clinical facts would receive different "
+        "care by payer or demographics, an equity and liability hazard."
+    ),
+    "temporal_leakage": (
+        "The model cited evidence dated after the decision time; a deployed system would rely on information "
+        "that did not yet exist, invalidating retrospective validation and prospective safety claims."
+    ),
+    "clinical_insensitivity": (
+        "A documented pre-decision contraindication (renal, cardiac, hematologic or troponin threshold) did not "
+        "change the recommendation; the patient could be treated despite a guideline stop signal."
+    ),
+}
+
+
+def _fhir_diff(base: dict[str, Any], variant: dict[str, Any]) -> list[str]:
+    def index(chart: dict[str, Any]) -> dict[str, dict[str, Any]]:
+        out: dict[str, dict[str, Any]] = {}
+        for entry in chart.get("entry", []):
+            resource = entry.get("resource", {}) if isinstance(entry, dict) else {}
+            out[f"{resource.get('resourceType')}/{resource.get('id')}"] = resource
+        return out
+
+    before, after = index(base), index(variant)
+    lines = []
+    for key in sorted(after.keys() - before.keys()):
+        lines.append(f"  - added `{key}`: `{json.dumps(after[key], sort_keys=True)}`")
+    for key in sorted(before.keys() - after.keys()):
+        lines.append(f"  - removed `{key}`")
+    for key in sorted(before.keys() & after.keys()):
+        if before[key] != after[key]:
+            fields = sorted(f for f in set(before[key]) | set(after[key]) if before[key].get(f) != after[key].get(f))
+            for field in fields:
+                lines.append(
+                    f"  - changed `{key}.{field}`: `{json.dumps(before[key].get(field))}` -> `{json.dumps(after[key].get(field))}`"
+                )
+    return lines or ["  - (no resource-level difference)"]
+
+
+def render_fuzz_findings(fuzz_payloads: list[dict[str, Any]]) -> str:
+    lines = [
+        "",
+        "## Discovery Fuzzer Findings",
+        "",
+        "Automated sweeps over `examples/discovery/base_chart.json` (demographic, insurance, clinical-threshold and "
+        "temporal-injection families). Each finding shows the FHIR perturbation diff and its safety consequence.",
+        "",
+        "| Model | Perturbations | Findings | Invariance | Temporal leakage | Clinical insensitivity |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    for payload in fuzz_payloads:
+        kinds = [f["finding"] for f in payload["findings"]]
+        lines.append(
+            f"| {payload['model']} | {payload['n_perturbations']} | {payload['n_findings']} | "
+            f"{kinds.count('invariance_violation')} | {kinds.count('temporal_leakage')} | "
+            f"{kinds.count('clinical_insensitivity')} |"
+        )
+    for payload in fuzz_payloads:
+        for finding in payload["findings"]:
+            lines.extend(
+                [
+                    "",
+                    f"### {payload['model']}: {finding['id']} ({finding['finding']})",
+                    "",
+                    f"- Mutation: `{finding['mutation']}`",
+                    f"- Decision: `{finding['base_decision']}` -> `{finding['variant_decision']}`",
+                ]
+            )
+            if finding.get("future_citations"):
+                lines.append(f"- Future-dated citations: {', '.join(f'`{c}`' for c in finding['future_citations'])}")
+            lines.append("- FHIR perturbation diff:")
+            lines.extend(_fhir_diff(finding["base_chart"], finding["variant_chart"]))
+            lines.append(f"- Safety consequence: {SAFETY_CONSEQUENCES.get(finding['finding'], 'Needs human review.')}")
+    return "\n".join(lines) + "\n"
+
+
+def _failure_detail(model: str, row: dict[str, Any], contract: Contract) -> list[str]:
+    diff = summarize_counterfactual_differences(contract)
+    base_items = {item.id: item for item in contract.base_patient.record}
+    variant_items = {item.id: item for item in contract.variant_patient.record}
+    lines = [
+        "",
+        f"### {model}: {contract.id}",
+        "",
+        f"- Task: {contract.task}",
+        f"- Failed assertion: {row['failed_assertion']} ({row['severity']})",
+    ]
+    for key, change in diff["attribute_changes"].items():
+        lines.append(f"- Delta (attribute `{key}`): `{change['base']}` -> `{change['variant']}`")
+    for entry in diff["record_items_changed"]:
+        lines.append(
+            f'- Delta (`{entry["id"]}`): "{base_items[entry["id"]].text}" -> "{variant_items[entry["id"]].text}"'
+        )
+    for item_id in diff["record_items_added"]:
+        item = variant_items[item_id]
+        lines.append(
+            f'- Delta (added `{item_id}`, dated {item.date.isoformat()}, decision date {contract.variant_patient.as_of.isoformat()}): "{item.text}"'
+        )
+    for item_id in diff["record_items_removed"]:
+        lines.append(f"- Delta (removed `{item_id}`)")
+    lines.append(f"- Expected clinical pivot: `{row['expected']}`")
+    lines.append(f"- Model recommendation: `{row['observed']}`")
+    lines.append(f"- Evidence issue: {row['evidence_issue']}")
+    return lines
 
 
 def _failure_row(payload: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
@@ -173,7 +372,12 @@ def _failure_row(payload: dict[str, Any], item: dict[str, Any]) -> dict[str, Any
     expected = f"{base['expected_decision']} -> {variant['expected_decision']}"
     observed = f"{base['observed_decision']} -> {variant['observed_decision']}"
     safety_terms = {"unsafe", "contraindicated", "avoid_beta_lactam", "defer"}
-    if temporal or base["expected_decision"] in safety_terms or variant["expected_decision"] in safety_terms or decision_failure:
+    if (
+        temporal
+        or base["expected_decision"] in safety_terms
+        or variant["expected_decision"] in safety_terms
+        or decision_failure
+    ):
         severity = "high"
     elif relation_failure:
         severity = "medium"
@@ -212,6 +416,19 @@ def _fmt_rate(value: Any) -> str:
         return f"{float(value):.2%}"
     except (TypeError, ValueError):
         return "n/a"
+
+
+def _fmt_with_error(value: Any, error: Any) -> str:
+    try:
+        return f"{float(value):.2%} (SE {float(error or 0.0) * 100:.2f})"
+    except (TypeError, ValueError):
+        return "n/a"
+
+
+def _fmt_decimal_interval(value: Any) -> str:
+    if not isinstance(value, (list, tuple)) or len(value) != 2:
+        return "n/a"
+    return f"{float(value[0]):.3f}-{float(value[1]):.3f}"
 
 
 def _fmt_interval(value: Any) -> str:

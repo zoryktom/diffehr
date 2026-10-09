@@ -1,0 +1,196 @@
+{
+  "id": "id_sepsis_pcn_allergy_flip_014",
+  "title": "De-labelled penicillin allergy permits empiric beta-lactam",
+  "domain": "infectious_disease",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "beta_lactam",
+    "avoid_beta_lactam"
+  ],
+  "task": "As of the decision date, choose empiric sepsis antimicrobial therapy: beta_lactam, or avoid_beta_lactam when penicillin anaphylaxis is documented (use aztreonam plus vancomycin).",
+  "base_patient": {
+    "id": "syn-id-014A",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250416_sepsis",
+        "date": "2025-04-16",
+        "type": "id_note",
+        "text": "Sepsis from pneumonia, septic shock on vasopressors."
+      },
+      {
+        "id": "alg_20250416_alg",
+        "date": "2025-04-16",
+        "type": "allergy",
+        "text": "Penicillin allergy with anaphylaxis: anaphylaxis with hypotension after ampicillin."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-014A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-014A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Sepsis from pneumonia, septic shock on vasopressors."
+            },
+            "recordedDate": "2025-04-16",
+            "id": "note_20250416_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-014A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Penicillin allergy with anaphylaxis: anaphylaxis with hypotension after ampicillin."
+            },
+            "recordedDate": "2025-04-16",
+            "id": "alg_20250416_alg",
+            "subject": {
+              "reference": "Patient/syn-id-014A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-014B",
+    "as_of": "2025-04-17",
+    "attributes": {
+      "age": 62,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250416_sepsis",
+        "date": "2025-04-16",
+        "type": "id_note",
+        "text": "Sepsis from pneumonia, septic shock on vasopressors."
+      },
+      {
+        "id": "alg_20250416_alg",
+        "date": "2025-04-16",
+        "type": "allergy",
+        "text": "Penicillin allergy: non-severe delayed rash years ago; subsequently tolerated cefazolin. No known drug allergy to beta-lactams after negative skin test and oral challenge."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-014B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-014B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Sepsis from pneumonia, septic shock on vasopressors."
+            },
+            "recordedDate": "2025-04-16",
+            "id": "note_20250416_sepsis",
+            "subject": {
+              "reference": "Patient/syn-id-014B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Penicillin allergy: non-severe delayed rash years ago; subsequently tolerated cefazolin. No known drug allergy to beta-lactams after negative skin test and oral challenge."
+            },
+            "recordedDate": "2025-04-16",
+            "id": "alg_20250416_alg",
+            "subject": {
+              "reference": "Patient/syn-id-014B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "avoid_beta_lactam",
+    "variant_decision": "beta_lactam",
+    "required_citations": {
+      "base": [
+        "alg_20250416_alg"
+      ],
+      "variant": [
+        "alg_20250416_alg"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Allergy de-labelling after testing permits beta-lactam therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-04-17",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Replace the anaphylaxis entry with a de-labelled allergy.",
+    "changed_fields": [
+      "record.alg.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

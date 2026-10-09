@@ -32,7 +32,57 @@
         "type": "microbiology",
         "text": "Blood culture E. coli susceptible to ceftriaxone, no ESBL detected."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-003A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-003A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Meropenem started empirically for gram-negative bacteremia."
+            },
+            "authoredOn": "2025-03-10",
+            "id": "id_abx_20250310_meropenem",
+            "subject": {
+              "reference": "Patient/syn-id-003A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "microbiology"
+            },
+            "effectiveDateTime": "2025-03-13",
+            "valueString": "Blood culture E. coli susceptible to ceftriaxone, no ESBL detected.",
+            "id": "id_culture_20250313_susc",
+            "subject": {
+              "reference": "Patient/syn-id-003A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-003B",
@@ -57,7 +107,57 @@
         "type": "microbiology",
         "text": "Blood culture E. coli ESBL positive, resistant to ceftriaxone and susceptible to meropenem."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-003B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-003B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 52, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Meropenem started empirically for gram-negative bacteremia."
+            },
+            "authoredOn": "2025-03-10",
+            "id": "id_abx_20250310_meropenem",
+            "subject": {
+              "reference": "Patient/syn-id-003B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "microbiology"
+            },
+            "effectiveDateTime": "2025-03-13",
+            "valueString": "Blood culture E. coli ESBL positive, resistant to ceftriaxone and susceptible to meropenem.",
+            "id": "id_culture_20250313_esbl",
+            "subject": {
+              "reference": "Patient/syn-id-003B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

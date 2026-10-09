@@ -31,7 +31,57 @@
         "type": "rheumatology_note",
         "text": "Remote rheumatoid arthritis in remission. No active autoimmune flare and no systemic steroids."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-010A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-010A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-09-01",
+            "description": "Metastatic melanoma with ECOG 1; immune checkpoint inhibitor considered.",
+            "id": "note_20250901_melanoma",
+            "subject": {
+              "reference": "Patient/syn-onc-010A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "rheumatology_note"
+            },
+            "date": "2025-09-05",
+            "description": "Remote rheumatoid arthritis in remission. No active autoimmune flare and no systemic steroids.",
+            "id": "rheum_20250905_autoimmune",
+            "subject": {
+              "reference": "Patient/syn-onc-010A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-010B",
@@ -55,7 +105,57 @@
         "type": "rheumatology_note",
         "text": "Active severe autoimmune flare requiring prednisone 60 mg daily."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-010B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-010B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-09-01",
+            "description": "Metastatic melanoma with ECOG 1; immune checkpoint inhibitor considered.",
+            "id": "note_20250901_melanoma",
+            "subject": {
+              "reference": "Patient/syn-onc-010B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "rheumatology_note"
+            },
+            "date": "2025-09-05",
+            "description": "Active severe autoimmune flare requiring prednisone 60 mg daily.",
+            "id": "rheum_20250905_autoimmune",
+            "subject": {
+              "reference": "Patient/syn-onc-010B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

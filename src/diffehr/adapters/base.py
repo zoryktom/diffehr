@@ -1,13 +1,35 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 import json
 import re
+from abc import ABC, abstractmethod
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from diffehr.core import Contract
+
+
+class ClinicalPrediction(BaseModel):
+    """Structured model output schema requested from every adapter."""
+
+    model_config = ConfigDict(extra="ignore", str_strip_whitespace=True)
+
+    decision: str = Field(min_length=1)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    contraindication_flagged: bool = False
+    clinical_rationale: str = ""
+    citations: list[str] = Field(default_factory=list)
+
+    @field_validator("decision", mode="before")
+    @classmethod
+    def normalize_decision(cls, value: Any) -> str:
+        return str(value).strip().lower()
+
+    @field_validator("confidence", mode="before")
+    @classmethod
+    def clamp_confidence(cls, value: Any) -> float:
+        return _clamp_float(value)
 
 
 class ModelResponse(BaseModel):
@@ -18,6 +40,7 @@ class ModelResponse(BaseModel):
     citations: tuple[str, ...] = ()
     rationale: str = ""
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    contraindication_flagged: bool = False
     raw_text: str = ""
 
     @field_validator("decision", mode="before")
@@ -43,6 +66,28 @@ class ModelAdapter(ABC):
         """Return a structured answer for one side of a contract."""
 
 
+def build_clinical_prompt(contract: Contract, side: str) -> str:
+    """Render a chart as an instruction prompt: chronological note summary, FHIR JSON narrative and output schema."""
+    patient = contract.patient_for_side(side)
+    allowed = ", ".join(contract.allowed_decisions)
+    parts = [
+        "You are evaluating a synthetic patient chart for a clinical AI benchmark. "
+        "This is not medical advice and no real patient data is included.",
+        f"Task: {contract.task}",
+        "Chronological clinical summary:",
+        patient.to_prompt_text(include_future=True),
+    ]
+    if patient.fhir is not None:
+        parts += ["Structured FHIR R4 Bundle (JSON):", json.dumps(patient.fhir, separators=(",", ":"), sort_keys=True)]
+    parts += [
+        "Respond with a single JSON object and nothing else, with exactly these keys:",
+        f'"decision" (one of [{allowed}]), "confidence" (number 0-1), '
+        '"contraindication_flagged" (true/false), "clinical_rationale" (one concise paragraph grounded only in the chart), '
+        '"citations" (list of chart item IDs supporting the decision).',
+    ]
+    return "\n\n".join(parts)
+
+
 def parse_model_response(model: str, text: str, allowed: tuple[str, ...]) -> ModelResponse:
     parsed = _extract_json_object(text)
     if isinstance(parsed, dict):
@@ -51,8 +96,10 @@ def parse_model_response(model: str, text: str, allowed: tuple[str, ...]) -> Mod
         if not isinstance(citations_raw, list):
             citations_raw = []
         citations = tuple(str(c).strip() for c in citations_raw if str(c).strip())
-        rationale = str(parsed.get("rationale", ""))
+        rationale = str(parsed.get("rationale", parsed.get("clinical_rationale", "")))
         confidence = _clamp_float(parsed.get("confidence", 0.0))
+        flagged = parsed.get("contraindication_flagged", False)
+        contraindication_flagged = flagged if isinstance(flagged, bool) else str(flagged).strip().lower() == "true"
     else:
         lower = text.lower()
         decision = "unknown"
@@ -63,6 +110,7 @@ def parse_model_response(model: str, text: str, allowed: tuple[str, ...]) -> Mod
         citations = tuple(sorted(set(re.findall(r"\b[a-z]+_[0-9]{8}_[a-z0-9_]+\b", text))))
         rationale = text.strip()
         confidence = 0.0
+        contraindication_flagged = bool(re.search(r"contraindicat", lower))
     if decision not in allowed:
         decision = "unknown"
     return ModelResponse(
@@ -71,6 +119,7 @@ def parse_model_response(model: str, text: str, allowed: tuple[str, ...]) -> Mod
         citations=citations,
         rationale=rationale,
         confidence=confidence,
+        contraindication_flagged=contraindication_flagged,
         raw_text=text,
     )
 

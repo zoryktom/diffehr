@@ -1,0 +1,256 @@
+{
+  "id": "id_temporal_future_036",
+  "title": "Post-admission urine susceptibility must not alter time-zero plan",
+  "domain": "infectious_disease",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "empiric_broad_spectrum",
+    "narrow_therapy"
+  ],
+  "task": "As of the decision date, choose antimicrobial strategy: empiric_broad_spectrum while cultures are pending, or narrow_therapy only when susceptibility results are available at the decision date.",
+  "base_patient": {
+    "id": "syn-id-036A",
+    "as_of": "2025-11-01",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "enc_20251029_admit",
+        "date": "2025-10-29",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251030_cx",
+        "date": "2025-10-30",
+        "type": "lab",
+        "text": "Urine culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251030_abx",
+        "date": "2025-10-30",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-036A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-036A",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-29"
+            },
+            "id": "enc_20251029_admit",
+            "subject": {
+              "reference": "Patient/syn-id-036A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Urine culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-30",
+            "id": "lab_20251030_cx",
+            "subject": {
+              "reference": "Patient/syn-id-036A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-30",
+            "id": "med_20251030_abx",
+            "subject": {
+              "reference": "Patient/syn-id-036A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-036B",
+    "as_of": "2025-11-01",
+    "attributes": {
+      "age": 49,
+      "sex": "male",
+      "race": "Hispanic",
+      "insurance": "medicaid"
+    },
+    "record": [
+      {
+        "id": "enc_20251029_admit",
+        "date": "2025-10-29",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251030_cx",
+        "date": "2025-10-30",
+        "type": "lab",
+        "text": "Urine culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251030_abx",
+        "date": "2025-10-30",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      },
+      {
+        "id": "lab_20251104_future_susceptibility",
+        "date": "2025-11-04",
+        "type": "lab",
+        "text": "Culture sensitivity report dated 72 hours after admission: urine isolate susceptible to nitrofurantoin."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-036B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-036B",
+            "gender": "male",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 49, \"insurance\": \"medicaid\", \"race\": \"Hispanic\", \"sex\": \"male\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-29"
+            },
+            "id": "enc_20251029_admit",
+            "subject": {
+              "reference": "Patient/syn-id-036B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Urine culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-30",
+            "id": "lab_20251030_cx",
+            "subject": {
+              "reference": "Patient/syn-id-036B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-30",
+            "id": "med_20251030_abx",
+            "subject": {
+              "reference": "Patient/syn-id-036B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Culture sensitivity report dated 72 hours after admission: urine isolate susceptible to nitrofurantoin."
+            },
+            "effectiveDateTime": "2025-11-04",
+            "id": "lab_20251104_future_susceptibility",
+            "subject": {
+              "reference": "Patient/syn-id-036B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "empiric_broad_spectrum",
+    "variant_decision": "empiric_broad_spectrum",
+    "required_citations": {
+      "base": [
+        "lab_20251030_cx",
+        "med_20251030_abx"
+      ],
+      "variant": [
+        "lab_20251030_cx",
+        "med_20251030_abx"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "A culture sensitivity report resulting 72 hours after admission cannot inform the time-zero decision.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-11-01",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a susceptibility report dated after the decision date.",
+    "changed_fields": [
+      "record.future_susceptibility"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

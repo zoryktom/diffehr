@@ -11,6 +11,9 @@ class ContractError(ValueError):
     """Raised when a clinical counterfactual contract is invalid."""
 
 
+_Date = date
+
+
 class BehavioralRelation(str, Enum):
     """Expected behavioral relation between base and variant decisions."""
 
@@ -18,7 +21,7 @@ class BehavioralRelation(str, Enum):
     MUST_REMAIN_INVARIABLE = "same"
 
     @classmethod
-    def normalize(cls, value: Any) -> "BehavioralRelation":
+    def normalize(cls, value: Any) -> BehavioralRelation:
         if isinstance(value, cls):
             return value
         raw = str(value).strip().lower().replace("-", "_")
@@ -100,7 +103,9 @@ class CounterfactualMutation(StrictModel):
 
 class ContractProvenance(StrictModel):
     source: str = "synthetic"
-    review_status: Literal["synthetic_unreviewed", "synthetic_author_checked", "clinician_reviewed"] = "synthetic_unreviewed"
+    review_status: Literal["synthetic_unreviewed", "synthetic_author_checked", "clinician_reviewed"] = (
+        "synthetic_unreviewed"
+    )
     references: tuple[str, ...] = ()
 
     @field_validator("references", mode="before")
@@ -122,11 +127,11 @@ class RecordItem(StrictModel):
 
     @field_validator("date", mode="before")
     @classmethod
-    def parse_date(cls, value: Any) -> date:
+    def parse_date(cls, value: Any) -> _Date:
         return _parse_iso_date(value, "date")
 
     @property
-    def parsed_date(self) -> date:
+    def parsed_date(self) -> _Date:
         return self.date
 
 
@@ -143,11 +148,21 @@ class PatientRecord(StrictModel):
         return _parse_iso_date(value, "as_of")
 
     @model_validator(mode="after")
-    def validate_record_ids(self) -> "PatientRecord":
+    def validate_record_ids(self) -> PatientRecord:
         ids = [item.id for item in self.record]
         if len(ids) != len(set(ids)):
             raise ValueError(f"{self.id}: record item ids must be unique")
         validate_fhir_sanity(self.fhir, owner=self.id)
+        if self.fhir and self.fhir.get("resourceType") == "Bundle":
+            patient_ids = {
+                str(e["resource"].get("id"))
+                for e in self.fhir.get("entry") or []
+                if isinstance(e, dict)
+                and isinstance(e.get("resource"), dict)
+                and e["resource"].get("resourceType") == "Patient"
+            }
+            if patient_ids and self.id not in patient_ids:
+                raise ValueError(f"{self.id}: FHIR Bundle Patient id must match the chart id")
         for item in self.record:
             validate_fhir_sanity(item.fhir, owner=item.id)
         return self
@@ -304,7 +319,7 @@ class Contract(StrictModel):
         return aliases.get(raw, raw)
 
     @model_validator(mode="after")
-    def validate_contract_semantics(self) -> "Contract":
+    def validate_contract_semantics(self) -> Contract:
         allowed = set(self.allowed_decisions)
         if self.expected.base_decision not in allowed:
             raise ValueError(f"{self.id}: base_decision is not allowed")
@@ -367,7 +382,25 @@ class Contract(StrictModel):
         )
 
 
+FHIR_RESOURCE_TYPES = frozenset(
+    {
+        "Bundle",
+        "Patient",
+        "Condition",
+        "Observation",
+        "MedicationRequest",
+        "Procedure",
+        "Encounter",
+        "DocumentReference",
+        "AllergyIntolerance",
+        "DiagnosticReport",
+        "MedicationStatement",
+    }
+)
+
+
 def validate_fhir_sanity(fhir: dict[str, Any] | None, owner: str) -> None:
+    """Validate FHIR R4 shape and referential integrity of resource ids and subject references."""
     if fhir is None:
         return
     if not isinstance(fhir, dict):
@@ -375,23 +408,50 @@ def validate_fhir_sanity(fhir: dict[str, Any] | None, owner: str) -> None:
     resource_type = fhir.get("resourceType")
     if not isinstance(resource_type, str) or not resource_type:
         raise ValueError(f"{owner}: fhir must include a resourceType")
-    if resource_type == "Bundle":
-        entries = fhir.get("entry", [])
-        if entries is None:
-            return
-        if not isinstance(entries, list):
-            raise ValueError(f"{owner}: FHIR Bundle.entry must be a list")
-        for index, entry in enumerate(entries):
-            if not isinstance(entry, dict):
-                raise ValueError(f"{owner}: FHIR Bundle.entry[{index}] must be an object")
-            resource = entry.get("resource")
-            if resource is not None and not isinstance(resource, dict):
-                raise ValueError(f"{owner}: FHIR Bundle.entry[{index}].resource must be an object")
-            if isinstance(resource, dict) and not isinstance(resource.get("resourceType"), str):
-                raise ValueError(f"{owner}: FHIR Bundle.entry[{index}].resource must include resourceType")
+    if resource_type not in FHIR_RESOURCE_TYPES:
+        raise ValueError(f"{owner}: unsupported FHIR resourceType {resource_type!r}")
+    if resource_type != "Bundle":
+        return
+    entries = fhir.get("entry", [])
+    if entries is None:
+        return
+    if not isinstance(entries, list):
+        raise ValueError(f"{owner}: FHIR Bundle.entry must be a list")
+    seen: set[tuple[str, str]] = set()
+    patients: set[str] = set()
+    references: list[tuple[int, str]] = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise ValueError(f"{owner}: FHIR Bundle.entry[{index}] must be an object")
+        resource = entry.get("resource")
+        if resource is None:
+            continue
+        if not isinstance(resource, dict):
+            raise ValueError(f"{owner}: FHIR Bundle.entry[{index}].resource must be an object")
+        kind = resource.get("resourceType")
+        if not isinstance(kind, str):
+            raise ValueError(f"{owner}: FHIR Bundle.entry[{index}].resource must include resourceType")
+        if kind not in FHIR_RESOURCE_TYPES:
+            raise ValueError(f"{owner}: FHIR Bundle.entry[{index}] has unsupported resourceType {kind!r}")
+        resource_id = resource.get("id")
+        if resource_id is not None:
+            key = (kind, str(resource_id))
+            if key in seen:
+                raise ValueError(f"{owner}: duplicate FHIR resource {kind}/{resource_id}")
+            seen.add(key)
+        if kind == "Patient" and resource_id is not None:
+            patients.add(str(resource_id))
+        subject = resource.get("subject")
+        if isinstance(subject, dict) and isinstance(subject.get("reference"), str):
+            references.append((index, subject["reference"]))
+    for index, reference in references:
+        if reference.startswith("Patient/") and reference.split("/", 1)[1] not in patients:
+            raise ValueError(f"{owner}: FHIR Bundle.entry[{index}] references missing {reference}")
 
 
-def _validate_required_citations(contract_id: str, side: str, citations: tuple[str, ...], patient: PatientRecord) -> None:
+def _validate_required_citations(
+    contract_id: str, side: str, citations: tuple[str, ...], patient: PatientRecord
+) -> None:
     item_ids = {item.id for item in patient.record}
     missing = sorted(set(citations) - item_ids)
     if missing:

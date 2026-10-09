@@ -1,10 +1,9 @@
+import tempfile
 import unittest
 from pathlib import Path
-import tempfile
 
 from diffehr.discovery import DiffEHRFuzzer, load_fhir_chart, replay_finding, save_fuzz_results
 from diffehr.models import make_model
-
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,7 +14,7 @@ class DiscoveryTests(unittest.TestCase):
         fuzzer = DiffEHRFuzzer(make_model("reckless-oncology"), perturbations=20)
         payload = fuzzer.run(chart)
         self.assertEqual(payload["n_perturbations"], 20)
-        self.assertEqual(payload["n_findings"], 3)
+        self.assertEqual(payload["n_findings"], 7)
         finding_types = {finding["finding"] for finding in payload["findings"]}
         self.assertIn("invariance_violation", finding_types)
         self.assertIn("temporal_leakage", finding_types)
@@ -26,7 +25,8 @@ class DiscoveryTests(unittest.TestCase):
             for finding in payload["findings"]
             if finding["finding"] == "invariance_violation"
         }
-        self.assertEqual(len(keys), 2)
+        self.assertEqual(len(keys), 3)
+        self.assertIn("clinical_insensitivity", finding_types)
 
     def test_recorded_finding_can_be_replayed(self):
         chart = load_fhir_chart(ROOT / "examples" / "discovery" / "base_chart.json")
@@ -38,6 +38,18 @@ class DiscoveryTests(unittest.TestCase):
             replay = replay_finding(path, finding_id, make_model("reckless-oncology"))
         self.assertEqual(replay["replayed_finding_id"], finding_id)
         self.assertIn("variant_decision", replay)
+
+    def test_oracle_has_no_findings_and_integrity_holds(self):
+        from diffehr.discovery.fuzzer import assert_referential_integrity
+
+        chart = load_fhir_chart(ROOT / "examples" / "discovery" / "base_chart.json")
+        payload = DiffEHRFuzzer(make_model("oracle"), perturbations=20).run(chart)
+        self.assertEqual(payload["n_findings"], 0)
+        for result in payload["results"]:
+            assert_referential_integrity(result["variant_chart"])
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            dup = payload["results"][0]["variant_chart"]
+            assert_referential_integrity({"entry": dup["entry"] + [dup["entry"][0]]})
 
     def test_malformed_fhir_chart_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "at least one non-Patient resource"):

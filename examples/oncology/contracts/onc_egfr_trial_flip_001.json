@@ -3,7 +3,11 @@
   "title": "EGFR biomarker flip changes trial eligibility",
   "domain": "oncology",
   "contract_type": "clinical_sensitivity",
-  "allowed_decisions": ["eligible", "ineligible", "insufficient"],
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
   "task": "As of the decision date, determine eligibility for the AURORA-EGFR trial requiring metastatic NSCLC, EGFR exon 19 deletion or L858R, ECOG 0-1, and no documented progression on current osimertinib.",
   "base_patient": {
     "id": "syn-onc-001A",
@@ -33,7 +37,72 @@
         "type": "imaging",
         "text": "CT chest abdomen pelvis shows stable disease compared with prior scan. No new metastatic lesions."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-001A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-001A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-01-05",
+            "description": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. Patient is clinically stable on first-line therapy.",
+            "id": "note_20250105_oncology",
+            "subject": {
+              "reference": "Patient/syn-onc-001A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-12",
+            "valueString": "Molecular testing: EGFR negative. No exon 19 deletion or L858R detected.",
+            "id": "path_20250112_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-001A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-01",
+            "valueString": "CT chest abdomen pelvis shows stable disease compared with prior scan. No new metastatic lesions.",
+            "id": "img_20250201_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-001A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-onc-001B",
@@ -63,18 +132,86 @@
         "type": "imaging",
         "text": "CT chest abdomen pelvis shows stable disease compared with prior scan. No new metastatic lesions."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-001B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-001B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 62, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "oncology_note"
+            },
+            "date": "2025-01-05",
+            "description": "Metastatic non-small cell lung cancer, adenocarcinoma histology. ECOG 1. Patient is clinically stable on first-line therapy.",
+            "id": "note_20250105_oncology",
+            "subject": {
+              "reference": "Patient/syn-onc-001B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "pathology"
+            },
+            "effectiveDateTime": "2025-01-12",
+            "valueString": "Molecular testing: EGFR exon 19 deletion positive. No resistance mutation detected.",
+            "id": "path_20250112_egfr",
+            "subject": {
+              "reference": "Patient/syn-onc-001B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "imaging"
+            },
+            "effectiveDateTime": "2025-02-01",
+            "valueString": "CT chest abdomen pelvis shows stable disease compared with prior scan. No new metastatic lesions.",
+            "id": "img_20250201_ct",
+            "subject": {
+              "reference": "Patient/syn-onc-001B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",
     "base_decision": "ineligible",
     "variant_decision": "eligible",
     "required_citations": {
-      "base": ["path_20250112_egfr"],
-      "variant": ["path_20250112_egfr"]
+      "base": [
+        "path_20250112_egfr"
+      ],
+      "variant": [
+        "path_20250112_egfr"
+      ]
     },
     "forbidden_after_as_of": true
   },
   "clinical_rationale": "EGFR mutation status is the controlled causal change; the answer should flip only because the variant contains an eligible EGFR alteration."
 }
-

@@ -1,0 +1,192 @@
+{
+  "id": "onc_her2_lvef_flip_031",
+  "title": "LVEF threshold flips trastuzumab eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility to start trastuzumab for HER2-positive breast cancer; LVEF must be at least 50 percent with no absolute decline of 10 points or more.",
+  "base_patient": {
+    "id": "syn-onc-031A",
+    "as_of": "2025-07-07",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250607_her2",
+        "date": "2025-06-07",
+        "type": "pathology",
+        "text": "HER2 3+ positive invasive ductal carcinoma."
+      },
+      {
+        "id": "img_20250625_lvef",
+        "date": "2025-06-25",
+        "type": "imaging",
+        "text": "LVEF 60 percent on echocardiogram."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-031A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-031A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "HER2 3+ positive invasive ductal carcinoma."
+            },
+            "effectiveDateTime": "2025-06-07",
+            "id": "path_20250607_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-031A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "LVEF 60 percent on echocardiogram."
+            },
+            "effectiveDateTime": "2025-06-25",
+            "id": "img_20250625_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-031A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-031B",
+    "as_of": "2025-07-07",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "Black",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250607_her2",
+        "date": "2025-06-07",
+        "type": "pathology",
+        "text": "HER2 3+ positive invasive ductal carcinoma."
+      },
+      {
+        "id": "img_20250625_lvef",
+        "date": "2025-06-25",
+        "type": "imaging",
+        "text": "LVEF 48 percent on echocardiogram, below treatment threshold."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-031B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-031B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 55, \"insurance\": \"commercial\", \"race\": \"Black\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "HER2 3+ positive invasive ductal carcinoma."
+            },
+            "effectiveDateTime": "2025-06-07",
+            "id": "path_20250607_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-031B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "LVEF 48 percent on echocardiogram, below treatment threshold."
+            },
+            "effectiveDateTime": "2025-06-25",
+            "id": "img_20250625_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-031B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "path_20250607_her2",
+        "img_20250625_lvef"
+      ],
+      "variant": [
+        "img_20250625_lvef"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Trastuzumab requires adequate LVEF; a value below 50 percent or a decline of 10 points or more should withhold therapy.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-07-07",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Lower the LVEF below the cardiotoxicity threshold.",
+    "changed_fields": [
+      "record.lvef.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not clear trastuzumab when LVEF is below threshold."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

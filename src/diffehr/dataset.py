@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 from dataclasses import dataclass
 from hashlib import sha256
-import json
 from pathlib import Path
 from typing import Any
 
 from .contracts import Contract, ContractError, load_contract, load_contracts
-
 
 MANIFEST_NAME = "manifest.json"
 DATASET_VERSION = "0.2.0"
@@ -55,7 +54,37 @@ def generate_dataset_manifest(root: str | Path) -> DatasetManifest:
     return DatasetManifest(root=root, payload=payload)
 
 
+def _pack_counts(root: Path) -> dict[str, int]:
+    return dict(sorted(Counter(contract.domain for contract in load_contracts(root)).items()))
+
+
+def sync_pack_files(root: str | Path) -> list[Path]:
+    """Rewrite each pack.json contract count and description from the contracts on disk."""
+    root = Path(root)
+    written = []
+    for pack_path in sorted(root.glob("*/pack.json")):
+        pack = json.loads(pack_path.read_text(encoding="utf-8"))
+        count = len(list((pack_path.parent / pack.get("contracts_path", "contracts")).glob("*.json")))
+        pack["n_contracts"] = count
+        pack["description"] = (
+            f"{count} paired synthetic {pack['domain'].replace('_', ' ')} EHR contracts for testing clinical counterfactual consistency."
+        )
+        pack_path.write_text(json.dumps(pack, indent=2) + "\n", encoding="utf-8")
+        written.append(pack_path)
+    return written
+
+
+def validate_pack_files(root: str | Path) -> None:
+    root = Path(root)
+    for pack_path in sorted(root.glob("*/pack.json")):
+        pack = json.loads(pack_path.read_text(encoding="utf-8"))
+        count = len(list((pack_path.parent / pack.get("contracts_path", "contracts")).glob("*.json")))
+        if pack.get("n_contracts") != count:
+            raise ContractError(f"{pack_path}: n_contracts={pack.get('n_contracts')} but {count} contract files exist")
+
+
 def save_dataset_manifest(root: str | Path) -> Path:
+    sync_pack_files(root)
     manifest = generate_dataset_manifest(root)
     manifest.path.write_text(json.dumps(manifest.payload, indent=2) + "\n", encoding="utf-8")
     return manifest.path
@@ -63,6 +92,7 @@ def save_dataset_manifest(root: str | Path) -> Path:
 
 def validate_dataset_manifest(root: str | Path) -> None:
     root = Path(root)
+    validate_pack_files(root)
     manifest_path = root / MANIFEST_NAME
     if not manifest_path.exists():
         return

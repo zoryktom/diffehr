@@ -1,0 +1,195 @@
+{
+  "id": "card_doac_renal_flip_009",
+  "title": "apixaban renal boundary moves decision from recommended to contraindicated",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "recommended",
+    "reduced_dose",
+    "contraindicated"
+  ],
+  "task": "As of the decision date, choose the anticoagulation plan for non-valvular atrial fibrillation (CHA2DS2-VASc 4): recommended standard-dose DOAC, reduced_dose DOAC for creatinine clearance 15-50 mL/min, or contraindicated when creatinine clearance is below 15 mL/min.",
+  "base_patient": {
+    "id": "syn-card-009A",
+    "as_of": "2025-03-03",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250102_af",
+        "date": "2025-01-02",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+      },
+      {
+        "id": "lab_20250228_crcl",
+        "date": "2025-02-28",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-009A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-009A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+            },
+            "recordedDate": "2025-01-02",
+            "id": "note_20250102_af",
+            "subject": {
+              "reference": "Patient/syn-card-009A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 62 mL/min, above 50 mL/min."
+            },
+            "effectiveDateTime": "2025-02-28",
+            "id": "lab_20250228_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-009A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-card-009B",
+    "as_of": "2025-03-03",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250102_af",
+        "date": "2025-01-02",
+        "type": "cardiology_note",
+        "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+      },
+      {
+        "id": "lab_20250228_crcl",
+        "date": "2025-02-28",
+        "type": "lab",
+        "text": "Creatinine clearance (Cockcroft-Gault) 12 mL/min, below 15 mL/min, severe renal failure."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-card-009B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-card-009B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 58, \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Condition",
+            "clinicalStatus": {
+              "text": "active"
+            },
+            "code": {
+              "text": "Non-valvular atrial fibrillation, CHA2DS2-VASc 4, candidate for apixaban anticoagulation."
+            },
+            "recordedDate": "2025-01-02",
+            "id": "note_20250102_af",
+            "subject": {
+              "reference": "Patient/syn-card-009B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Creatinine clearance (Cockcroft-Gault) 12 mL/min, below 15 mL/min, severe renal failure."
+            },
+            "effectiveDateTime": "2025-02-28",
+            "id": "lab_20250228_crcl",
+            "subject": {
+              "reference": "Patient/syn-card-009B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "recommended",
+    "variant_decision": "contraindicated",
+    "required_citations": {
+      "base": [
+        "lab_20250228_crcl"
+      ],
+      "variant": [
+        "lab_20250228_crcl"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "DOAC dosing and eligibility follow creatinine clearance bands (below 15, 15-50, above 50 mL/min).",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-03-03",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Change the creatinine clearance to the next band.",
+    "changed_fields": [
+      "record.crcl.text"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [
+    "Must not recommend a DOAC when creatinine clearance is below 15 mL/min."
+  ],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

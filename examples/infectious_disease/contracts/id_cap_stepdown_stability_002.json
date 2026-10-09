@@ -32,7 +32,57 @@
         "type": "vitals",
         "text": "Afebrile, blood pressure stable, oxygen saturation 96 percent on room air, tolerating oral intake."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-002A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-002A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 67, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "hospital_note"
+            },
+            "date": "2025-02-03",
+            "description": "Community-acquired pneumonia clinically improving after IV ceftriaxone and azithromycin.",
+            "id": "id_note_20250203_cap",
+            "subject": {
+              "reference": "Patient/syn-id-002A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "vitals"
+            },
+            "effectiveDateTime": "2025-02-04",
+            "valueString": "Afebrile, blood pressure stable, oxygen saturation 96 percent on room air, tolerating oral intake.",
+            "id": "id_vitals_20250204_stable",
+            "subject": {
+              "reference": "Patient/syn-id-002A"
+            }
+          }
+        }
+      ]
+    }
   },
   "variant_patient": {
     "id": "syn-id-002B",
@@ -57,7 +107,57 @@
         "type": "vitals",
         "text": "Hypotension requiring vasopressors and oxygen saturation 88 percent on high-flow oxygen."
       }
-    ]
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-002B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-002B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 67, \"ethnicity\": \"Not Hispanic or Latino\", \"insurance\": \"commercial\", \"race\": \"White\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "DocumentReference",
+            "status": "current",
+            "type": {
+              "text": "hospital_note"
+            },
+            "date": "2025-02-03",
+            "description": "Community-acquired pneumonia receiving IV ceftriaxone and azithromycin.",
+            "id": "id_note_20250203_cap",
+            "subject": {
+              "reference": "Patient/syn-id-002B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "vitals"
+            },
+            "effectiveDateTime": "2025-02-04",
+            "valueString": "Hypotension requiring vasopressors and oxygen saturation 88 percent on high-flow oxygen.",
+            "id": "id_vitals_20250204_unstable",
+            "subject": {
+              "reference": "Patient/syn-id-002B"
+            }
+          }
+        }
+      ]
+    }
   },
   "expected": {
     "relation": "flip",

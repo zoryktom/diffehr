@@ -1,0 +1,256 @@
+{
+  "id": "id_temporal_future_035",
+  "title": "Post-admission blood susceptibility must not alter time-zero plan",
+  "domain": "infectious_disease",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "empiric_broad_spectrum",
+    "narrow_therapy"
+  ],
+  "task": "As of the decision date, choose antimicrobial strategy: empiric_broad_spectrum while cultures are pending, or narrow_therapy only when susceptibility results are available at the decision date.",
+  "base_patient": {
+    "id": "syn-id-035A",
+    "as_of": "2025-10-23",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "enc_20251020_admit",
+        "date": "2025-10-20",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251021_cx",
+        "date": "2025-10-21",
+        "type": "lab",
+        "text": "Blood culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251021_abx",
+        "date": "2025-10-21",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-035A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-035A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-20"
+            },
+            "id": "enc_20251020_admit",
+            "subject": {
+              "reference": "Patient/syn-id-035A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Blood culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-21",
+            "id": "lab_20251021_cx",
+            "subject": {
+              "reference": "Patient/syn-id-035A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-21",
+            "id": "med_20251021_abx",
+            "subject": {
+              "reference": "Patient/syn-id-035A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-id-035B",
+    "as_of": "2025-10-23",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "enc_20251020_admit",
+        "date": "2025-10-20",
+        "type": "encounter",
+        "text": "Admitted with sepsis; time-zero triage chart."
+      },
+      {
+        "id": "lab_20251021_cx",
+        "date": "2025-10-21",
+        "type": "lab",
+        "text": "Blood culture collected; susceptibility pending."
+      },
+      {
+        "id": "med_20251021_abx",
+        "date": "2025-10-21",
+        "type": "medication",
+        "text": "Empiric piperacillin-tazobactam started."
+      },
+      {
+        "id": "lab_20251026_future_susceptibility",
+        "date": "2025-10-26",
+        "type": "lab",
+        "text": "Culture sensitivity report dated 72 hours after admission: blood isolate susceptible to penicillin."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-id-035B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-id-035B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Encounter",
+            "status": "finished",
+            "class": {
+              "code": "IMP"
+            },
+            "period": {
+              "start": "2025-10-20"
+            },
+            "id": "enc_20251020_admit",
+            "subject": {
+              "reference": "Patient/syn-id-035B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Blood culture collected; susceptibility pending."
+            },
+            "effectiveDateTime": "2025-10-21",
+            "id": "lab_20251021_cx",
+            "subject": {
+              "reference": "Patient/syn-id-035B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "MedicationRequest",
+            "status": "active",
+            "intent": "order",
+            "medicationCodeableConcept": {
+              "text": "Empiric piperacillin-tazobactam started."
+            },
+            "authoredOn": "2025-10-21",
+            "id": "med_20251021_abx",
+            "subject": {
+              "reference": "Patient/syn-id-035B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Culture sensitivity report dated 72 hours after admission: blood isolate susceptible to penicillin."
+            },
+            "effectiveDateTime": "2025-10-26",
+            "id": "lab_20251026_future_susceptibility",
+            "subject": {
+              "reference": "Patient/syn-id-035B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "empiric_broad_spectrum",
+    "variant_decision": "empiric_broad_spectrum",
+    "required_citations": {
+      "base": [
+        "lab_20251021_cx",
+        "med_20251021_abx"
+      ],
+      "variant": [
+        "lab_20251021_cx",
+        "med_20251021_abx"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "A culture sensitivity report resulting 72 hours after admission cannot inform the time-zero decision.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-10-23",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a susceptibility report dated after the decision date.",
+    "changed_fields": [
+      "record.future_susceptibility"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

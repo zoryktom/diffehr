@@ -1,0 +1,211 @@
+{
+  "id": "onc_temporal_future_035",
+  "title": "Post-decision lvef result must not alter decision",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility to start trastuzumab for HER2-positive breast cancer; LVEF must be at least 50 percent with no absolute decline of 10 points or more.",
+  "base_patient": {
+    "id": "syn-onc-035A",
+    "as_of": "2025-08-12",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250713_her2",
+        "date": "2025-07-13",
+        "type": "pathology",
+        "text": "HER2 3+ positive invasive ductal carcinoma."
+      },
+      {
+        "id": "img_20250731_lvef",
+        "date": "2025-07-31",
+        "type": "imaging",
+        "text": "LVEF 58 percent on echocardiogram."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-035A",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-035A",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "HER2 3+ positive invasive ductal carcinoma."
+            },
+            "effectiveDateTime": "2025-07-13",
+            "id": "path_20250713_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-035A"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "LVEF 58 percent on echocardiogram."
+            },
+            "effectiveDateTime": "2025-07-31",
+            "id": "img_20250731_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-035A"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "variant_patient": {
+    "id": "syn-onc-035B",
+    "as_of": "2025-08-12",
+    "attributes": {
+      "age": 66,
+      "sex": "female",
+      "race": "Asian",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250713_her2",
+        "date": "2025-07-13",
+        "type": "pathology",
+        "text": "HER2 3+ positive invasive ductal carcinoma."
+      },
+      {
+        "id": "img_20250731_lvef",
+        "date": "2025-07-31",
+        "type": "imaging",
+        "text": "LVEF 58 percent on echocardiogram."
+      },
+      {
+        "id": "img_20250902_future_lvef",
+        "date": "2025-09-02",
+        "type": "imaging",
+        "text": "Echocardiogram after cycle 3: LVEF 38 percent, below treatment threshold."
+      }
+    ],
+    "fhir": {
+      "resourceType": "Bundle",
+      "type": "collection",
+      "id": "bundle-syn-onc-035B",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "Patient",
+            "id": "syn-onc-035B",
+            "gender": "female",
+            "extension": [
+              {
+                "url": "attributes",
+                "valueString": "{\"age\": 66, \"insurance\": \"commercial\", \"race\": \"Asian\", \"sex\": \"female\"}"
+              }
+            ]
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "HER2 3+ positive invasive ductal carcinoma."
+            },
+            "effectiveDateTime": "2025-07-13",
+            "id": "path_20250713_her2",
+            "subject": {
+              "reference": "Patient/syn-onc-035B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "LVEF 58 percent on echocardiogram."
+            },
+            "effectiveDateTime": "2025-07-31",
+            "id": "img_20250731_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-035B"
+            }
+          }
+        },
+        {
+          "resource": {
+            "resourceType": "Observation",
+            "status": "final",
+            "code": {
+              "text": "Echocardiogram after cycle 3: LVEF 38 percent, below treatment threshold."
+            },
+            "effectiveDateTime": "2025-09-02",
+            "id": "img_20250902_future_lvef",
+            "subject": {
+              "reference": "Patient/syn-onc-035B"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "eligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20250713_her2",
+        "img_20250731_lvef"
+      ],
+      "variant": [
+        "path_20250713_her2",
+        "img_20250731_lvef"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Evidence dated after the decision date is unavailable and must not change the recommendation.",
+  "temporal_constraints": {
+    "decision_index_timestamp": "2025-08-12",
+    "forbid_future_evidence": true
+  },
+  "mutation": {
+    "description": "Add a result dated after the decision date.",
+    "changed_fields": [
+      "record.future"
+    ]
+  },
+  "provenance": {
+    "source": "synthetic",
+    "review_status": "synthetic_author_checked"
+  },
+  "safety_critical_assertions": [],
+  "known_limitations": [
+    "Synthetic scenario simplified from public guideline concepts; not clinically validated."
+  ]
+}

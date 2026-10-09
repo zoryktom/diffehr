@@ -8,7 +8,6 @@ import pytest
 from diffehr.contracts import BehavioralRelation, ContractError, contract_from_dict, load_contracts
 from diffehr.dataset import generate_dataset_manifest, summarize_counterfactual_differences
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "examples" / "oncology" / "contracts" / "onc_race_invariance_006.json"
 
@@ -16,12 +15,12 @@ CONTRACT_PATH = ROOT / "examples" / "oncology" / "contracts" / "onc_race_invaria
 class ContractTests(unittest.TestCase):
     def test_oncology_contracts_load(self):
         contracts = load_contracts(ROOT / "examples" / "oncology" / "contracts")
-        self.assertEqual(len(contracts), 16)
+        self.assertEqual(len(contracts), 40)
         self.assertTrue(all(contract.id.startswith("onc_") for contract in contracts))
 
     def test_all_specialty_contracts_load(self):
         contracts = load_contracts(ROOT / "examples")
-        self.assertEqual(len(contracts), 32)
+        self.assertEqual(len(contracts), 120)
         domains = {contract.domain for contract in contracts}
         self.assertEqual(domains, {"oncology", "cardiology", "infectious_disease"})
 
@@ -52,9 +51,9 @@ class ContractTests(unittest.TestCase):
 
     def test_dataset_manifest_matches_actual_contracts(self):
         manifest = generate_dataset_manifest(ROOT / "examples").payload
-        self.assertEqual(manifest["contract_count"], 32)
-        self.assertEqual(manifest["domain_counts"], {"cardiology": 8, "infectious_disease": 8, "oncology": 16})
-        self.assertEqual(len(manifest["contracts"]), 32)
+        self.assertEqual(manifest["contract_count"], 120)
+        self.assertEqual(manifest["domain_counts"], {"cardiology": 40, "infectious_disease": 40, "oncology": 40})
+        self.assertEqual(len(manifest["contracts"]), 120)
         self.assertTrue(all("sha256" in item for item in manifest["contracts"]))
 
     def test_counterfactual_difference_summary_is_machine_readable(self):
