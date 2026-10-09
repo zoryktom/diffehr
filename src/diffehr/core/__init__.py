@@ -1,11 +1,6 @@
-"""Backward-compatible contract imports.
+"""Core contract schema and loaders for DiffEHR."""
 
-The research artifact schema now lives in :mod:`diffehr.core`.
-"""
-
-from __future__ import annotations
-
-from .core import (
+from .schema import (
     BehavioralRelation,
     ClinicalTask,
     Contract,
@@ -17,11 +12,8 @@ from .core import (
     RecordItem,
     RequiredEvidenceCitations,
     TemporalConstraints,
-    contract_from_dict,
-    load_contract,
-    load_contracts,
-    validate_contract,
 )
+from .loader import contract_from_dict, load_contract, load_contracts, validate_contract
 
 __all__ = [
     "BehavioralRelation",

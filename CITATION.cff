@@ -3,7 +3,7 @@ title: "DiffEHR: Counterfactual Contract Testing for Clinical AI Systems"
 message: "If you use DiffEHR in research, please cite this software artifact."
 type: software
 authors:
-  - name: "DiffEHR Contributors"
+  - name: "Zorykto Mykola"
 version: "0.1.0"
 license: "Apache-2.0"
 keywords:
@@ -12,4 +12,3 @@ keywords:
   - counterfactual evaluation
   - synthetic EHR
   - FHIR
-

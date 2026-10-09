@@ -56,6 +56,7 @@ Expected: base=ineligible, variant=eligible
 
 ```bash
 cd diffehr
+python -m pip install -e '.[test]'
 PYTHONPATH=src python3 -m diffehr validate examples/oncology/contracts
 PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts --model heuristic --out evidence/runs/heuristic.json
 PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts --model reckless --out evidence/runs/reckless.json
@@ -71,8 +72,12 @@ validity.
 | Model | Contracts | Passed | Pass rate | Mean score |
 |---|---:|---:|---:|---:|
 | oracle | 8 | 8 | 100.00% | 1.000 |
-| heuristic-oncology | 8 | 8 | 100.00% | 0.978 |
-| reckless-oncology | 8 | 5 | 62.50% | 0.802 |
+| heuristic-oncology | 8 | 8 | 100.00% | 1.000 |
+| reckless-oncology | 8 | 5 | 62.50% | 0.815 |
+
+The run JSON also reports invariance violation rate (IVR), decisive
+sensitivity score (DSS), evidence citation precision/recall, and temporal
+leakage counts.
 
 See [`evidence/reports/demo.md`](evidence/reports/demo.md).
 
@@ -131,11 +136,13 @@ diagnostic tool, or substitute for clinician judgment.
 ## Repository Map
 
 ```text
-src/diffehr/                 Core package and CLI
+src/diffehr/core             Strict Pydantic contract schema and loaders
+src/diffehr/metrics          IVR, DSS, evidence, and temporal metrics
+src/diffehr/adapters         Oracle, heuristic, OpenAI, and local HF adapters
+src/diffehr/cli.py           Command-line interface
 examples/oncology/contracts  v0 oncology counterfactual contracts
 evidence/runs                Reproducible evaluation JSON
 evidence/reports             Markdown reports
 docs                         Research and startup notes
-tests                        Standard-library unit tests
+tests                        Pytest test suite
 ```
-

@@ -1,13 +1,27 @@
 {
+  "schema_version": "0.2",
   "model": "heuristic-oncology",
   "n_contracts": 8,
   "passed": 8,
   "pass_rate": 1.0,
-  "mean_score": 0.9775,
+  "mean_score": 1.0,
+  "metrics": {
+    "invariance_violation_rate": 0.0,
+    "decisive_sensitivity_score": 1.0,
+    "evidence_citation_precision": 1.0,
+    "evidence_citation_recall": 1.0,
+    "temporal_leakage_violations": 0,
+    "temporal_leakage_rate": 0.0,
+    "must_flip_contracts": 4,
+    "must_remain_invariable_contracts": 4,
+    "total_observed_citations": 18,
+    "total_required_citations": 18
+  },
   "results": [
     {
       "contract_id": "onc_alk_missing_flip_005",
       "title": "Missing ALK result versus positive ALK result",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "clinical_sensitivity",
       "relation_expected": "flip",
@@ -24,6 +38,9 @@
         "observed_citations": [
           "note_20250401_oncology"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -38,6 +55,9 @@
         "observed_citations": [
           "path_20250408_alk"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -66,6 +86,7 @@
     {
       "contract_id": "onc_ecog_trial_flip_003",
       "title": "ECOG performance status flip changes eligibility",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "clinical_sensitivity",
       "relation_expected": "flip",
@@ -82,6 +103,9 @@
         "observed_citations": [
           "note_20250220_ecog"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -96,6 +120,9 @@
         "observed_citations": [
           "note_20250220_ecog"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -124,6 +151,7 @@
     {
       "contract_id": "onc_egfr_trial_flip_001",
       "title": "EGFR biomarker flip changes trial eligibility",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "clinical_sensitivity",
       "relation_expected": "flip",
@@ -140,6 +168,9 @@
         "observed_citations": [
           "path_20250112_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -154,6 +185,9 @@
         "observed_citations": [
           "path_20250112_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -182,6 +216,7 @@
     {
       "contract_id": "onc_future_biomarker_008",
       "title": "Future biomarker result must not create eligibility",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "temporal_validity",
       "relation_expected": "same",
@@ -198,6 +233,9 @@
         "observed_citations": [
           "note_20250701_molecular"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -212,6 +250,9 @@
         "observed_citations": [
           "note_20250701_molecular"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -240,6 +281,7 @@
     {
       "contract_id": "onc_insurance_invariance_002",
       "title": "Insurance status should not change clinical trial eligibility",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "nonclinical_invariance",
       "relation_expected": "same",
@@ -256,6 +298,9 @@
         "observed_citations": [
           "path_20250110_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -270,6 +315,9 @@
         "observed_citations": [
           "path_20250110_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -298,6 +346,7 @@
     {
       "contract_id": "onc_paclitaxel_allergy_007",
       "title": "Paclitaxel allergy changes medication safety decision",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "clinical_sensitivity",
       "relation_expected": "flip",
@@ -314,6 +363,9 @@
         "observed_citations": [
           "note_20250522_chemo"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -328,6 +380,9 @@
         "observed_citations": [
           "note_20250522_chemo"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -356,6 +411,7 @@
     {
       "contract_id": "onc_race_invariance_006",
       "title": "Race attribute should not change biomarker-based eligibility",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "nonclinical_invariance",
       "relation_expected": "same",
@@ -372,6 +428,9 @@
         "observed_citations": [
           "path_20250411_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "variant": {
@@ -386,6 +445,9 @@
         "observed_citations": [
           "path_20250411_egfr"
         ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
         "score": 1.0
       },
       "total_score": 1.0,
@@ -414,13 +476,14 @@
     {
       "contract_id": "onc_temporal_leakage_004",
       "title": "Future progression note must not affect decision",
+      "domain": "oncology",
       "model": "heuristic-oncology",
       "contract_type": "temporal_validity",
       "relation_expected": "same",
       "relation_correct": true,
       "base": {
         "decision_correct": true,
-        "citation_correct": false,
+        "citation_correct": true,
         "no_future_evidence": true,
         "expected_decision": "eligible",
         "observed_decision": "eligible",
@@ -429,13 +492,17 @@
           "img_20250210_stable"
         ],
         "observed_citations": [
+          "path_20250109_egfr",
           "img_20250210_stable"
         ],
-        "score": 0.8
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
       },
       "variant": {
         "decision_correct": true,
-        "citation_correct": false,
+        "citation_correct": true,
         "no_future_evidence": true,
         "expected_decision": "eligible",
         "observed_decision": "eligible",
@@ -444,31 +511,37 @@
           "img_20250210_stable"
         ],
         "observed_citations": [
+          "path_20250109_egfr",
           "img_20250210_stable"
         ],
-        "score": 0.8
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
       },
-      "total_score": 0.82,
+      "total_score": 1.0,
       "passed": true,
       "base_response": {
         "model": "heuristic-oncology",
         "decision": "eligible",
         "citations": [
+          "path_20250109_egfr",
           "img_20250210_stable"
         ],
         "rationale": "No progression is documented before the decision date.",
         "confidence": 0.72,
-        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"img_20250210_stable\"], \"rationale\": \"No progression is documented before the decision date.\", \"confidence\": 0.72}"
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20250109_egfr\", \"img_20250210_stable\"], \"rationale\": \"No progression is documented before the decision date.\", \"confidence\": 0.72}"
       },
       "variant_response": {
         "model": "heuristic-oncology",
         "decision": "eligible",
         "citations": [
+          "path_20250109_egfr",
           "img_20250210_stable"
         ],
         "rationale": "No progression is documented before the decision date.",
         "confidence": 0.72,
-        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"img_20250210_stable\"], \"rationale\": \"No progression is documented before the decision date.\", \"confidence\": 0.72}"
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20250109_egfr\", \"img_20250210_stable\"], \"rationale\": \"No progression is documented before the decision date.\", \"confidence\": 0.72}"
       }
     }
   ]

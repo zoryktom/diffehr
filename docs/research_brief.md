@@ -37,10 +37,10 @@ Subquestions:
 
 DiffEHR contributes:
 
-1. A contract schema for clinical counterfactual testing.
+1. A strict Pydantic v2 contract schema for clinical counterfactual testing.
 2. A runner that evaluates arbitrary clinical AI systems through model adapters.
-3. A scoring framework for decision correctness, relation correctness, evidence
-   localization, and temporal validity.
+3. Quantitative metrics for invariance violation rate, decisive sensitivity,
+   evidence citation precision/recall, and temporal leakage.
 4. A pilot oncology contract pack.
 5. A reproducible evidence report.
 
@@ -96,4 +96,3 @@ Possible venues:
 DiffEHR gives biomedical informatics researchers and health AI builders a way to
 test whether clinical AI systems use the right evidence, ignore the wrong
 evidence, and remain reliable under controlled patient-record changes.
-

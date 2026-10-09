@@ -1,11 +1,6 @@
-"""Backward-compatible metric imports.
+"""Quantitative metrics for DiffEHR contract runs."""
 
-The scoring engine now lives in :mod:`diffehr.metrics`.
-"""
-
-from __future__ import annotations
-
-from .metrics import (
+from .computation import (
     ContractResult,
     MetricSummary,
     SideScore,

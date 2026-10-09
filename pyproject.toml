@@ -10,7 +10,10 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 authors = [
-  { name = "DiffEHR Contributors" }
+  { name = "Zorykto Mykola" }
+]
+dependencies = [
+  "pydantic>=2.6,<3"
 ]
 keywords = [
   "biomedical-informatics",
@@ -33,6 +36,14 @@ classifiers = [
 [project.scripts]
 diffehr = "diffehr.cli:main"
 
+[project.optional-dependencies]
+test = [
+  "pytest>=8"
+]
+hf = [
+  "transformers>=4.40",
+  "torch"
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
-
