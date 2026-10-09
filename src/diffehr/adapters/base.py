@@ -74,18 +74,66 @@ def build_clinical_prompt(contract: Contract, side: str) -> str:
         "You are evaluating a synthetic patient chart for a clinical AI benchmark. "
         "This is not medical advice and no real patient data is included.",
         f"Task: {contract.task}",
-        "Chronological clinical summary:",
-        patient.to_prompt_text(include_future=True),
-    ]
-    if patient.fhir is not None:
-        parts += ["Structured FHIR R4 Bundle (JSON):", json.dumps(patient.fhir, separators=(",", ":"), sort_keys=True)]
-    parts += [
+        patient_to_markdown(patient),
         "Respond with a single JSON object and nothing else, with exactly these keys:",
         f'"decision" (one of [{allowed}]), "confidence" (number 0-1), '
         '"contraindication_flagged" (true/false), "clinical_rationale" (one concise paragraph grounded only in the chart), '
         '"citations" (list of chart item IDs supporting the decision).',
     ]
     return "\n\n".join(parts)
+
+
+def _resource_text(resource: dict[str, Any]) -> str:
+    for key in ("valueString", "description", "note"):
+        value = resource.get(key)
+        if isinstance(value, str) and value:
+            return value
+    code = resource.get("code")
+    if isinstance(code, dict) and isinstance(code.get("text"), str):
+        return str(code["text"])
+    return json.dumps({k: v for k, v in resource.items() if k not in {"id", "subject", "resourceType"}}, sort_keys=True)
+
+
+def _resource_date(resource: dict[str, Any]) -> str:
+    for key in ("effectiveDateTime", "date", "authoredOn", "onsetDateTime", "recordedDate", "performedDateTime"):
+        value = resource.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return "undated"
+
+
+def fhir_to_markdown(bundle: dict[str, Any]) -> str:
+    """Serialize a FHIR R4 Bundle into a clinician-style markdown chart summary (chronological, ID-tagged)."""
+    patient_lines: list[str] = []
+    dated: list[tuple[str, str, str, str, str]] = []
+    for entry in bundle.get("entry", []):
+        resource = entry.get("resource", {})
+        rtype = str(resource.get("resourceType", "Resource"))
+        if rtype == "Patient":
+            patient_lines.append(f"- Sex: {resource.get('gender', 'unknown')}")
+            for ext in resource.get("extension", []):
+                try:
+                    attrs = json.loads(ext.get("valueString", "{}"))
+                except (TypeError, json.JSONDecodeError):
+                    continue
+                if isinstance(attrs, dict):
+                    patient_lines.extend(
+                        f"- {key.replace('_', ' ').title()}: {value}" for key, value in sorted(attrs.items())
+                    )
+            continue
+        dated.append((_resource_date(resource), rtype, str(resource.get("id", "")), _resource_text(resource), ""))
+    lines = ["## Patient", *patient_lines, "", "## Chart (chronological)"]
+    for date_text, rtype, rid, text, _ in sorted(dated):
+        lines.append(f"- [{rid}] {date_text} {rtype}: {text}")
+    return "\n".join(lines)
+
+
+def patient_to_markdown(patient: Any) -> str:
+    """Markdown summary of a PatientRecord, from its FHIR bundle when present, else its record items."""
+    header = f"Decision date: {patient.as_of}"
+    if getattr(patient, "fhir", None) is not None:
+        return f"{header}\n\n{fhir_to_markdown(patient.fhir)}"
+    return f"{header}\n\n{patient.to_prompt_text(include_future=True)}"
 
 
 def parse_model_response(model: str, text: str, allowed: tuple[str, ...]) -> ModelResponse:

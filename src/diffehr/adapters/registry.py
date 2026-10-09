@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .base import ModelAdapter
 from .heuristic import HeuristicAdapter
-from .local_hf import HuggingFaceAdapter
+from .local_hf import MODEL_ALIASES, HuggingFaceAdapter
 from .openai import OpenAIAdapter
 from .oracle import OracleAdapter
 
@@ -40,6 +40,8 @@ def make_model(name: str) -> ModelAdapter:
         return HeuristicAdapter(respect_temporal=True, insurance_bias=False)
     if lowered in {"reckless", "reckless-oncology"}:
         return HeuristicAdapter(respect_temporal=False, insurance_bias=True)
+    if lowered in MODEL_ALIASES:
+        return HuggingFaceAdapter(lowered)
     for prefix, key in (("openai:", "openai"), ("localhf:", "local_hf"), ("hf:", "local_hf")):
         if lowered.startswith(prefix):
             return make_adapter(key, normalized.split(":", 1)[1])

@@ -157,13 +157,22 @@ denominators yield 0.0. See [`docs/METRICS.md`](docs/METRICS.md).
 
 The artifact has 120 synthetic contracts (40 each in oncology, cardiology and infectious
 disease): 74 `flip`, 23 `nonclinical_invariance` and 23 `temporal_validity`. All baselines are
-deterministic and offline; no real language-model results are reported.
+deterministic and offline; the two small language models were run locally from the HF cache.
 
 | Model | Contracts | Passed | Pass rate | CFA % | IFR % | TDV % | Mean SDI (95% CI) | Fuzz findings |
 |---|---:|---:|---:|---:|---:|---:|---|---:|
 | oracle | 120 | 120 | 100.00% | 100.00 | 0.00 | 0.00 | 0.000 (0.000-0.000) | 0 |
 | heuristic | 120 | 80 | 66.67% | 64.86 | 0.00 | 0.00 | 0.191 (0.132-0.257) | 3 |
 | reckless | 120 | 59 | 49.17% | 60.81 | 30.43 | 47.83 | 0.295 (0.225-0.369) | 7 |
+| Qwen2.5-0.5B-Instruct (real, greedy, mps) | 120 | 0 | 0.00% | 0.00 | 0.00 | 21.74 | 0.625 (0.568-0.685) | n/a |
+| SmolLM2-135M-Instruct (real, greedy, mps) | 120 | 6 | 5.00% | 0.00 | 0.00 | 17.39 | 0.712 (0.651-0.771) | n/a |
+
+BioMistral-7B, Meditron-7B and Llama-3.1-8B-Instruct are registered (`biomistral-7b`, `meditron-7b`,
+`llama-3.1-8b`) but were **not evaluated**: their weights are not cached and do not fit in the 8 GB
+evaluation machine. With `HF_OFFLINE=1` and no cached weights they run as labelled offline fixtures
+that only exercise the harness and are excluded from results. Set `HF_OFFLINE=0` (with enough
+memory/GPU and access to gated repos) to evaluate them. The two small models change their
+decision on only 5 and 12 of 120 pairs, so their 0% IFR reflects insensitivity, not invariance.
 
 CFA = Counterfactual Flip Accuracy, IFR = Invariance Failure Rate, TDV = Temporal Directional
 Violation, SDI = Safety Divergence Index. The heuristic fails clinically sensitive contracts
@@ -185,7 +194,7 @@ bash scripts/run_all_benchmarks.sh
 ```
 
 The script (`set -euo pipefail`) refreshes and validates `examples/manifest.json`, evaluates the
-`oracle`, `heuristic` and `reckless` baselines on all 120 contracts into `evidence/runs/full/`,
+`oracle`, `heuristic` and `reckless` baselines and the Hugging Face models on all 120 contracts into `evidence/runs/full/`,
 fuzzes `examples/discovery/base_chart.json` with each baseline into `evidence/runs/fuzz/`
 (the reckless output is also copied to `evidence/runs/fuzz_findings.json`), replays a recorded
 finding, and writes `evidence/reports/full_benchmark_report.md` and `failure_analysis.md`.
@@ -205,8 +214,8 @@ interpretation as requiring human review.
 
 The `openai` adapter speaks the OpenAI-compatible `/chat/completions` API (temperature 0) and
 honors `OPENAI_BASE_URL` for compatible servers; `local_hf` runs a local Hugging Face model with
-greedy decoding. Neither is used by the benchmark script or CI, and neither has been run
-against a real model for the reported results.
+greedy decoding (device order cuda, mps, cpu). The benchmark script runs `local_hf` models; the
+`openai` adapter is not used by the script or CI and was only tested with mocked responses.
 
 ```bash
 export OPENAI_API_KEY="..."

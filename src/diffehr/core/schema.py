@@ -457,3 +457,61 @@ def _validate_required_citations(
     if missing:
         joined = ", ".join(missing)
         raise ValueError(f"{contract_id}: required {side} citation(s) not found in chart: {joined}")
+
+
+class FHIRBundle(StrictModel):
+    """Strict envelope for the FHIR R4 collection Bundles embedded in charts."""
+
+    resourceType: Literal["Bundle"]  # noqa: N815
+    type: str = "collection"
+    id: str | None = None
+    timestamp: str | None = None
+    diffehrDecisionTime: str | None = None  # noqa: N815
+    diffehrAttributes: dict[str, Any] | None = None  # noqa: N815
+    entry: list[dict[str, Any]] = Field(default_factory=list)
+
+
+CounterfactualContract = Contract
+
+
+class PerturbationDelta(StrictModel):
+    """One fuzzer mutation applied to a base chart."""
+
+    id: str = Field(min_length=1)
+    type: Literal["demographic", "clinical", "temporal"]
+    mutation: str = Field(min_length=1)
+    intended_perturbation: str = Field(min_length=1)
+
+
+class ClinicalFinding(StrictModel):
+    """A confirmed contract violation discovered by the fuzzer."""
+
+    id: str = Field(min_length=1)
+    type: Literal["demographic", "clinical", "temporal"]
+    mutation: str
+    intended_perturbation: str
+    base_chart: dict[str, Any]
+    variant_chart: dict[str, Any]
+    base_decision: str
+    variant_decision: str
+    changed_decision: bool
+    future_citations: list[str] = Field(default_factory=list)
+    base_citations: list[str] = Field(default_factory=list)
+    variant_citations: list[str] = Field(default_factory=list)
+    finding: Literal["invariance_violation", "temporal_leakage", "clinical_insensitivity"]
+    finding_status: str
+    needs_human_review: bool
+
+
+class BenchmarkResult(StrictModel):
+    """Aggregate result of one model on a contract set (the run JSON header, without per-contract rows)."""
+
+    schema_version: str
+    model: str
+    run_metadata: dict[str, Any]
+    n_contracts: int = Field(ge=0)
+    passed: int = Field(ge=0)
+    pass_rate: float = Field(ge=0.0, le=1.0)
+    mean_score: float = Field(ge=0.0, le=1.0)
+    metrics: dict[str, Any]
+    results: list[dict[str, Any]]

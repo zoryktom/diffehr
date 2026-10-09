@@ -11,9 +11,9 @@
 
 **Materials and Methods.** A contract couples a base chart and a variant chart that differ by one controlled change, a decision task, allowed decisions, expected decisions, required evidence citations, and a decision-time cutoff. We release 120 contracts (40 each in oncology, cardiology and infectious disease): 74 clinical-sensitivity contracts that must flip, 23 non-clinical invariance contracts (payer, race, language, setting) that must not, and 23 temporal-validity contracts that must ignore post-decision evidence. Four headline metrics are defined: Counterfactual Flip Accuracy (CFA), Invariance Failure Rate (IFR), Temporal Directional Violation (TDV) and a safety-weighted Safety Divergence Index (SDI), each with standard errors and deterministic 95% bootstrap intervals. A discovery fuzzer mutates a FHIR chart along demographic, insurance, critical-laboratory-threshold and temporal-injection families while enforcing resource-id and subject-reference integrity.
 
-**Results.** Three fully offline policies were evaluated: an oracle, a keyword heuristic, and a deliberately flawed "reckless" policy. The oracle passed 120/120 contracts (CFA 100%, IFR 0%, TDV 0%, SDI 0.000). The heuristic passed 80/120 (66.7%; CFA 64.9% [SE 5.6], IFR 0.0%, TDV 0.0%, SDI 0.191 [95% CI 0.132-0.257]) and passed all 32 contracts it was originally tuned on but only 16/40 infectious-disease contracts. The reckless policy passed 59/120 (49.2%; CFA 60.8%, IFR 30.4% [SE 9.6], TDV 47.8% [SE 10.4], SDI 0.295 [0.225-0.369]) and cited 11 post-decision evidence items. The fuzzer surfaced 7 findings for the reckless policy (3 payer-driven invariance violations, 1 temporal leakage, 3 clinical insensitivities), 3 clinical insensitivities for the heuristic, and none for the oracle.
+**Results.** Three offline reference policies and two small open-weight language models were evaluated. The reference policies were: an oracle, a keyword heuristic, and a deliberately flawed "reckless" policy. The oracle passed 120/120 contracts (CFA 100%, IFR 0%, TDV 0%, SDI 0.000). The heuristic passed 80/120 (66.7%; CFA 64.9% [SE 5.6], IFR 0.0%, TDV 0.0%, SDI 0.191 [95% CI 0.132-0.257]) and passed all 32 contracts it was originally tuned on but only 16/40 infectious-disease contracts. The reckless policy passed 59/120 (49.2%; CFA 60.8%, IFR 30.4% [SE 9.6], TDV 47.8% [SE 10.4], SDI 0.295 [0.225-0.369]) and cited 11 post-decision evidence items. The fuzzer surfaced 7 findings for the reckless policy (3 payer-driven invariance violations, 1 temporal leakage, 3 clinical insensitivities), 3 clinical insensitivities for the heuristic, and none for the oracle. Two real open-weight models run locally with greedy decoding, Qwen2.5-0.5B-Instruct and SmolLM2-135M-Instruct, passed 0/120 and 6/120 contracts (CFA 0% for both; SDI 0.625 and 0.712), changing their decision on only 5 and 12 of 120 counterfactual pairs. The 7-8B clinical and general models named in the protocol (BioMistral-7B, Meditron-7B, Llama-3.1-8B-Instruct) could not be run on the available 8 GB machine and are not evaluated.
 
-**Discussion and Conclusion.** Contract-level metrics exposed failures (payer sensitivity, temporal leakage, insensitivity to renal, cardiac and troponin thresholds) that a pass/fail accuracy number does not separate. No large language model was evaluated in this release; HuggingFace and OpenAI-compatible adapters are implemented and unit-tested offline, and empirical results for them are future work. Results characterize the benchmark's discriminative behavior on three reference policies, not the safety of any deployed system.
+**Discussion and Conclusion.** Contract-level metrics exposed failures (payer sensitivity, temporal leakage, insensitivity to renal, cardiac and troponin thresholds) that a pass/fail accuracy number does not separate. Only two sub-1B open-weight models were evaluated; larger clinical models and hosted APIs are supported by the harness, and their results are future work. Results characterize the benchmark's discriminative behavior, not the safety of any deployed system.
 
 **Keywords:** clinical AI evaluation; counterfactual testing; FHIR; synthetic data; invariance; temporal leakage; patient safety.
 
@@ -23,7 +23,7 @@ Clinical AI systems are usually validated with aggregate accuracy on held-out ca
 
 Software engineering addresses analogous problems with unit tests and behavioral testing; CheckList [Ribeiro 2020] introduced the idea for NLP. We adapt it to clinical records. A DiffEHR *contract* specifies a minimal counterfactual edit to a chart and the behavioral relation that must hold: **flip** (a decisive clinical fact changed), **same** (an irrelevant attribute changed, or evidence became available only after the decision date). Contracts are machine-checkable, version-controlled, and run against any system exposing a structured-output adapter.
 
-Contributions: (1) a strict, validated contract schema with FHIR R4 bundles and referential-integrity checks; (2) 120 synthetic contracts across three specialties; (3) four headline metrics with uncertainty estimates and defined edge-case behavior; (4) a FHIR-aware counterfactual fuzzer; (5) an offline, reproducible pipeline with CI; and (6) an empirical characterization with three reference policies.
+Contributions: (1) a strict, validated contract schema with FHIR R4 bundles and referential-integrity checks; (2) 120 synthetic contracts across three specialties; (3) four headline metrics with uncertainty estimates and defined edge-case behavior; (4) a FHIR-aware counterfactual fuzzer; (5) an offline, reproducible pipeline with CI; and (6) an empirical characterization with three reference policies and two real open-weight language models.
 
 ## 2. Clinical Counterfactual Formulation
 
@@ -56,14 +56,16 @@ Empty denominators yield 0.0 (no observable violation) instead of raising. Stand
 
 **Contracts.** 120 contracts, 40 per pack: oncology (EGFR, KRAS G12C, ALK, BRAF, immune-checkpoint autoimmunity, HER2/LVEF, temporal, invariance), cardiology (DOAC renal dosing bands, beta-blocker use in heart failure, CYP2C19/clopidogrel, temporal, invariance) and infectious disease (penicillin allergy, MRSA, procalcitonin de-escalation, temporal, invariance). Of these, 32 were hand-authored in earlier versions and 88 were produced by the deterministic generator `scripts/generate_contracts.py`; FHIR bundles for the 32 were materialized by `scripts/add_fhir_bundles.py`. All data are synthetic, author-checked, and not clinician-reviewed.
 
-**Systems (all offline; no API calls or model downloads).**
+**Systems (offline; no API calls, no weight downloads).**
 - *Oracle:* returns the contract's expected decisions and required citations (validates the harness; upper bound).
 - *Heuristic:* keyword rules that respect decision-time cutoffs. Rules were written against the original 32 contracts.
 - *Reckless:* the heuristic with temporal checks disabled and an insurance bias (adverse payer status lowers eligibility), simulating known failure modes.
+- *Open-weight language models (real inference):* `Qwen/Qwen2.5-0.5B-Instruct` and `HuggingFaceTB/SmolLM2-135M-Instruct`, loaded from the local Hugging Face cache with `HF_OFFLINE=1` through `HuggingFaceAdapter` (transformers/torch, device order cuda, mps, cpu; here mps), greedy decoding (`do_sample=False`), at most 192 new tokens, and the model's chat template. Charts are serialized from the FHIR bundle into a chronological, ID-tagged markdown summary and the model is asked for a JSON object (`decision`, `confidence`, `contraindication_flagged`, `clinical_rationale`, `citations`); unparseable output falls back to a regex over the allowed decisions and otherwise scores as `unknown`.
+- *Not evaluated:* `BioMistral/BioMistral-7B`, `epfl-llm/meditron-7b` and `meta-llama/Llama-3.1-8B-Instruct` are wired into the registry (`biomistral-7b`, `meditron-7b`, `llama-3.1-8b`) but their weights are not cached and do not fit in the 8 GB of memory of the evaluation machine (Llama additionally requires gated access). With `HF_OFFLINE=1` and no cached weights the adapter enters `offline_mock_mode` and returns a fixed fixture response; these runs only test the harness, are labelled `hf-fixture:` and are excluded from every results table and from the failure analysis.
 
 **Fuzzer.** On `examples/discovery/base_chart.json` (an EGFR-mutant oncology chart) the fuzzer generates 20 perturbations (seed 2025): payer, race, ethnicity, gender identity, language and postal-code changes; pre-decision critical findings (eGFR 24, LVEF 38%, ANC 400, troponin I 2.4 ng/mL) that should flip eligibility; and temporal manipulations (one existing result shifted one week past $\tau$; future-dated biopsy, pathology and culture results injected). Each mutated bundle is checked for id uniqueness and subject-reference integrity before use.
 
-**Pipeline.** `bash scripts/run_all_benchmarks.sh` validates manifests, runs all three systems, fuzzes with each, and writes JSON to `evidence/runs/` and Markdown to `evidence/reports/`. Runs record version, dataset fingerprint (SHA-256), seed and timestamp; per-contract latency is reported.
+**Pipeline.** `bash scripts/run_all_benchmarks.sh` validates manifests, runs all systems (including the Hugging Face stage), fuzzes with the three reference policies, and writes JSON to `evidence/runs/` and Markdown to `evidence/reports/`. Runs record version, dataset fingerprint (SHA-256), seed and timestamp; per-contract latency is reported.
 
 ## 6. Results
 
@@ -98,6 +100,15 @@ The heuristic passes all 32 contracts it was tuned on yet only 80/120 overall, w
 | Heuristic | 20 | 3 | 0 | 0 | 3 |
 | Reckless | 20 | 7 | 3 | 1 | 3 |
 
+### 6.4 Open-weight language models
+
+| System | Passed | CFA % (SE) | IFR % (SE) | TDV % (SE) | Mean SDI (SE; 95% CI) | Unparseable decisions | Pairs with changed decision | Latency (s/contract) |
+|---|---:|---|---|---|---|---:|---:|---:|
+| Qwen2.5-0.5B-Instruct | 0/120 | 0.00 (0.00) | 0.00 (0.00) | 21.74 (8.60) | 0.625 (0.030; 0.568-0.685) | 2/240 | 5/120 | 8.19 |
+| SmolLM2-135M-Instruct | 6/120 | 0.00 (0.00) | 0.00 (0.00) | 17.39 (7.90) | 0.712 (0.032; 0.651-0.771) | 100/240 | 12/120 | 3.93 |
+
+By specialty (passed of 40; SDI): Qwen oncology 0 (0.655), cardiology 0 (0.689), infectious disease 0 (0.531); SmolLM2 oncology 6 (0.500), cardiology 0 (0.613), infectious disease 0 (1.000). Both models almost always return the same decision for the base and variant chart, so their IFR of 0% reflects insensitivity rather than invariance: CFA, which requires the decision to change correctly, is 0% for both. SmolLM2 produced unparseable output for 100 of 240 prompts. These models are far below the scale of the clinical models in the protocol and the result should be read as an end-to-end validation of the model harness and as a floor, not as a comparison of clinical LLM quality.
+
 ## 7. Failure Mode Taxonomy
 
 The seven reckless-policy fuzzer discoveries fall into three classes (full FHIR diffs in `evidence/reports/failure_analysis.md`; each is reproducible with `diffehr replay-finding`):
@@ -114,7 +125,7 @@ Contract tests suggest concrete guardrails: (i) regression-gate every model or p
 
 ## 9. Limitations
 
-- **Baseline-only evaluation.** Only three offline policies were run. No LLM (including the supported BioMistral, Meditron, MedGemma, Llama, Mistral and Qwen families, or OpenAI-compatible endpoints) was evaluated; those adapters are implemented and tested offline with mocked pipelines and responses, so conclusions about real models cannot be drawn.
+- **Limited model coverage.** Real inference covers only two sub-1B models (0.5B and 135M parameters) and not the clinical 7-8B models (BioMistral-7B, Meditron-7B, Llama-3.1-8B-Instruct), which could not be run on the 8 GB evaluation machine. The OpenAI-compatible adapter was exercised only with mocked responses. Conclusions about clinical or frontier models cannot be drawn.
 - **Synthetic, unvalidated contracts.** Contracts are author-generated, templated, and not clinician-reviewed or guideline-certified; heuristic rules were written with knowledge of 32 of the contracts. Ground truth is therefore a design decision, and real-chart complexity (noise, missing data, free text length) is absent.
 - **Reference policies are artificial.** The reckless policy was constructed to fail; its rates quantify benchmark sensitivity, not the prevalence of these failures in practice.
 - **Small samples.** IFR and TDV rest on 23 contracts each; intervals are wide, and the bootstrap treats the finite contract set as the sampling unit.

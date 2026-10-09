@@ -22,3 +22,4 @@ evidence/reports/*
 !evidence/reports/full_benchmark_report.md
 !evidence/reports/failure_analysis.md
 !evidence/reports/benchmark_summary.md
+!evidence/reports/hf_benchmark_summary.md

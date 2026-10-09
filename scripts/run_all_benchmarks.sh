@@ -23,7 +23,18 @@ mkdir -p evidence/runs/full evidence/runs/fuzz evidence/reports
   --output-dir evidence/runs/full \
   --report evidence/reports/benchmark_summary.md
 
-echo "== Step 3: discovery fuzzer sweeps =="
+echo "== Step 3: Hugging Face evaluations =="
+# HF_OFFLINE=1 (default) never downloads weights: cached models run real greedy inference on cuda/mps/cpu,
+# uncached models fall back to clearly labelled offline fixtures that the report keeps separate.
+export HF_OFFLINE="${HF_OFFLINE:-1}"
+HF_MODELS="${HF_MODELS:-biomistral-7b,meditron-7b,llama-3.1-8b,qwen2.5-0.5b,smollm2-135m}"
+"$PY" -m diffehr benchmark \
+  --manifest examples/manifest.json \
+  --models "$HF_MODELS" \
+  --output-dir evidence/runs/full \
+  --report evidence/reports/hf_benchmark_summary.md
+
+echo "== Step 4: discovery fuzzer sweeps =="
 for model in oracle heuristic reckless; do
   "$PY" -m diffehr fuzz \
     --input examples/discovery/base_chart.json \
@@ -33,7 +44,7 @@ for model in oracle heuristic reckless; do
     --out "evidence/runs/fuzz/fuzz_${model}.json"
 done
 
-echo "== Step 4: raw artifacts =="
+echo "== Step 5: raw artifacts =="
 cp evidence/runs/fuzz/fuzz_reckless.json evidence/runs/fuzz_findings.json
 "$PY" -m diffehr replay-finding \
   --input evidence/runs/fuzz_findings.json \
@@ -41,7 +52,7 @@ cp evidence/runs/fuzz/fuzz_reckless.json evidence/runs/fuzz_findings.json
   --model reckless \
   --out evidence/runs/replayed_finding.json
 
-echo "== Step 5: reports =="
+echo "== Step 6: reports =="
 "$PY" -m diffehr report \
   --input-dir evidence/runs/full \
   --contracts examples \

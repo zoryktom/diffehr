@@ -4,9 +4,10 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from .adapters import make_adapter
-from .contracts import ContractError, load_contracts
+from .contracts import Contract, ContractError, load_contracts
 from .dataset import save_dataset_manifest, validate_dataset_manifest
 from .discovery import DiffEHRFuzzer, load_fhir_chart, replay_finding, save_fuzz_results
 from .models import make_model
@@ -81,8 +82,13 @@ def cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
-def _failure_markdown(args: argparse.Namespace, payloads: list, title: str) -> str:
+def _failure_markdown(args: argparse.Namespace, payloads: list[dict[str, Any]], title: str) -> str:
     markdown = render_failure_analysis(payloads, title=title, contracts=_load_contracts_if_present(args.contracts))
+    fuzz_input = getattr(args, "fuzz_input", None)
+    if fuzz_input is not None:
+        if not fuzz_input.is_file():
+            raise ContractError(f"{fuzz_input}: fuzz findings file does not exist")
+        markdown += render_fuzz_findings([json.loads(fuzz_input.read_text(encoding="utf-8"))])
     fuzz_dir = getattr(args, "fuzz_dir", None)
     if fuzz_dir is not None:
         if not fuzz_dir.is_dir():
@@ -92,7 +98,7 @@ def _failure_markdown(args: argparse.Namespace, payloads: list, title: str) -> s
     return markdown
 
 
-def _load_contracts_if_present(root: Path | None) -> list | None:
+def _load_contracts_if_present(root: Path | None) -> list[Contract] | None:
     if root is None or not root.exists():
         return None
     return load_contracts(root)
@@ -136,7 +142,10 @@ def cmd_benchmark(args: argparse.Namespace) -> int:
     contracts = load_contracts(root)
     if args.manifest is not None:
         validate_dataset_manifest(root)
-    model_names = [name.strip() for name in args.adapters.split(",") if name.strip()] if args.adapters else args.models
+    raw_names = (
+        args.adapters.split(",") if args.adapters else [part for item in args.models for part in item.split(",")]
+    )
+    model_names = [name.strip() for name in raw_names if name.strip()]
     outdir = args.output_dir or args.outdir
     outdir.mkdir(parents=True, exist_ok=True)
     result_paths = []
@@ -186,6 +195,7 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument(
         "--fuzz-dir", type=Path, help="Directory of fuzz result JSON files appended to the failure analysis."
     )
+    report.add_argument("--fuzz-input", type=Path, help="A single fuzz findings JSON file.")
     report.add_argument("--out", type=Path, default=Path("evidence/reports/report.md"))
     report.add_argument("--title", default="DiffEHR Evaluation Report")
     report.set_defaults(func=cmd_report)
@@ -243,7 +253,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        return args.func(args)
+        return int(args.func(args))
     except ContractError as exc:
         print(f"Contract error: {exc}", file=sys.stderr)
         return 2

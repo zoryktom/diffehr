@@ -58,9 +58,9 @@ def _extract_response_text(data: object) -> str:
     if isinstance(data, dict) and isinstance(data.get("choices"), list) and data["choices"]:
         message = data["choices"][0].get("message") if isinstance(data["choices"][0], dict) else None
         if isinstance(message, dict) and isinstance(message.get("content"), str):
-            return message["content"]
+            return str(message["content"])
     if isinstance(data, dict) and isinstance(data.get("output_text"), str):
-        return data["output_text"]
+        return str(data["output_text"])
     texts: list[str] = []
 
     def walk(value: object) -> None:

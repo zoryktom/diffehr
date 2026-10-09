@@ -25,8 +25,8 @@ Values are percentages with binomial standard error (SE) in parentheses; SDI is 
 | Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |
 |---|---|---:|---:|---:|---:|---:|---:|
 | oracle | OracleAdapter | 40 | 40 | 40 | 120 | 0.002 | 0.019 |
-| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.033 |
-| reckless-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.029 |
+| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.032 |
+| reckless-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.031 |
 
 ## Metric 95% Bootstrap Confidence Intervals
 

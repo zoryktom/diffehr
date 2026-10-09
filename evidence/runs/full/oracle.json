@@ -130,12 +130,14 @@
     ],
     "dataset_version": "0.2.0",
     "dataset_fingerprint_sha256": "8148148e294e7aa7c6ca5456b7c4464d3bcd93d569a2b911674281dd59a820cf",
-    "generated_at": "2026-10-09T22:51:25Z",
+    "generated_at": "2026-10-09T23:05:32Z",
     "elapsed_seconds": 0.0023,
-    "mean_latency_ms_per_contract": 0.0195,
+    "mean_latency_ms_per_contract": 0.0194,
     "bootstrap_samples": 1000,
     "bootstrap_seed": 2025,
-    "external_model": false
+    "external_model": false,
+    "fixture": false,
+    "device": null
   },
   "n_contracts": 120,
   "passed": 120,

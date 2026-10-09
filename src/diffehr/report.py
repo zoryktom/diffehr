@@ -11,10 +11,31 @@ from .metrics.computation import ContractResult, headline_metrics
 
 def load_results(path: str | Path) -> dict[str, Any]:
     with Path(path).open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        payload: dict[str, Any] = json.load(handle)
+    return payload
+
+
+def _is_fixture(payload: dict[str, Any]) -> bool:
+    return bool(payload.get("run_metadata", {}).get("fixture", False))
 
 
 def render_markdown(result_sets: list[dict[str, Any]], title: str = "DiffEHR Evaluation Report") -> str:
+    real = [payload for payload in result_sets if not _is_fixture(payload)]
+    fixtures = [payload for payload in result_sets if _is_fixture(payload)]
+    markdown = _render_markdown(real, title)
+    if fixtures:
+        markdown += "\n## Harness Smoke Test (offline fixtures, not model results)\n\n"
+        markdown += (
+            "Weights for these models were unavailable (`HF_OFFLINE=1`, not cached). The adapter returned a fixed "
+            "fixture response, so these rows only show that the harness runs end to end and say nothing about the models.\n\n"
+        )
+        markdown += "| Model | Contracts | Passed |\n|---|---:|---:|\n"
+        for payload in fixtures:
+            markdown += f"| {payload['model']} | {payload['n_contracts']} | {payload['passed']} |\n"
+    return markdown
+
+
+def _render_markdown(result_sets: list[dict[str, Any]], title: str) -> str:
     lines = [
         f"# {title}",
         "",
@@ -182,6 +203,7 @@ def render_failure_analysis(
     contracts: list[Contract] | None = None,
     max_details_per_model: int = 12,
 ) -> str:
+    result_sets = [payload for payload in result_sets if not _is_fixture(payload)]
     lines = [
         f"# {title}",
         "",

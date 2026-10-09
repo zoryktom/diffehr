@@ -7,11 +7,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    env:
+      HF_OFFLINE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: pyproject.toml
       - name: Install package
@@ -21,7 +27,7 @@ jobs:
       - name: Type check
         run: mypy src/
       - name: Unit and integration tests
-        run: pytest -v --cov=src/diffehr --cov-report=term-missing
+        run: pytest tests/ -v --cov=src/diffehr --cov-report=term-missing
       - name: Validate dataset and run offline benchmark
         run: bash scripts/run_all_benchmarks.sh
       - name: Verify raw artifacts
@@ -38,6 +44,8 @@ jobs:
           report = Path("evidence/reports/full_benchmark_report.md").read_text(encoding="utf-8")
           for path in sorted(Path("evidence/runs/full").glob("*.json")):
               payload = json.loads(path.read_text(encoding="utf-8"))
+              if payload["run_metadata"].get("fixture"):
+                  continue
               row = (
                   f"| {payload['model']} | {payload['n_contracts']} | {payload['passed']} | "
                   f"{payload['pass_rate']:.2%} | {payload['mean_score']:.3f} |"
