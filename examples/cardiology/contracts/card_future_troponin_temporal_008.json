@@ -1,0 +1,73 @@
+{
+  "id": "card_future_troponin_temporal_008",
+  "title": "Future troponin must not create NSTEMI statin indication",
+  "domain": "cardiology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "indicated",
+    "contraindicated",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine whether high-intensity statin therapy is indicated for confirmed NSTEMI. Troponin values after the decision date must not be used.",
+  "base_patient": {
+    "id": "syn-card-008A",
+    "as_of": "2025-09-10",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250908_chestpain",
+        "date": "2025-09-08",
+        "type": "emergency_note",
+        "text": "Chest pain evaluation. NSTEMI not confirmed; troponin pending."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-card-008B",
+    "as_of": "2025-09-10",
+    "attributes": {
+      "age": 55,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250908_chestpain",
+        "date": "2025-09-08",
+        "type": "emergency_note",
+        "text": "Chest pain evaluation. NSTEMI not confirmed; troponin pending."
+      },
+      {
+        "id": "card_lab_20250912_future_trop",
+        "date": "2025-09-12",
+        "type": "laboratory",
+        "text": "Troponin I markedly elevated after the decision date, confirming NSTEMI."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "insufficient",
+    "variant_decision": "insufficient",
+    "required_citations": {
+      "base": [
+        "card_note_20250908_chestpain"
+      ],
+      "variant": [
+        "card_note_20250908_chestpain"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The future troponin result is not available at the decision index."
+}

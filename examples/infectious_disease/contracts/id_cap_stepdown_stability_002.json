@@ -1,0 +1,78 @@
+{
+  "id": "id_cap_stepdown_stability_002",
+  "title": "CAP oral step-down flips with hemodynamic instability",
+  "domain": "infectious_disease",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "oral_stepdown",
+    "iv_continue",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether community-acquired pneumonia therapy can step down from IV to oral antibiotics, requiring hemodynamic stability and improving oxygenation.",
+  "base_patient": {
+    "id": "syn-id-002A",
+    "as_of": "2025-02-05",
+    "attributes": {
+      "age": 67,
+      "sex": "female",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_note_20250203_cap",
+        "date": "2025-02-03",
+        "type": "hospital_note",
+        "text": "Community-acquired pneumonia clinically improving after IV ceftriaxone and azithromycin."
+      },
+      {
+        "id": "id_vitals_20250204_stable",
+        "date": "2025-02-04",
+        "type": "vitals",
+        "text": "Afebrile, blood pressure stable, oxygen saturation 96 percent on room air, tolerating oral intake."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-id-002B",
+    "as_of": "2025-02-05",
+    "attributes": {
+      "age": 67,
+      "sex": "female",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_note_20250203_cap",
+        "date": "2025-02-03",
+        "type": "hospital_note",
+        "text": "Community-acquired pneumonia receiving IV ceftriaxone and azithromycin."
+      },
+      {
+        "id": "id_vitals_20250204_unstable",
+        "date": "2025-02-04",
+        "type": "vitals",
+        "text": "Hypotension requiring vasopressors and oxygen saturation 88 percent on high-flow oxygen."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "oral_stepdown",
+    "variant_decision": "iv_continue",
+    "required_citations": {
+      "base": [
+        "id_note_20250203_cap",
+        "id_vitals_20250204_stable"
+      ],
+      "variant": [
+        "id_vitals_20250204_unstable"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Hemodynamic stability is the decisive controlled change for oral step-down."
+}

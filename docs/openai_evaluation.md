@@ -13,7 +13,7 @@ cd diffehr
 ## Run
 
 ```bash
-PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts \
+PYTHONPATH=src python3 -m diffehr evaluate examples \
   --model openai:gpt-5-mini \
   --out evidence/runs/openai-gpt-5-mini.json
 ```
@@ -37,10 +37,10 @@ The result JSON includes:
 - per-contract decisions
 - required versus observed citations
 - temporal leakage checks
+- IVR/DSS confidence intervals
 - raw model outputs
 
 ## Note
 
-Do not commit API keys or real patient data. The included oncology pack is
-synthetic and for testing only.
-
+Do not commit API keys or real patient data. The included oncology, cardiology,
+and infectious disease packs are synthetic and for testing only.

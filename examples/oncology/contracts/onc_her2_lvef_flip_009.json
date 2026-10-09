@@ -1,0 +1,76 @@
+{
+  "id": "onc_her2_lvef_flip_009",
+  "title": "HER2 therapy eligibility flips with low baseline LVEF",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine trastuzumab eligibility for HER2-positive breast cancer requiring HER2 positivity and baseline LVEF at least 50 percent.",
+  "base_patient": {
+    "id": "syn-onc-009A",
+    "as_of": "2025-08-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250720_her2",
+        "date": "2025-07-20",
+        "type": "pathology",
+        "text": "Breast cancer pathology HER2 3+ positive by IHC."
+      },
+      {
+        "id": "echo_20250725_lvef",
+        "date": "2025-07-25",
+        "type": "echocardiogram",
+        "text": "Baseline LVEF 58 percent."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-009B",
+    "as_of": "2025-08-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20250720_her2",
+        "date": "2025-07-20",
+        "type": "pathology",
+        "text": "Breast cancer pathology HER2 3+ positive by IHC."
+      },
+      {
+        "id": "echo_20250725_lvef",
+        "date": "2025-07-25",
+        "type": "echocardiogram",
+        "text": "Baseline LVEF 38 percent, below 45 percent."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "path_20250720_her2",
+        "echo_20250725_lvef"
+      ],
+      "variant": [
+        "echo_20250725_lvef"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Low baseline LVEF is the controlled contraindicating change for trastuzumab."
+}

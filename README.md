@@ -58,28 +58,34 @@ Expected: base=ineligible, variant=eligible
 cd diffehr
 python -m pip install -e '.[test]'
 PYTHONPATH=src python3 -m diffehr validate examples/oncology/contracts
-PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts --model heuristic --out evidence/runs/heuristic.json
-PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts --model reckless --out evidence/runs/reckless.json
-PYTHONPATH=src python3 -m diffehr report evidence/runs/heuristic.json evidence/runs/reckless.json --out evidence/reports/demo.md
+PYTHONPATH=src python3 -m diffehr validate examples
+PYTHONPATH=src python3 -m diffehr evaluate examples --model oracle --out evidence/runs/oracle.json
+PYTHONPATH=src python3 -m diffehr evaluate examples --model reckless-oncology --out evidence/runs/reckless.json
+PYTHONPATH=src python3 -m diffehr fuzz --input examples/discovery/base_chart.json --perturbations 20 --model reckless-oncology --out evidence/runs/fuzz_findings.json
+scripts/run_all_benchmarks.sh
 ```
 
 ## Baseline Evidence
 
-The v0 oncology pilot includes 8 contracts covering biomarker sensitivity,
-ECOG eligibility, payer/race invariance, medication safety, and temporal
-validity.
+The multi-specialty artifact includes 32 contracts across oncology,
+cardiology, and infectious disease. It covers biomarker sensitivity, ECOG
+eligibility, payer/race/language/setting invariance, cardiology medication
+selection, antimicrobial stewardship, medication safety, and temporal validity.
 
 | Model | Contracts | Passed | Pass rate | Mean score |
 |---|---:|---:|---:|---:|
-| oracle | 8 | 8 | 100.00% | 1.000 |
-| heuristic-oncology | 8 | 8 | 100.00% | 1.000 |
-| reckless-oncology | 8 | 5 | 62.50% | 0.815 |
+| oracle | 32 | 32 | 100.00% | 1.000 |
+| heuristic-oncology | 32 | 32 | 100.00% | 0.999 |
+| reckless-oncology | 32 | 24 | 75.00% | 0.877 |
 
 The run JSON also reports invariance violation rate (IVR), decisive
-sensitivity score (DSS), evidence citation precision/recall, and temporal
-leakage counts.
+sensitivity score (DSS), evidence citation precision/recall, temporal leakage
+counts, and 95% bootstrap confidence intervals for IVR and DSS. The reckless
+baseline reaches IVR 50.00% and 5 temporal leakage violations on the 32-contract
+suite.
 
-See [`evidence/reports/demo.md`](evidence/reports/demo.md).
+See [`evidence/reports/full_benchmark_report.md`](evidence/reports/full_benchmark_report.md)
+and [`docs/paper_preprint.md`](docs/paper_preprint.md).
 
 ## Test A Live OpenAI Model
 
@@ -88,7 +94,7 @@ model available to your account:
 
 ```bash
 export OPENAI_API_KEY="..."
-PYTHONPATH=src python3 -m diffehr evaluate examples/oncology/contracts --model openai:gpt-5-mini --out evidence/runs/openai-gpt-5-mini.json
+PYTHONPATH=src python3 -m diffehr evaluate examples --model openai:gpt-5-mini --out evidence/runs/openai-gpt-5-mini.json
 PYTHONPATH=src python3 -m diffehr report evidence/runs/openai-gpt-5-mini.json --out evidence/reports/openai-gpt-5-mini.md
 ```
 
@@ -139,10 +145,13 @@ diagnostic tool, or substitute for clinician judgment.
 src/diffehr/core             Strict Pydantic contract schema and loaders
 src/diffehr/metrics          IVR, DSS, evidence, and temporal metrics
 src/diffehr/adapters         Oracle, heuristic, OpenAI, and local HF adapters
+src/diffehr/discovery        Automated counterfactual fuzzer
 src/diffehr/cli.py           Command-line interface
-examples/oncology/contracts  v0 oncology counterfactual contracts
+examples/*/contracts         Oncology, cardiology, and infectious disease contracts
+examples/discovery           FHIR chart for fuzzing
 evidence/runs                Reproducible evaluation JSON
 evidence/reports             Markdown reports
 docs                         Research and startup notes
+scripts/run_all_benchmarks.sh Full artifact reproduction script
 tests                        Pytest test suite
 ```

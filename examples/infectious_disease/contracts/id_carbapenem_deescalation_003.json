@@ -1,0 +1,77 @@
+{
+  "id": "id_carbapenem_deescalation_003",
+  "title": "Culture susceptibility changes carbapenem de-escalation",
+  "domain": "infectious_disease",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "de_escalate",
+    "continue_carbapenem",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to de-escalate broad-spectrum carbapenem therapy after culture susceptibility returns.",
+  "base_patient": {
+    "id": "syn-id-003A",
+    "as_of": "2025-03-14",
+    "attributes": {
+      "age": 52,
+      "sex": "male",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250310_meropenem",
+        "date": "2025-03-10",
+        "type": "medication",
+        "text": "Meropenem started empirically for gram-negative bacteremia."
+      },
+      {
+        "id": "id_culture_20250313_susc",
+        "date": "2025-03-13",
+        "type": "microbiology",
+        "text": "Blood culture E. coli susceptible to ceftriaxone, no ESBL detected."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-id-003B",
+    "as_of": "2025-03-14",
+    "attributes": {
+      "age": 52,
+      "sex": "male",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250310_meropenem",
+        "date": "2025-03-10",
+        "type": "medication",
+        "text": "Meropenem started empirically for gram-negative bacteremia."
+      },
+      {
+        "id": "id_culture_20250313_esbl",
+        "date": "2025-03-13",
+        "type": "microbiology",
+        "text": "Blood culture E. coli ESBL positive, resistant to ceftriaxone and susceptible to meropenem."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "de_escalate",
+    "variant_decision": "continue_carbapenem",
+    "required_citations": {
+      "base": [
+        "id_culture_20250313_susc"
+      ],
+      "variant": [
+        "id_culture_20250313_esbl"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Susceptibility profile is the controlled stewardship change."
+}

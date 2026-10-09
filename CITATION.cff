@@ -4,7 +4,7 @@ message: "If you use DiffEHR in research, please cite this software artifact."
 type: software
 authors:
   - name: "Zorykto Mykola"
-version: "0.1.0"
+version: "0.2.0"
 license: "Apache-2.0"
 keywords:
   - biomedical informatics

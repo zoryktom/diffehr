@@ -14,10 +14,12 @@ clinical reasons? We introduce DiffEHR, an open-source framework for
 counterfactual contract testing of clinical AI systems using paired synthetic
 EHRs. Each contract specifies a base patient record, a minimally changed variant
 record, the expected output relation, required evidence citations, and temporal
-validity constraints. We demonstrate DiffEHR-Oncology, a pilot benchmark
-covering biomarker sensitivity, ECOG eligibility, payer and race invariance,
-medication safety, and future-evidence leakage. DiffEHR reframes clinical AI
-evaluation as executable behavioral contracts rather than isolated case scores.
+validity constraints. We demonstrate a 32-contract multi-specialty benchmark
+covering oncology, cardiology, and infectious disease, including biomarker
+sensitivity, medication contraindications, antimicrobial stewardship,
+non-clinical invariance, and future-evidence leakage. DiffEHR reframes clinical
+AI evaluation as executable behavioral contracts rather than isolated case
+scores.
 
 ## Research Question
 
@@ -41,8 +43,9 @@ DiffEHR contributes:
 2. A runner that evaluates arbitrary clinical AI systems through model adapters.
 3. Quantitative metrics for invariance violation rate, decisive sensitivity,
    evidence citation precision/recall, and temporal leakage.
-4. A pilot oncology contract pack.
-5. A reproducible evidence report.
+4. A 32-contract oncology, cardiology, and infectious disease corpus.
+5. An automated counterfactual discovery fuzzer.
+6. A reproducible evidence report and empirical preprint draft.
 
 ## Why This Is Not Just Another Benchmark
 
@@ -58,16 +61,18 @@ relation:
 This makes DiffEHR closer to `pytest` for clinical AI behavior than to a static
 leaderboard dataset.
 
-## V0 Pilot Evidence
+## V0 Evidence
 
-The v0 oncology pack includes 8 contracts. A careful heuristic baseline passes
-all pilot contracts. A reckless baseline that ignores dates and overreacts to
-insurance fails payer-invariance and temporal-validity contracts.
+The current pack includes 32 contracts. A careful heuristic baseline passes all
+contracts with mean score 0.999. A reckless baseline that ignores dates and
+overreacts to payer status passes 24/32 contracts with mean score 0.877, IVR
+50.00%, and 5 temporal leakage violations.
 
-The current report is stored at:
+The current reports are stored at:
 
 ```text
-evidence/reports/demo.md
+evidence/reports/full_benchmark_report.md
+docs/paper_preprint.md
 ```
 
 ## Next Experiments
@@ -75,7 +80,7 @@ evidence/reports/demo.md
 1. Evaluate frontier LLMs through the OpenAI adapter.
 2. Add adapters for Anthropic, local vLLM/Ollama models, and HTTP-based vendor
    endpoints.
-3. Expand DiffEHR-Oncology to 100 contracts.
+3. Expand the multi-specialty corpus to 100+ contracts.
 4. Add clinician review for contract validity.
 5. Measure disagreement between static accuracy and counterfactual contract
    scores.

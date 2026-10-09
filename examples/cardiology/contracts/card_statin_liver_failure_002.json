@@ -1,0 +1,80 @@
+{
+  "id": "card_statin_liver_failure_002",
+  "title": "Statin indication flips with active liver failure",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "indicated",
+    "contraindicated",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine whether high-intensity statin therapy is indicated after myocardial infarction, excluding active liver failure or acute transaminitis.",
+  "base_patient": {
+    "id": "syn-card-002A",
+    "as_of": "2025-04-15",
+    "attributes": {
+      "age": 59,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250401_mi",
+        "date": "2025-04-01",
+        "type": "discharge_summary",
+        "text": "NSTEMI treated medically. Secondary prevention with high-intensity statin is indicated."
+      },
+      {
+        "id": "card_lab_20250403_lft",
+        "date": "2025-04-03",
+        "type": "laboratory",
+        "text": "AST 32 U/L and ALT 28 U/L; no active liver failure."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-card-002B",
+    "as_of": "2025-04-15",
+    "attributes": {
+      "age": 59,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250401_mi",
+        "date": "2025-04-01",
+        "type": "discharge_summary",
+        "text": "NSTEMI treated medically. Secondary prevention would otherwise call for high-intensity statin."
+      },
+      {
+        "id": "card_lab_20250403_lft",
+        "date": "2025-04-03",
+        "type": "laboratory",
+        "text": "Acute liver failure with AST 920 U/L and ALT 1100 U/L, active transaminitis."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "indicated",
+    "variant_decision": "contraindicated",
+    "required_citations": {
+      "base": [
+        "card_note_20250401_mi",
+        "card_lab_20250403_lft"
+      ],
+      "variant": [
+        "card_lab_20250403_lft"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Active acute liver failure is the controlled contraindicating change."
+}

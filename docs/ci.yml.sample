@@ -13,9 +13,10 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run unit tests
-        run: PYTHONPATH=src python -m unittest discover -s tests
+        run: PYTHONPATH=src python -m pytest tests/
       - name: Validate example contracts
-        run: PYTHONPATH=src python -m diffehr validate examples/oncology/contracts
+        run: PYTHONPATH=src python -m diffehr validate examples
       - name: Run smoke evaluation
-        run: PYTHONPATH=src python -m diffehr evaluate examples/oncology/contracts --model oracle --out /tmp/oracle.json
-
+        run: PYTHONPATH=src python -m diffehr evaluate examples --model oracle --out /tmp/oracle.json
+      - name: Run fuzz smoke test
+        run: PYTHONPATH=src python -m diffehr fuzz --input examples/discovery/base_chart.json --perturbations 20 --model reckless-oncology --out /tmp/fuzz.json

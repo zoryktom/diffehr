@@ -1,0 +1,66 @@
+{
+  "resourceType": "Bundle",
+  "id": "fuzz-egfr-chart",
+  "type": "collection",
+  "timestamp": "2025-02-15T09:00:00Z",
+  "diffehrDecisionTime": "2025-02-15",
+  "diffehrAttributes": {
+    "race": "White",
+    "payer": "commercial",
+    "gender_identity": "cisgender woman",
+    "postal_code": "10001",
+    "primary_language": "English"
+  },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "syn-fuzz-001",
+        "gender": "female",
+        "birthDate": "1962-04-05",
+        "race": "White",
+        "payer": "commercial",
+        "gender_identity": "cisgender woman",
+        "primary_language": "English",
+        "address": [
+          {
+            "postalCode": "10001"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "DiagnosticReport",
+        "id": "path_20250201_egfr",
+        "effectiveDateTime": "2025-02-01",
+        "code": {
+          "text": "Molecular pathology"
+        },
+        "conclusion": "EGFR exon 19 deletion positive. No resistance mutation detected."
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "note_20250205_ecog",
+        "effectiveDateTime": "2025-02-05",
+        "code": {
+          "text": "Performance status"
+        },
+        "valueString": "ECOG 1. Patient clinically stable."
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "img_20250210_stable",
+        "effectiveDateTime": "2025-02-10",
+        "code": {
+          "text": "CT imaging"
+        },
+        "valueString": "CT chest abdomen pelvis shows stable disease with no progression."
+      }
+    }
+  ]
+}

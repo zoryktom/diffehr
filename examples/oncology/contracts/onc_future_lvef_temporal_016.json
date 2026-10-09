@@ -1,0 +1,81 @@
+{
+  "id": "onc_future_lvef_temporal_016",
+  "title": "Future LVEF recovery must not create trastuzumab eligibility",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine trastuzumab eligibility requiring HER2 positivity and LVEF at least 50 percent. LVEF recovery documented after the decision date must not be used.",
+  "base_patient": {
+    "id": "syn-onc-016A",
+    "as_of": "2025-12-10",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20251201_her2",
+        "date": "2025-12-01",
+        "type": "pathology",
+        "text": "HER2 3+ positive by IHC."
+      },
+      {
+        "id": "echo_20251205_lvef_low",
+        "date": "2025-12-05",
+        "type": "echocardiogram",
+        "text": "Baseline LVEF 40 percent, below treatment threshold."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-016B",
+    "as_of": "2025-12-10",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "path_20251201_her2",
+        "date": "2025-12-01",
+        "type": "pathology",
+        "text": "HER2 3+ positive by IHC."
+      },
+      {
+        "id": "echo_20251205_lvef_low",
+        "date": "2025-12-05",
+        "type": "echocardiogram",
+        "text": "Baseline LVEF 40 percent, below treatment threshold."
+      },
+      {
+        "id": "echo_20251212_future_lvef",
+        "date": "2025-12-12",
+        "type": "echocardiogram",
+        "text": "After the decision date, repeat echo shows LVEF recovered to 55 percent."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "ineligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "echo_20251205_lvef_low"
+      ],
+      "variant": [
+        "echo_20251205_lvef_low"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Future LVEF recovery is not available at the decision index."
+}

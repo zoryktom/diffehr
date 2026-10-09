@@ -29,27 +29,52 @@ def render_markdown(result_sets: list[dict[str, Any]], title: str = "DiffEHR Eva
             f"{payload['pass_rate']:.2%} | {payload['mean_score']:.3f} |"
         )
     lines.extend(["", "## Research Metrics", ""])
-    lines.append("| Model | IVR | DSS | Evidence precision | Evidence recall | Temporal leakage |")
-    lines.append("|---|---:|---:|---:|---:|---:|")
+    lines.append("| Model | IVR | IVR 95% CI | DSS | DSS 95% CI | Evidence precision | Evidence recall | Temporal leakage |")
+    lines.append("|---|---:|---:|---:|---:|---:|---:|---:|")
     for payload in result_sets:
         metrics = payload.get("metrics", {})
+        intervals = metrics.get("confidence_intervals", {})
         lines.append(
             f"| {payload['model']} | "
             f"{_fmt_rate(metrics.get('invariance_violation_rate', 0.0))} | "
+            f"{_fmt_interval(intervals.get('invariance_violation_rate'))} | "
             f"{_fmt_rate(metrics.get('decisive_sensitivity_score', 0.0))} | "
+            f"{_fmt_interval(intervals.get('decisive_sensitivity_score'))} | "
             f"{_fmt_rate(metrics.get('evidence_citation_precision', 0.0))} | "
             f"{_fmt_rate(metrics.get('evidence_citation_recall', 0.0))} | "
             f"{metrics.get('temporal_leakage_violations', 0)} |"
         )
+    lines.extend(["", "## Specialty Summary", ""])
+    lines.append("| Model | Specialty | Category | Passed | Total | Pass rate |")
+    lines.append("|---|---|---|---:|---:|---:|")
+    for payload in result_sets:
+        for (domain, contract_type), items in _bucket_results(payload).items():
+            passed = sum(1 for item in items if item["passed"])
+            lines.append(
+                f"| {payload['model']} | {domain} | {contract_type} | "
+                f"{passed} | {len(items)} | {passed / len(items):.2%} |"
+            )
+    lines.extend(["", "## Failure Matrix", ""])
+    lines.append("| Model | Specialty | Category | Fail rate | Chart |")
+    lines.append("|---|---|---|---:|---|")
+    matrix_rows: list[tuple[float, str]] = []
+    for payload in result_sets:
+        for (domain, contract_type), items in _bucket_results(payload).items():
+            failed = sum(1 for item in items if not item["passed"])
+            rate = failed / len(items)
+            matrix_rows.append(
+                (
+                    rate,
+                    f"| {payload['model']} | {domain} | {contract_type} | {rate:.2%} | {_ascii_bar(rate)} |",
+                )
+            )
+    for _, row in sorted(matrix_rows, key=lambda item: item[0], reverse=True):
+        lines.append(row)
     lines.extend(["", "## Failure Modes", ""])
     lines.append("| Model | Domain | Contract type | Failed | Total |")
     lines.append("|---|---|---|---:|---:|")
     for payload in result_sets:
-        buckets: dict[tuple[str, str], list[dict[str, Any]]] = {}
-        for item in payload["results"]:
-            key = (item.get("domain", "unknown"), item["contract_type"])
-            buckets.setdefault(key, []).append(item)
-        for (domain, contract_type), items in sorted(buckets.items()):
+        for (domain, contract_type), items in _bucket_results(payload).items():
             failed = sum(1 for item in items if not item["passed"])
             lines.append(f"| {payload['model']} | {domain} | {contract_type} | {failed} | {len(items)} |")
     lines.extend(["", "## Contract Results", ""])
@@ -86,6 +111,26 @@ def _fmt_rate(value: Any) -> str:
         return f"{float(value):.2%}"
     except (TypeError, ValueError):
         return "n/a"
+
+
+def _fmt_interval(value: Any) -> str:
+    if not isinstance(value, (list, tuple)) or len(value) != 2:
+        return "n/a"
+    return f"{_fmt_rate(value[0])}-{_fmt_rate(value[1])}"
+
+
+def _ascii_bar(rate: float, width: int = 10) -> str:
+    filled = round(rate * width)
+    filled = min(width, max(0, filled))
+    return "#" * filled + "." * (width - filled)
+
+
+def _bucket_results(payload: dict[str, Any]) -> dict[tuple[str, str], list[dict[str, Any]]]:
+    buckets: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for item in payload["results"]:
+        key = (item.get("domain", "unknown"), item["contract_type"])
+        buckets.setdefault(key, []).append(item)
+    return dict(sorted(buckets.items()))
 
 
 def save_markdown(markdown: str, path: str | Path) -> None:

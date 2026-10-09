@@ -13,7 +13,8 @@ cases. DiffEHR turns those edge cases into executable tests.
 - contract schema
 - local CLI runner
 - baseline adapters
-- sample oncology pack
+- sample oncology, cardiology, and infectious disease packs
+- automated counterfactual discovery fuzzer
 - reproducible reports
 - contribution workflow for new packs
 
@@ -67,4 +68,3 @@ DiffEHR becomes valuable if it owns:
 Potential acquirers include health AI evaluation companies, EHR vendors,
 ambient documentation vendors, clinical trial matching companies, payer/provider
 workflow platforms, and AI governance platforms.
-

@@ -1,0 +1,7 @@
+{
+  "id": "diffehr-cardiology",
+  "title": "DiffEHR Cardiology Contract Pack",
+  "domain": "cardiology",
+  "n_contracts": 8,
+  "schema_version": "0.2"
+}

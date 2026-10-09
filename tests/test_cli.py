@@ -2,6 +2,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 
@@ -25,7 +26,25 @@ class CliTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Validated 8", result.stdout)
+        self.assertIn("Validated 16", result.stdout)
+
+    def test_validate_all_examples_command(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "diffehr",
+                "validate",
+                str(ROOT / "examples"),
+            ],
+            cwd=ROOT,
+            env={"PYTHONPATH": str(ROOT / "src")},
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Validated 32", result.stdout)
 
     def test_evaluate_command_writes_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -92,6 +111,35 @@ class CliTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("Research Metrics", report.read_text(encoding="utf-8"))
+            self.assertIn("Failure Matrix", report.read_text(encoding="utf-8"))
+
+    def test_fuzz_command_writes_findings(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            out = Path(tmpdir) / "fuzz.json"
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "diffehr",
+                    "fuzz",
+                    "--input",
+                    str(ROOT / "examples" / "discovery" / "base_chart.json"),
+                    "--perturbations",
+                    "20",
+                    "--model",
+                    "reckless-oncology",
+                    "--out",
+                    str(out),
+                ],
+                cwd=ROOT,
+                env={"PYTHONPATH": str(ROOT / "src")},
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertGreaterEqual(payload["n_findings"], 2)
 
 
 if __name__ == "__main__":

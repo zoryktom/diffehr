@@ -1,0 +1,85 @@
+{
+  "id": "id_future_culture_temporal_007",
+  "title": "Future susceptibility must not force carbapenem de-escalation",
+  "domain": "infectious_disease",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "de_escalate",
+    "continue_carbapenem",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to de-escalate carbapenem therapy. Culture susceptibility reports after the decision date must not be used.",
+  "base_patient": {
+    "id": "syn-id-007A",
+    "as_of": "2025-07-20",
+    "attributes": {
+      "age": 52,
+      "sex": "male",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250718_meropenem",
+        "date": "2025-07-18",
+        "type": "medication",
+        "text": "Meropenem started empirically for gram-negative bacteremia."
+      },
+      {
+        "id": "id_culture_20250719_pending",
+        "date": "2025-07-19",
+        "type": "microbiology",
+        "text": "Blood culture growing gram-negative rods; susceptibility pending."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-id-007B",
+    "as_of": "2025-07-20",
+    "attributes": {
+      "age": 52,
+      "sex": "male",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250718_meropenem",
+        "date": "2025-07-18",
+        "type": "medication",
+        "text": "Meropenem started empirically for gram-negative bacteremia."
+      },
+      {
+        "id": "id_culture_20250719_pending",
+        "date": "2025-07-19",
+        "type": "microbiology",
+        "text": "Blood culture growing gram-negative rods; susceptibility pending."
+      },
+      {
+        "id": "id_culture_20250722_future_susc",
+        "date": "2025-07-22",
+        "type": "microbiology",
+        "text": "After the decision date, E. coli susceptibility returned ceftriaxone susceptible, no ESBL detected."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "continue_carbapenem",
+    "variant_decision": "continue_carbapenem",
+    "required_citations": {
+      "base": [
+        "id_abx_20250718_meropenem",
+        "id_culture_20250719_pending"
+      ],
+      "variant": [
+        "id_abx_20250718_meropenem",
+        "id_culture_20250719_pending"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The future susceptibility report is unavailable at the decision index."
+}

@@ -1,0 +1,80 @@
+{
+  "id": "card_pci_cyp2c19_flip_003",
+  "title": "CYP2C19 loss-of-function changes post-PCI antiplatelet selection",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "clopidogrel",
+    "ticagrelor",
+    "insufficient"
+  ],
+  "task": "As of the decision date, select oral P2Y12 antiplatelet therapy after PCI, using ticagrelor rather than clopidogrel when a CYP2C19 loss-of-function allele is documented.",
+  "base_patient": {
+    "id": "syn-card-003A",
+    "as_of": "2025-05-20",
+    "attributes": {
+      "age": 78,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_proc_20250510_pci",
+        "date": "2025-05-10",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed in proximal LAD after acute coronary syndrome."
+      },
+      {
+        "id": "card_gen_20250512_cyp",
+        "date": "2025-05-12",
+        "type": "genomics",
+        "text": "CYP2C19 normal metabolizer. No loss-of-function allele detected."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-card-003B",
+    "as_of": "2025-05-20",
+    "attributes": {
+      "age": 78,
+      "sex": "male",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_proc_20250510_pci",
+        "date": "2025-05-10",
+        "type": "procedure",
+        "text": "Drug-eluting stent placed in proximal LAD after acute coronary syndrome."
+      },
+      {
+        "id": "card_gen_20250512_cyp",
+        "date": "2025-05-12",
+        "type": "genomics",
+        "text": "CYP2C19 loss-of-function allele detected, poor metabolizer phenotype."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "clopidogrel",
+    "variant_decision": "ticagrelor",
+    "required_citations": {
+      "base": [
+        "card_proc_20250510_pci",
+        "card_gen_20250512_cyp"
+      ],
+      "variant": [
+        "card_gen_20250512_cyp"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "CYP2C19 loss-of-function is the controlled pharmacogenomic change."
+}

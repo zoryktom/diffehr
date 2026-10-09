@@ -15,8 +15,14 @@ CONTRACT_PATH = ROOT / "examples" / "oncology" / "contracts" / "onc_race_invaria
 class ContractTests(unittest.TestCase):
     def test_oncology_contracts_load(self):
         contracts = load_contracts(ROOT / "examples" / "oncology" / "contracts")
-        self.assertEqual(len(contracts), 8)
+        self.assertEqual(len(contracts), 16)
         self.assertTrue(all(contract.id.startswith("onc_") for contract in contracts))
+
+    def test_all_specialty_contracts_load(self):
+        contracts = load_contracts(ROOT / "examples")
+        self.assertEqual(len(contracts), 32)
+        domains = {contract.domain for contract in contracts}
+        self.assertEqual(domains, {"oncology", "cardiology", "infectious_disease"})
 
     def test_contract_prompts_include_json_instruction(self):
         contract = load_contracts(ROOT / "examples" / "oncology" / "contracts")[0]

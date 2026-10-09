@@ -1,7 +1,7 @@
 # DiffEHR-Oncology
 
-This example pack contains paired synthetic oncology charts for counterfactual
-contract testing. Each contract includes:
+This example pack contains 16 paired synthetic oncology charts for
+counterfactual contract testing. Each contract includes:
 
 - a base synthetic patient chart
 - a variant chart with a controlled clinical or non-clinical change
@@ -18,8 +18,7 @@ Run:
 
 ```bash
 python -m diffehr validate examples/oncology/contracts
-python -m diffehr evaluate examples/oncology/contracts --model heuristic --out evidence/runs/heuristic.json
-python -m diffehr evaluate examples/oncology/contracts --model reckless --out evidence/runs/reckless.json
-python -m diffehr report evidence/runs/heuristic.json evidence/runs/reckless.json --out evidence/reports/demo.md
+python -m diffehr evaluate examples/oncology/contracts --model heuristic-oncology --out evidence/runs/heuristic-oncology.json
+python -m diffehr evaluate examples/oncology/contracts --model reckless-oncology --out evidence/runs/reckless-oncology.json
+python -m diffehr report evidence/runs/heuristic-oncology.json evidence/runs/reckless-oncology.json --out evidence/reports/demo.md
 ```
-

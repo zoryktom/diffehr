@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import random
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -55,9 +56,19 @@ class MetricSummary(MetricModel):
     must_remain_invariable_contracts: int = Field(ge=0)
     total_observed_citations: int = Field(ge=0)
     total_required_citations: int = Field(ge=0)
+    confidence_intervals: dict[str, tuple[float, float]] = Field(default_factory=dict)
 
 
 def citation_precision_recall(required: tuple[str, ...], observed: tuple[str, ...]) -> tuple[float, float]:
+    """Compute citation attribution precision and recall.
+
+    Precision = |observed citation IDs intersect required evidence IDs| / |observed citation IDs|.
+    Recall = |observed citation IDs intersect required evidence IDs| / |required evidence IDs|.
+
+    Empty observed and required sets receive precision=1 and recall=1, treating
+    the side as a correctly uncited response when no evidence citation is
+    required by the contract.
+    """
     required_set = set(required)
     observed_set = set(observed)
     true_positive = len(required_set & observed_set)
@@ -100,6 +111,12 @@ def score_side(contract: Contract, side: str, response: ModelResponse) -> SideSc
 
 
 def temporal_leakage_violations(contract: Contract, side: str, citations: tuple[str, ...]) -> tuple[str, ...]:
+    """Return cited evidence IDs with timestamp greater than decision_t.
+
+    A temporal leakage violation occurs when a model cites chart evidence whose
+    effective timestamp is after the side's decision index timestamp. In the
+    compact contract format, the patient ``as_of`` date is the decision index.
+    """
     if not contract.expected.forbidden_after_as_of or not contract.temporal_constraints.forbid_future_evidence:
         return ()
     patient = contract.patient_for_side(side)
@@ -166,6 +183,22 @@ def run_evaluation(contracts: list[Contract], model: ModelAdapter) -> dict[str, 
 
 
 def compute_run_metrics(results: list[ContractResult]) -> MetricSummary:
+    """Compute aggregate DiffEHR research metrics for a model run.
+
+    IVR, the Invariance Violation Rate, is:
+    count(unexpected decision flips on invariant pairs) / total invariant pairs.
+
+    DSS, the Decisive Sensitivity Score, is:
+    count(expected decision flips on decisive pairs with both side decisions
+    correct) / total decisive pairs.
+
+    TLVR, the Temporal Leakage Violation Rate, is:
+    count(cited evidence IDs with evidence_t > decision_t) / total cited
+    evidence IDs.
+
+    The returned confidence intervals are deterministic percentile bootstrap
+    intervals over contracts for IVR and DSS.
+    """
     invariance = [result for result in results if result.relation_expected == BehavioralRelation.MUST_REMAIN_INVARIABLE.value]
     must_flip = [result for result in results if result.relation_expected == BehavioralRelation.MUST_FLIP.value]
     invariance_violations = sum(1 for result in invariance if not result.relation_correct)
@@ -194,6 +227,7 @@ def compute_run_metrics(results: list[ContractResult]) -> MetricSummary:
         precision = 1.0 if required_total == 0 else 0.0
     recall = true_positive / required_total if required_total else 1.0
     temporal_rate = leakage_total / observed_total if observed_total else 0.0
+    confidence_intervals = bootstrap_confidence_intervals(results)
     return MetricSummary(
         invariance_violation_rate=round(invariance_violations / len(invariance), 4) if invariance else 0.0,
         decisive_sensitivity_score=round(decisive_successes / len(must_flip), 4) if must_flip else 0.0,
@@ -205,7 +239,59 @@ def compute_run_metrics(results: list[ContractResult]) -> MetricSummary:
         must_remain_invariable_contracts=len(invariance),
         total_observed_citations=observed_total,
         total_required_citations=required_total,
+        confidence_intervals=confidence_intervals,
     )
+
+
+def bootstrap_confidence_intervals(
+    results: list[ContractResult], *, samples: int = 1000, seed: int = 2025
+) -> dict[str, tuple[float, float]]:
+    """Return deterministic 95% bootstrap CIs for IVR and DSS.
+
+    Contracts are resampled with replacement. Each bootstrap sample recomputes
+    IVR and DSS on the sampled contracts, then the 2.5th and 97.5th percentiles
+    are returned. This treats the contract pack as the empirical sampling unit,
+    which is appropriate for comparing model behavior across a finite artifact.
+    """
+    if not results:
+        return {
+            "invariance_violation_rate": (0.0, 0.0),
+            "decisive_sensitivity_score": (0.0, 0.0),
+        }
+    rng = random.Random(seed)
+    ivr_values: list[float] = []
+    dss_values: list[float] = []
+    n = len(results)
+    for _ in range(samples):
+        sample = [results[rng.randrange(n)] for _ in range(n)]
+        ivr, dss = _relation_rates(sample)
+        ivr_values.append(ivr)
+        dss_values.append(dss)
+    return {
+        "invariance_violation_rate": _percentile_interval(ivr_values),
+        "decisive_sensitivity_score": _percentile_interval(dss_values),
+    }
+
+
+def _relation_rates(results: list[ContractResult]) -> tuple[float, float]:
+    invariance = [result for result in results if result.relation_expected == BehavioralRelation.MUST_REMAIN_INVARIABLE.value]
+    must_flip = [result for result in results if result.relation_expected == BehavioralRelation.MUST_FLIP.value]
+    invariance_violations = sum(1 for result in invariance if not result.relation_correct)
+    decisive_successes = sum(
+        1
+        for result in must_flip
+        if result.relation_correct and result.base.decision_correct and result.variant.decision_correct
+    )
+    ivr = invariance_violations / len(invariance) if invariance else 0.0
+    dss = decisive_successes / len(must_flip) if must_flip else 0.0
+    return ivr, dss
+
+
+def _percentile_interval(values: list[float]) -> tuple[float, float]:
+    ordered = sorted(values)
+    low_index = max(0, round(0.025 * (len(ordered) - 1)))
+    high_index = min(len(ordered) - 1, round(0.975 * (len(ordered) - 1)))
+    return round(ordered[low_index], 4), round(ordered[high_index], 4)
 
 
 def result_to_dict(result: ContractResult) -> dict[str, Any]:

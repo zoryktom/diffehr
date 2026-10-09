@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ScoringTests(unittest.TestCase):
     def setUp(self):
-        self.contracts = load_contracts(ROOT / "examples" / "oncology" / "contracts")
+        self.contracts = load_contracts(ROOT / "examples")
 
     def test_oracle_passes_all_contracts(self):
         payload = run_evaluation(self.contracts, make_model("oracle"))
@@ -22,6 +22,13 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(payload["metrics"]["evidence_citation_precision"], 1.0)
         self.assertEqual(payload["metrics"]["evidence_citation_recall"], 1.0)
         self.assertEqual(payload["metrics"]["temporal_leakage_violations"], 0)
+        self.assertEqual(payload["metrics"]["confidence_intervals"]["invariance_violation_rate"], [0.0, 0.0])
+        self.assertEqual(payload["metrics"]["confidence_intervals"]["decisive_sensitivity_score"], [1.0, 1.0])
+
+    def test_heuristic_passes_full_multispecialty_suite(self):
+        payload = run_evaluation(self.contracts, make_model("heuristic-oncology"))
+        self.assertEqual(payload["passed"], 32)
+        self.assertEqual(payload["n_contracts"], 32)
 
     def test_reckless_fails_at_least_one_contract(self):
         payload = run_evaluation(self.contracts, make_model("reckless"))

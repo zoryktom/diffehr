@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 
 from .contracts import ContractError, load_contracts
+from .discovery import DiffEHRFuzzer, load_fhir_chart, save_fuzz_results
 from .models import make_model
 from .report import load_results, render_markdown, save_markdown
 from .scoring import run_evaluation, save_results
@@ -33,6 +34,20 @@ def cmd_report(args: argparse.Namespace) -> int:
     payloads = [load_results(path) for path in args.results]
     markdown = render_markdown(payloads, title=args.title)
     save_markdown(markdown, args.out)
+    print(f"Wrote {args.out}")
+    return 0
+
+
+def cmd_fuzz(args: argparse.Namespace) -> int:
+    chart = load_fhir_chart(args.input)
+    model = make_model(args.model)
+    fuzzer = DiffEHRFuzzer(model, perturbations=args.perturbations)
+    payload = fuzzer.run(chart)
+    save_fuzz_results(payload, args.out)
+    print(
+        f"{payload['model']}: {payload['n_findings']} finding(s) across "
+        f"{payload['n_perturbations']} perturbation(s)."
+    )
     print(f"Wrote {args.out}")
     return 0
 
@@ -81,6 +96,13 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--out", type=Path, default=Path("evidence/reports/report.md"))
     report.add_argument("--title", default="DiffEHR Evaluation Report")
     report.set_defaults(func=cmd_report)
+
+    fuzz = subparsers.add_parser("fuzz", help="Run automated counterfactual discovery on a FHIR chart.")
+    fuzz.add_argument("--input", required=True, type=Path)
+    fuzz.add_argument("--perturbations", type=int, default=20)
+    fuzz.add_argument("--model", default="heuristic")
+    fuzz.add_argument("--out", type=Path, default=Path("evidence/runs/fuzz_findings.json"))
+    fuzz.set_defaults(func=cmd_fuzz)
 
     benchmark = subparsers.add_parser("benchmark", help="Evaluate multiple models and render a report.")
     benchmark.add_argument("contracts", type=Path)

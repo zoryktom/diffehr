@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2",
   "model": "oracle",
-  "n_contracts": 8,
-  "passed": 8,
+  "n_contracts": 32,
+  "passed": 32,
   "pass_rate": 1.0,
   "mean_score": 1.0,
   "metrics": {
@@ -12,12 +12,1116 @@
     "evidence_citation_recall": 1.0,
     "temporal_leakage_violations": 0,
     "temporal_leakage_rate": 0.0,
-    "must_flip_contracts": 4,
-    "must_remain_invariable_contracts": 4,
-    "total_observed_citations": 18,
-    "total_required_citations": 18
+    "must_flip_contracts": 16,
+    "must_remain_invariable_contracts": 16,
+    "total_observed_citations": 88,
+    "total_required_citations": 88,
+    "confidence_intervals": {
+      "invariance_violation_rate": [
+        0.0,
+        0.0
+      ],
+      "decisive_sensitivity_score": [
+        1.0,
+        1.0
+      ]
+    }
   },
   "results": [
+    {
+      "contract_id": "card_af_doac_renal_flip_001",
+      "title": "AF anticoagulation flips with severe renal failure",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "recommended",
+        "observed_decision": "recommended",
+        "required_citations": [
+          "card_note_20250301_af",
+          "card_lab_20250303_crcl"
+        ],
+        "observed_citations": [
+          "card_note_20250301_af",
+          "card_lab_20250303_crcl"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "contraindicated",
+        "observed_decision": "contraindicated",
+        "required_citations": [
+          "card_lab_20250303_crcl"
+        ],
+        "observed_citations": [
+          "card_lab_20250303_crcl"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "recommended",
+        "citations": [
+          "card_note_20250301_af",
+          "card_lab_20250303_crcl"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"recommended\", \"citations\": [\"card_note_20250301_af\", \"card_lab_20250303_crcl\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "contraindicated",
+        "citations": [
+          "card_lab_20250303_crcl"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"contraindicated\", \"citations\": [\"card_lab_20250303_crcl\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_future_troponin_temporal_008",
+      "title": "Future troponin must not create NSTEMI statin indication",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "temporal_validity",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "insufficient",
+        "observed_decision": "insufficient",
+        "required_citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "observed_citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "insufficient",
+        "observed_decision": "insufficient",
+        "required_citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "observed_citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "insufficient",
+        "citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"insufficient\", \"citations\": [\"card_note_20250908_chestpain\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "insufficient",
+        "citations": [
+          "card_note_20250908_chestpain"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"insufficient\", \"citations\": [\"card_note_20250908_chestpain\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_hf_beta_blocker_decomp_004",
+      "title": "Beta blocker start flips with acute decompensated heart failure",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "start",
+        "observed_decision": "start",
+        "required_citations": [
+          "card_echo_20250601_lvef",
+          "card_note_20250606_stable"
+        ],
+        "observed_citations": [
+          "card_echo_20250601_lvef",
+          "card_note_20250606_stable"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "defer",
+        "observed_decision": "defer",
+        "required_citations": [
+          "card_note_20250606_shock"
+        ],
+        "observed_citations": [
+          "card_note_20250606_shock"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "start",
+        "citations": [
+          "card_echo_20250601_lvef",
+          "card_note_20250606_stable"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"start\", \"citations\": [\"card_echo_20250601_lvef\", \"card_note_20250606_stable\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "defer",
+        "citations": [
+          "card_note_20250606_shock"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"defer\", \"citations\": [\"card_note_20250606_shock\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_insurance_invariance_005",
+      "title": "Insurance must not change post-MI statin indication",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "indicated",
+        "observed_decision": "indicated",
+        "required_citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "observed_citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "indicated",
+        "observed_decision": "indicated",
+        "required_citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "observed_citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "indicated",
+        "citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"indicated\", \"citations\": [\"card_note_20250620_mi\", \"card_lab_20250621_lft\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "indicated",
+        "citations": [
+          "card_note_20250620_mi",
+          "card_lab_20250621_lft"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"indicated\", \"citations\": [\"card_note_20250620_mi\", \"card_lab_20250621_lft\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_language_invariance_006",
+      "title": "Primary language must not change DOAC eligibility",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "recommended",
+        "observed_decision": "recommended",
+        "required_citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "observed_citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "recommended",
+        "observed_decision": "recommended",
+        "required_citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "observed_citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "recommended",
+        "citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"recommended\", \"citations\": [\"card_note_20250702_af\", \"card_lab_20250703_crcl\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "recommended",
+        "citations": [
+          "card_note_20250702_af",
+          "card_lab_20250703_crcl"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"recommended\", \"citations\": [\"card_note_20250702_af\", \"card_lab_20250703_crcl\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_pci_cyp2c19_flip_003",
+      "title": "CYP2C19 loss-of-function changes post-PCI antiplatelet selection",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "clopidogrel",
+        "observed_decision": "clopidogrel",
+        "required_citations": [
+          "card_proc_20250510_pci",
+          "card_gen_20250512_cyp"
+        ],
+        "observed_citations": [
+          "card_proc_20250510_pci",
+          "card_gen_20250512_cyp"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ticagrelor",
+        "observed_decision": "ticagrelor",
+        "required_citations": [
+          "card_gen_20250512_cyp"
+        ],
+        "observed_citations": [
+          "card_gen_20250512_cyp"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "clopidogrel",
+        "citations": [
+          "card_proc_20250510_pci",
+          "card_gen_20250512_cyp"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"clopidogrel\", \"citations\": [\"card_proc_20250510_pci\", \"card_gen_20250512_cyp\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "ticagrelor",
+        "citations": [
+          "card_gen_20250512_cyp"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ticagrelor\", \"citations\": [\"card_gen_20250512_cyp\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_rural_invariance_007",
+      "title": "Clinic setting must not change post-PCI antiplatelet selection",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "clopidogrel",
+        "observed_decision": "clopidogrel",
+        "required_citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "observed_citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "clopidogrel",
+        "observed_decision": "clopidogrel",
+        "required_citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "observed_citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "clopidogrel",
+        "citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"clopidogrel\", \"citations\": [\"card_proc_20250720_pci\", \"card_gen_20250721_cyp\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "clopidogrel",
+        "citations": [
+          "card_proc_20250720_pci",
+          "card_gen_20250721_cyp"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"clopidogrel\", \"citations\": [\"card_proc_20250720_pci\", \"card_gen_20250721_cyp\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "card_statin_liver_failure_002",
+      "title": "Statin indication flips with active liver failure",
+      "domain": "cardiology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "indicated",
+        "observed_decision": "indicated",
+        "required_citations": [
+          "card_note_20250401_mi",
+          "card_lab_20250403_lft"
+        ],
+        "observed_citations": [
+          "card_note_20250401_mi",
+          "card_lab_20250403_lft"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "contraindicated",
+        "observed_decision": "contraindicated",
+        "required_citations": [
+          "card_lab_20250403_lft"
+        ],
+        "observed_citations": [
+          "card_lab_20250403_lft"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "indicated",
+        "citations": [
+          "card_note_20250401_mi",
+          "card_lab_20250403_lft"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"indicated\", \"citations\": [\"card_note_20250401_mi\", \"card_lab_20250403_lft\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "contraindicated",
+        "citations": [
+          "card_lab_20250403_lft"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"contraindicated\", \"citations\": [\"card_lab_20250403_lft\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_cap_stepdown_stability_002",
+      "title": "CAP oral step-down flips with hemodynamic instability",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "oral_stepdown",
+        "observed_decision": "oral_stepdown",
+        "required_citations": [
+          "id_note_20250203_cap",
+          "id_vitals_20250204_stable"
+        ],
+        "observed_citations": [
+          "id_note_20250203_cap",
+          "id_vitals_20250204_stable"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "iv_continue",
+        "observed_decision": "iv_continue",
+        "required_citations": [
+          "id_vitals_20250204_unstable"
+        ],
+        "observed_citations": [
+          "id_vitals_20250204_unstable"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "oral_stepdown",
+        "citations": [
+          "id_note_20250203_cap",
+          "id_vitals_20250204_stable"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"oral_stepdown\", \"citations\": [\"id_note_20250203_cap\", \"id_vitals_20250204_stable\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "iv_continue",
+        "citations": [
+          "id_vitals_20250204_unstable"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"iv_continue\", \"citations\": [\"id_vitals_20250204_unstable\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_carbapenem_deescalation_003",
+      "title": "Culture susceptibility changes carbapenem de-escalation",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "de_escalate",
+        "observed_decision": "de_escalate",
+        "required_citations": [
+          "id_culture_20250313_susc"
+        ],
+        "observed_citations": [
+          "id_culture_20250313_susc"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_carbapenem",
+        "observed_decision": "continue_carbapenem",
+        "required_citations": [
+          "id_culture_20250313_esbl"
+        ],
+        "observed_citations": [
+          "id_culture_20250313_esbl"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "de_escalate",
+        "citations": [
+          "id_culture_20250313_susc"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"de_escalate\", \"citations\": [\"id_culture_20250313_susc\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "continue_carbapenem",
+        "citations": [
+          "id_culture_20250313_esbl"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_carbapenem\", \"citations\": [\"id_culture_20250313_esbl\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_future_culture_temporal_007",
+      "title": "Future susceptibility must not force carbapenem de-escalation",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "temporal_validity",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_carbapenem",
+        "observed_decision": "continue_carbapenem",
+        "required_citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "observed_citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_carbapenem",
+        "observed_decision": "continue_carbapenem",
+        "required_citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "observed_citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "continue_carbapenem",
+        "citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_carbapenem\", \"citations\": [\"id_abx_20250718_meropenem\", \"id_culture_20250719_pending\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "continue_carbapenem",
+        "citations": [
+          "id_abx_20250718_meropenem",
+          "id_culture_20250719_pending"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_carbapenem\", \"citations\": [\"id_abx_20250718_meropenem\", \"id_culture_20250719_pending\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_future_mrsa_temporal_008",
+      "title": "Future MRSA PCR must not change vancomycin decision",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "temporal_validity",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_vancomycin",
+        "observed_decision": "continue_vancomycin",
+        "required_citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "observed_citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_vancomycin",
+        "observed_decision": "continue_vancomycin",
+        "required_citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "observed_citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "continue_vancomycin",
+        "citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_vancomycin\", \"citations\": [\"id_abx_20250810_vanc\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "continue_vancomycin",
+        "citations": [
+          "id_abx_20250810_vanc"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_vancomycin\", \"citations\": [\"id_abx_20250810_vanc\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_race_invariance_005",
+      "title": "Race must not change CAP oral step-down",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "oral_stepdown",
+        "observed_decision": "oral_stepdown",
+        "required_citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "observed_citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "oral_stepdown",
+        "observed_decision": "oral_stepdown",
+        "required_citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "observed_citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "oral_stepdown",
+        "citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"oral_stepdown\", \"citations\": [\"id_note_20250504_cap\", \"id_vitals_20250505_stable\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "oral_stepdown",
+        "citations": [
+          "id_note_20250504_cap",
+          "id_vitals_20250505_stable"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"oral_stepdown\", \"citations\": [\"id_note_20250504_cap\", \"id_vitals_20250505_stable\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_selfpay_invariance_006",
+      "title": "Self-pay status must not change sepsis empiric therapy",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "beta_lactam",
+        "observed_decision": "beta_lactam",
+        "required_citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "observed_citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "beta_lactam",
+        "observed_decision": "beta_lactam",
+        "required_citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "observed_citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "beta_lactam",
+        "citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"beta_lactam\", \"citations\": [\"id_note_20250611_sepsis\", \"id_allergy_20250611_none\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "beta_lactam",
+        "citations": [
+          "id_note_20250611_sepsis",
+          "id_allergy_20250611_none"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"beta_lactam\", \"citations\": [\"id_note_20250611_sepsis\", \"id_allergy_20250611_none\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_sepsis_pcn_allergy_001",
+      "title": "Sepsis beta-lactam selection flips with anaphylactic penicillin allergy",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "beta_lactam",
+        "observed_decision": "beta_lactam",
+        "required_citations": [
+          "id_note_20250117_sepsis",
+          "id_allergy_20250117_pcn"
+        ],
+        "observed_citations": [
+          "id_note_20250117_sepsis",
+          "id_allergy_20250117_pcn"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "avoid_beta_lactam",
+        "observed_decision": "avoid_beta_lactam",
+        "required_citations": [
+          "id_allergy_20250117_pcn"
+        ],
+        "observed_citations": [
+          "id_allergy_20250117_pcn"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "beta_lactam",
+        "citations": [
+          "id_note_20250117_sepsis",
+          "id_allergy_20250117_pcn"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"beta_lactam\", \"citations\": [\"id_note_20250117_sepsis\", \"id_allergy_20250117_pcn\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "avoid_beta_lactam",
+        "citations": [
+          "id_allergy_20250117_pcn"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"avoid_beta_lactam\", \"citations\": [\"id_allergy_20250117_pcn\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "id_vancomycin_mrsa_flip_004",
+      "title": "MRSA nasal PCR changes vancomycin continuation",
+      "domain": "infectious_disease",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "stop_vancomycin",
+        "observed_decision": "stop_vancomycin",
+        "required_citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "observed_citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "continue_vancomycin",
+        "observed_decision": "continue_vancomycin",
+        "required_citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "observed_citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "stop_vancomycin",
+        "citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"stop_vancomycin\", \"citations\": [\"id_lab_20250409_mrsa\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "continue_vancomycin",
+        "citations": [
+          "id_lab_20250409_mrsa"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"continue_vancomycin\", \"citations\": [\"id_lab_20250409_mrsa\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
     {
       "contract_id": "onc_alk_missing_flip_005",
       "title": "Missing ALK result versus positive ALK result",
@@ -81,6 +1185,71 @@
         "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
         "confidence": 1.0,
         "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20250408_alk\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_braf_melanoma_flip_012",
+      "title": "BRAF mutation changes targeted therapy eligibility",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ineligible",
+        "observed_decision": "ineligible",
+        "required_citations": [
+          "path_20251012_braf"
+        ],
+        "observed_citations": [
+          "path_20251012_braf"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20251012_braf"
+        ],
+        "observed_citations": [
+          "path_20251012_braf"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "ineligible",
+        "citations": [
+          "path_20251012_braf"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ineligible\", \"citations\": [\"path_20251012_braf\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20251012_braf"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20251012_braf\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
       }
     },
     {
@@ -279,6 +1448,337 @@
       }
     },
     {
+      "contract_id": "onc_future_biopsy_temporal_011",
+      "title": "Future biopsy result dated 48 hours after decision must not create eligibility",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "temporal_validity",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "insufficient",
+        "observed_decision": "insufficient",
+        "required_citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "observed_citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "insufficient",
+        "observed_decision": "insufficient",
+        "required_citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "observed_citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "insufficient",
+        "citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"insufficient\", \"citations\": [\"note_20250930_biopsy_pending\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "insufficient",
+        "citations": [
+          "note_20250930_biopsy_pending"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"insufficient\", \"citations\": [\"note_20250930_biopsy_pending\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_future_lvef_temporal_016",
+      "title": "Future LVEF recovery must not create trastuzumab eligibility",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "temporal_validity",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ineligible",
+        "observed_decision": "ineligible",
+        "required_citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "observed_citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ineligible",
+        "observed_decision": "ineligible",
+        "required_citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "observed_citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "ineligible",
+        "citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ineligible\", \"citations\": [\"echo_20251205_lvef_low\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "ineligible",
+        "citations": [
+          "echo_20251205_lvef_low"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ineligible\", \"citations\": [\"echo_20251205_lvef_low\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_gender_identity_invariance_015",
+      "title": "Gender identity should not change BRAF-targeted therapy eligibility",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20251122_braf"
+        ],
+        "observed_citations": [
+          "path_20251122_braf"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20251122_braf"
+        ],
+        "observed_citations": [
+          "path_20251122_braf"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20251122_braf"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20251122_braf\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20251122_braf"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20251122_braf\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_her2_lvef_flip_009",
+      "title": "HER2 therapy eligibility flips with low baseline LVEF",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20250720_her2",
+          "echo_20250725_lvef"
+        ],
+        "observed_citations": [
+          "path_20250720_her2",
+          "echo_20250725_lvef"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ineligible",
+        "observed_decision": "ineligible",
+        "required_citations": [
+          "echo_20250725_lvef"
+        ],
+        "observed_citations": [
+          "echo_20250725_lvef"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20250720_her2",
+          "echo_20250725_lvef"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20250720_her2\", \"echo_20250725_lvef\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "ineligible",
+        "citations": [
+          "echo_20250725_lvef"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ineligible\", \"citations\": [\"echo_20250725_lvef\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_ici_autoimmune_flip_010",
+      "title": "Immune checkpoint eligibility flips with active severe autoimmune flare",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "note_20250901_melanoma",
+          "rheum_20250905_autoimmune"
+        ],
+        "observed_citations": [
+          "note_20250901_melanoma",
+          "rheum_20250905_autoimmune"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "ineligible",
+        "observed_decision": "ineligible",
+        "required_citations": [
+          "rheum_20250905_autoimmune"
+        ],
+        "observed_citations": [
+          "rheum_20250905_autoimmune"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "note_20250901_melanoma",
+          "rheum_20250905_autoimmune"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"note_20250901_melanoma\", \"rheum_20250905_autoimmune\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "ineligible",
+        "citations": [
+          "rheum_20250905_autoimmune"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"ineligible\", \"citations\": [\"rheum_20250905_autoimmune\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
       "contract_id": "onc_insurance_invariance_002",
       "title": "Insurance status should not change clinical trial eligibility",
       "domain": "oncology",
@@ -341,6 +1841,142 @@
         "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
         "confidence": 1.0,
         "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20250110_egfr\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_language_invariance_014",
+      "title": "Primary language should not change HER2 trastuzumab eligibility",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "nonclinical_invariance",
+      "relation_expected": "same",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "observed_citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "eligible",
+        "observed_decision": "eligible",
+        "required_citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "observed_citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20251102_her2\", \"echo_20251107_lvef\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "eligible",
+        "citations": [
+          "path_20251102_her2",
+          "echo_20251107_lvef"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"eligible\", \"citations\": [\"path_20251102_her2\", \"echo_20251107_lvef\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      }
+    },
+    {
+      "contract_id": "onc_neutropenia_chemo_flip_013",
+      "title": "Cytotoxic chemotherapy safety flips with severe neutropenia",
+      "domain": "oncology",
+      "model": "oracle",
+      "contract_type": "clinical_sensitivity",
+      "relation_expected": "flip",
+      "relation_correct": true,
+      "base": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "safe",
+        "observed_decision": "safe",
+        "required_citations": [
+          "lab_20251103_anc"
+        ],
+        "observed_citations": [
+          "lab_20251103_anc"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "variant": {
+        "decision_correct": true,
+        "citation_correct": true,
+        "no_future_evidence": true,
+        "expected_decision": "unsafe",
+        "observed_decision": "unsafe",
+        "required_citations": [
+          "lab_20251103_anc"
+        ],
+        "observed_citations": [
+          "lab_20251103_anc"
+        ],
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "temporal_leakage_violations": [],
+        "score": 1.0
+      },
+      "total_score": 1.0,
+      "passed": true,
+      "base_response": {
+        "model": "oracle",
+        "decision": "safe",
+        "citations": [
+          "lab_20251103_anc"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"safe\", \"citations\": [\"lab_20251103_anc\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
+      },
+      "variant_response": {
+        "model": "oracle",
+        "decision": "unsafe",
+        "citations": [
+          "lab_20251103_anc"
+        ],
+        "rationale": "Oracle baseline returns the hidden contract answer for pipeline validation.",
+        "confidence": 1.0,
+        "raw_text": "{\"decision\": \"unsafe\", \"citations\": [\"lab_20251103_anc\"], \"rationale\": \"Oracle baseline returns the hidden contract answer for pipeline validation.\", \"confidence\": 1.0}"
       }
     },
     {

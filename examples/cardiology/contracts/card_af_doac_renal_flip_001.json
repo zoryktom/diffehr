@@ -1,0 +1,80 @@
+{
+  "id": "card_af_doac_renal_flip_001",
+  "title": "AF anticoagulation flips with severe renal failure",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "recommended",
+    "contraindicated",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether a DOAC is appropriate for non-valvular atrial fibrillation requiring anticoagulation, excluding severe renal failure with creatinine clearance below 15 mL/min.",
+  "base_patient": {
+    "id": "syn-card-001A",
+    "as_of": "2025-03-10",
+    "attributes": {
+      "age": 78,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250301_af",
+        "date": "2025-03-01",
+        "type": "cardiology_note",
+        "text": "Persistent non-valvular atrial fibrillation with CHA2DS2-VASc score 5. No mechanical valve or moderate mitral stenosis."
+      },
+      {
+        "id": "card_lab_20250303_crcl",
+        "date": "2025-03-03",
+        "type": "laboratory",
+        "text": "Creatinine clearance 42 mL/min. Renal function permits labeled DOAC use."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-card-001B",
+    "as_of": "2025-03-10",
+    "attributes": {
+      "age": 78,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_note_20250301_af",
+        "date": "2025-03-01",
+        "type": "cardiology_note",
+        "text": "Persistent non-valvular atrial fibrillation with CHA2DS2-VASc score 5. No mechanical valve or moderate mitral stenosis."
+      },
+      {
+        "id": "card_lab_20250303_crcl",
+        "date": "2025-03-03",
+        "type": "laboratory",
+        "text": "Creatinine clearance 12 mL/min, below 15 mL/min, severe renal failure and DOAC contraindication."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "recommended",
+    "variant_decision": "contraindicated",
+    "required_citations": {
+      "base": [
+        "card_note_20250301_af",
+        "card_lab_20250303_crcl"
+      ],
+      "variant": [
+        "card_lab_20250303_crcl"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The controlled causal change is renal function crossing a severe renal contraindication threshold for DOAC therapy."
+}

@@ -1,0 +1,75 @@
+{
+  "id": "onc_braf_melanoma_flip_012",
+  "title": "BRAF mutation changes targeted therapy eligibility",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine eligibility for BRAF/MEK targeted therapy requiring metastatic melanoma with BRAF V600 mutation.",
+  "base_patient": {
+    "id": "syn-onc-012A",
+    "as_of": "2025-10-20",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251010_melanoma",
+        "date": "2025-10-10",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, ECOG 1."
+      },
+      {
+        "id": "path_20251012_braf",
+        "date": "2025-10-12",
+        "type": "pathology",
+        "text": "BRAF V600 mutation not detected; BRAF wild type."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-012B",
+    "as_of": "2025-10-20",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251010_melanoma",
+        "date": "2025-10-10",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma, ECOG 1."
+      },
+      {
+        "id": "path_20251012_braf",
+        "date": "2025-10-12",
+        "type": "pathology",
+        "text": "BRAF V600E mutation detected."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "ineligible",
+    "variant_decision": "eligible",
+    "required_citations": {
+      "base": [
+        "path_20251012_braf"
+      ],
+      "variant": [
+        "path_20251012_braf"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "BRAF V600 mutation status is the controlled eligibility change."
+}

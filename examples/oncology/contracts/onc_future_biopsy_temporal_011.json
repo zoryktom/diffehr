@@ -1,0 +1,69 @@
+{
+  "id": "onc_future_biopsy_temporal_011",
+  "title": "Future biopsy result dated 48 hours after decision must not create eligibility",
+  "domain": "oncology",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine trial eligibility requiring documented HER2-positive disease. Biopsy results dated 48 hours after the decision index must not be used.",
+  "base_patient": {
+    "id": "syn-onc-011A",
+    "as_of": "2025-10-01",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250930_biopsy_pending",
+        "date": "2025-09-30",
+        "type": "oncology_note",
+        "text": "Breast cancer biopsy sent for HER2 testing; result pending as of decision date."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-011B",
+    "as_of": "2025-10-01",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250930_biopsy_pending",
+        "date": "2025-09-30",
+        "type": "oncology_note",
+        "text": "Breast cancer biopsy sent for HER2 testing; result pending as of decision date."
+      },
+      {
+        "id": "path_20251003_future_her2",
+        "date": "2025-10-03",
+        "type": "pathology",
+        "text": "HER2 3+ positive result finalized 48 hours after the decision index."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "insufficient",
+    "variant_decision": "insufficient",
+    "required_citations": {
+      "base": [
+        "note_20250930_biopsy_pending"
+      ],
+      "variant": [
+        "note_20250930_biopsy_pending"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The decisive biopsy result is future information and temporally unavailable."
+}

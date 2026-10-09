@@ -1,0 +1,71 @@
+{
+  "id": "id_future_mrsa_temporal_008",
+  "title": "Future MRSA PCR must not change vancomycin decision",
+  "domain": "infectious_disease",
+  "contract_type": "temporal_validity",
+  "allowed_decisions": [
+    "stop_vancomycin",
+    "continue_vancomycin",
+    "insufficient"
+  ],
+  "task": "As of the decision date, decide whether to continue empiric vancomycin for pneumonia. MRSA PCR results after the decision date must not be used.",
+  "base_patient": {
+    "id": "syn-id-008A",
+    "as_of": "2025-08-11",
+    "attributes": {
+      "age": 69,
+      "sex": "female",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250810_vanc",
+        "date": "2025-08-10",
+        "type": "medication",
+        "text": "Vancomycin started empirically for severe pneumonia with MRSA PCR pending."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-id-008B",
+    "as_of": "2025-08-11",
+    "attributes": {
+      "age": 69,
+      "sex": "female",
+      "race": "White",
+      "ethnicity": "Not Hispanic or Latino",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "id_abx_20250810_vanc",
+        "date": "2025-08-10",
+        "type": "medication",
+        "text": "Vancomycin started empirically for severe pneumonia with MRSA PCR pending."
+      },
+      {
+        "id": "id_lab_20250813_future_mrsa",
+        "date": "2025-08-13",
+        "type": "microbiology",
+        "text": "After the decision date, MRSA nasal PCR returned negative."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "same",
+    "base_decision": "continue_vancomycin",
+    "variant_decision": "continue_vancomycin",
+    "required_citations": {
+      "base": [
+        "id_abx_20250810_vanc"
+      ],
+      "variant": [
+        "id_abx_20250810_vanc"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The future MRSA PCR is unavailable at the decision index."
+}

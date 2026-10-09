@@ -1,0 +1,80 @@
+{
+  "id": "card_hf_beta_blocker_decomp_004",
+  "title": "Beta blocker start flips with acute decompensated heart failure",
+  "domain": "cardiology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "start",
+    "defer",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine whether to start evidence-based beta-blocker therapy for HFrEF, deferring during acute decompensated heart failure or cardiogenic shock.",
+  "base_patient": {
+    "id": "syn-card-004A",
+    "as_of": "2025-06-08",
+    "attributes": {
+      "age": 64,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_echo_20250601_lvef",
+        "date": "2025-06-01",
+        "type": "echocardiogram",
+        "text": "Left ventricular ejection fraction 30 percent, chronic HFrEF."
+      },
+      {
+        "id": "card_note_20250606_stable",
+        "date": "2025-06-06",
+        "type": "cardiology_note",
+        "text": "Euvolemic and hemodynamically stable; no acute decompensated heart failure."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-card-004B",
+    "as_of": "2025-06-08",
+    "attributes": {
+      "age": 64,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial",
+      "primary_language": "English",
+      "clinic_setting": "urban"
+    },
+    "record": [
+      {
+        "id": "card_echo_20250601_lvef",
+        "date": "2025-06-01",
+        "type": "echocardiogram",
+        "text": "Left ventricular ejection fraction 30 percent, chronic HFrEF."
+      },
+      {
+        "id": "card_note_20250606_shock",
+        "date": "2025-06-06",
+        "type": "cardiology_note",
+        "text": "Acute decompensated heart failure with cardiogenic shock requiring IV inotropes."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "start",
+    "variant_decision": "defer",
+    "required_citations": {
+      "base": [
+        "card_echo_20250601_lvef",
+        "card_note_20250606_stable"
+      ],
+      "variant": [
+        "card_note_20250606_shock"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "The controlled change is clinical stability versus acute decompensation."
+}

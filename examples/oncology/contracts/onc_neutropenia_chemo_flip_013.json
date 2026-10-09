@@ -1,0 +1,75 @@
+{
+  "id": "onc_neutropenia_chemo_flip_013",
+  "title": "Cytotoxic chemotherapy safety flips with severe neutropenia",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "safe",
+    "unsafe",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine whether to proceed with cytotoxic chemotherapy, requiring ANC at least 1500/uL.",
+  "base_patient": {
+    "id": "syn-onc-013A",
+    "as_of": "2025-11-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251101_chemo",
+        "date": "2025-11-01",
+        "type": "oncology_note",
+        "text": "Adjuvant cytotoxic chemotherapy planned."
+      },
+      {
+        "id": "lab_20251103_anc",
+        "date": "2025-11-03",
+        "type": "laboratory",
+        "text": "Absolute neutrophil count ANC 2400/uL."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-013B",
+    "as_of": "2025-11-05",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20251101_chemo",
+        "date": "2025-11-01",
+        "type": "oncology_note",
+        "text": "Adjuvant cytotoxic chemotherapy planned."
+      },
+      {
+        "id": "lab_20251103_anc",
+        "date": "2025-11-03",
+        "type": "laboratory",
+        "text": "Severe neutropenia with absolute neutrophil count ANC 400/uL."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "safe",
+    "variant_decision": "unsafe",
+    "required_citations": {
+      "base": [
+        "lab_20251103_anc"
+      ],
+      "variant": [
+        "lab_20251103_anc"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "ANC below chemotherapy threshold is the controlled safety change."
+}

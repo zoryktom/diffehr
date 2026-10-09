@@ -1,10 +1,12 @@
 {
-  "id": "diffehr-oncology-v0",
-  "title": "DiffEHR-Oncology v0",
-  "description": "Paired synthetic oncology EHR contracts for testing clinical counterfactual consistency.",
-  "version": "0.1.0",
+  "id": "diffehr-oncology",
+  "title": "DiffEHR Oncology Contract Pack",
+  "description": "Sixteen paired synthetic oncology EHR contracts for testing clinical counterfactual consistency.",
+  "version": "0.2.0",
+  "domain": "oncology",
+  "n_contracts": 16,
+  "schema_version": "0.2",
   "contracts_path": "contracts",
   "intended_use": "Clinical AI evaluation research and regression testing on synthetic records.",
   "not_intended_use": "Clinical decision support, diagnosis, treatment, or validation of medical devices."
 }
-

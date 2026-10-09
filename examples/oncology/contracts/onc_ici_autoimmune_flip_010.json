@@ -1,0 +1,76 @@
+{
+  "id": "onc_ici_autoimmune_flip_010",
+  "title": "Immune checkpoint eligibility flips with active severe autoimmune flare",
+  "domain": "oncology",
+  "contract_type": "clinical_sensitivity",
+  "allowed_decisions": [
+    "eligible",
+    "ineligible",
+    "insufficient"
+  ],
+  "task": "As of the decision date, determine immune checkpoint inhibitor eligibility for metastatic melanoma, excluding active severe autoimmune flare requiring high-dose steroids.",
+  "base_patient": {
+    "id": "syn-onc-010A",
+    "as_of": "2025-09-12",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250901_melanoma",
+        "date": "2025-09-01",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma with ECOG 1; immune checkpoint inhibitor considered."
+      },
+      {
+        "id": "rheum_20250905_autoimmune",
+        "date": "2025-09-05",
+        "type": "rheumatology_note",
+        "text": "Remote rheumatoid arthritis in remission. No active autoimmune flare and no systemic steroids."
+      }
+    ]
+  },
+  "variant_patient": {
+    "id": "syn-onc-010B",
+    "as_of": "2025-09-12",
+    "attributes": {
+      "age": 58,
+      "sex": "female",
+      "race": "White",
+      "insurance": "commercial"
+    },
+    "record": [
+      {
+        "id": "note_20250901_melanoma",
+        "date": "2025-09-01",
+        "type": "oncology_note",
+        "text": "Metastatic melanoma with ECOG 1; immune checkpoint inhibitor considered."
+      },
+      {
+        "id": "rheum_20250905_autoimmune",
+        "date": "2025-09-05",
+        "type": "rheumatology_note",
+        "text": "Active severe autoimmune flare requiring prednisone 60 mg daily."
+      }
+    ]
+  },
+  "expected": {
+    "relation": "flip",
+    "base_decision": "eligible",
+    "variant_decision": "ineligible",
+    "required_citations": {
+      "base": [
+        "note_20250901_melanoma",
+        "rheum_20250905_autoimmune"
+      ],
+      "variant": [
+        "rheum_20250905_autoimmune"
+      ]
+    },
+    "forbidden_after_as_of": true
+  },
+  "clinical_rationale": "Active severe autoimmune flare is the decisive contraindicating change."
+}
