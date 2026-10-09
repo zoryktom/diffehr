@@ -3,7 +3,7 @@ from pathlib import Path
 
 from diffehr.contracts import load_contracts
 from diffehr.models import ModelResponse, make_model
-from diffehr.scoring import citation_precision_recall, run_evaluation, score_side
+from diffehr.scoring import citation_precision_recall, compute_run_metrics, run_evaluation, score_side
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +24,11 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(payload["metrics"]["temporal_leakage_violations"], 0)
         self.assertEqual(payload["metrics"]["confidence_intervals"]["invariance_violation_rate"], [0.0, 0.0])
         self.assertEqual(payload["metrics"]["confidence_intervals"]["decisive_sensitivity_score"], [1.0, 1.0])
+        metadata = payload["run_metadata"]
+        self.assertEqual(metadata["dataset_version"], "0.2.0")
+        self.assertEqual(metadata["contract_count"], 32)
+        self.assertEqual(len(metadata["dataset_fingerprint_sha256"]), 64)
+        self.assertFalse(metadata["external_model"])
 
     def test_heuristic_passes_full_multispecialty_suite(self):
         payload = run_evaluation(self.contracts, make_model("heuristic-oncology"))
@@ -52,6 +57,14 @@ class ScoringTests(unittest.TestCase):
         score = score_side(contract, "variant", response)
         self.assertFalse(score.no_future_evidence)
         self.assertEqual(score.temporal_leakage_violations, ("img_20250301_future_progression",))
+
+    def test_empty_metric_inputs_are_explicit_zero_or_perfect_empty_sets(self):
+        metrics = compute_run_metrics([])
+        self.assertEqual(metrics.invariance_violation_rate, 0.0)
+        self.assertEqual(metrics.decisive_sensitivity_score, 0.0)
+        self.assertEqual(metrics.evidence_citation_precision, 1.0)
+        self.assertEqual(metrics.evidence_citation_recall, 1.0)
+        self.assertEqual(metrics.temporal_leakage_violations, 0)
 
 
 if __name__ == "__main__":

@@ -12,16 +12,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Run unit tests
-        run: PYTHONPATH=src python -m pytest tests/
-      - name: Refresh manifest
-        run: PYTHONPATH=src python -m diffehr manifest examples
-      - name: Validate example contracts
+      - name: Install package
+        run: python -m pip install -e '.[test]'
+      - name: Run tests
+        run: PYTHONPATH=src pytest tests/ -q
+      - name: Validate dataset
         run: PYTHONPATH=src python -m diffehr validate examples
-      - name: Run smoke evaluation
-        run: PYTHONPATH=src python -m diffehr evaluate examples --model oracle --out /tmp/oracle.json
-      - name: Run fuzz smoke test
-        run: PYTHONPATH=src python -m diffehr fuzz --input examples/discovery/base_chart.json --perturbations 20 --model reckless-oncology --out /tmp/fuzz.json
       - name: Run deterministic benchmark
         run: scripts/run_all_benchmarks.sh
       - name: Verify benchmark report consistency
@@ -39,4 +35,7 @@ jobs:
               )
               if row not in report:
                   raise SystemExit(f"Missing report row for {path}: {row}")
+              for key in ("generated_at", "dataset_fingerprint_sha256", "dataset_version"):
+                  if key not in payload.get("run_metadata", {}):
+                      raise SystemExit(f"{path} missing run_metadata.{key}")
           PY

@@ -39,9 +39,9 @@ def load_contracts(path: str | Path) -> list[Contract]:
         return [load_contract(root)]
     if not root.exists():
         raise ContractError(f"{root}: path does not exist")
-    files = sorted(root.glob("*.json"))
+    files = sorted(root.glob("**/contracts/*.json"))
     if not files:
-        files = sorted(root.glob("**/contracts/*.json"))
+        files = sorted(file for file in root.glob("*.json") if file.name != "manifest.json")
     if not files:
         raise ContractError(f"{root}: no contract JSON files found")
     return [load_contract(file) for file in files]

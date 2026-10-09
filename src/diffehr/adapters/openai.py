@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import urllib.error
 import urllib.request
 
@@ -42,7 +43,13 @@ class OpenAIAdapter(ModelAdapter):
         except urllib.error.HTTPError as exc:
             body = exc.read().decode("utf-8", errors="replace")
             raise RuntimeError(f"OpenAI API error {exc.code}: {body}") from exc
+        except (urllib.error.URLError, TimeoutError, socket.timeout) as exc:
+            raise RuntimeError(f"OpenAI API request failed: {exc}") from exc
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("OpenAI API response was not valid JSON") from exc
         text = _extract_response_text(data)
+        if not text.strip():
+            raise RuntimeError("OpenAI API response did not contain text output")
         return parse_model_response(self.name, text, contract.allowed_decisions)
 
 

@@ -98,6 +98,21 @@ class CounterfactualMutation(StrictModel):
         return tuple(str(item).strip() for item in value if str(item).strip())
 
 
+class ContractProvenance(StrictModel):
+    source: str = "synthetic"
+    review_status: Literal["synthetic_unreviewed", "synthetic_author_checked", "clinician_reviewed"] = "synthetic_unreviewed"
+    references: tuple[str, ...] = ()
+
+    @field_validator("references", mode="before")
+    @classmethod
+    def normalize_references(cls, value: Any) -> tuple[str, ...]:
+        if value in (None, ""):
+            return ()
+        if not isinstance(value, (list, tuple, set)):
+            raise TypeError("references must be a list of strings")
+        return tuple(str(item).strip() for item in value if str(item).strip())
+
+
 class RecordItem(StrictModel):
     id: str = Field(min_length=1)
     date: date
@@ -252,6 +267,19 @@ class Contract(StrictModel):
     clinical_rationale: str = ""
     temporal_constraints: TemporalConstraints = Field(default_factory=TemporalConstraints)
     mutation: CounterfactualMutation | None = None
+    provenance: ContractProvenance = Field(default_factory=ContractProvenance)
+    safety_critical_assertions: tuple[str, ...] = ()
+    known_ambiguities: tuple[str, ...] = ()
+    known_limitations: tuple[str, ...] = ()
+
+    @field_validator("safety_critical_assertions", "known_ambiguities", "known_limitations", mode="before")
+    @classmethod
+    def normalize_text_tuple(cls, value: Any) -> tuple[str, ...]:
+        if value in (None, ""):
+            return ()
+        if not isinstance(value, (list, tuple, set)):
+            raise TypeError("field must be a list of strings")
+        return tuple(str(item).strip() for item in value if str(item).strip())
 
     @field_validator("allowed_decisions", mode="before")
     @classmethod

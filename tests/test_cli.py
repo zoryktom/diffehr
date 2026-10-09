@@ -141,6 +141,63 @@ class CliTests(unittest.TestCase):
             payload = json.loads(out.read_text(encoding="utf-8"))
             self.assertGreaterEqual(payload["n_findings"], 2)
 
+    def test_manifest_and_failure_commands(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            manifest_result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "diffehr",
+                    "manifest",
+                    str(ROOT / "examples"),
+                ],
+                cwd=ROOT,
+                env={"PYTHONPATH": str(ROOT / "src")},
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(manifest_result.returncode, 0, manifest_result.stderr)
+            run = Path(tmpdir) / "reckless.json"
+            report = Path(tmpdir) / "failures.md"
+            evaluate = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "diffehr",
+                    "evaluate",
+                    str(ROOT / "examples"),
+                    "--model",
+                    "reckless-oncology",
+                    "--out",
+                    str(run),
+                ],
+                cwd=ROOT,
+                env={"PYTHONPATH": str(ROOT / "src")},
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(evaluate.returncode, 0, evaluate.stderr)
+            failures = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "diffehr",
+                    "failures",
+                    str(run),
+                    "--out",
+                    str(report),
+                ],
+                cwd=ROOT,
+                env={"PYTHONPATH": str(ROOT / "src")},
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(failures.returncode, 0, failures.stderr)
+            self.assertIn("Case-Level Failures", report.read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()

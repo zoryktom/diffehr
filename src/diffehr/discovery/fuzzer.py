@@ -39,11 +39,13 @@ class DiffEHRFuzzer:
         model: ModelAdapter,
         *,
         perturbations: int = 20,
+        seed: int = 2025,
         task: str | None = None,
         allowed_decisions: tuple[str, ...] = DEFAULT_ALLOWED_DECISIONS,
     ) -> None:
         self.model = model
         self.perturbations = max(1, perturbations)
+        self.seed = seed
         self.task = task or (
             "As of the decision date, determine eligibility for an EGFR-directed oncology trial "
             "requiring EGFR exon 19 deletion or L858R and no progression before the decision date."
@@ -55,6 +57,7 @@ class DiffEHRFuzzer:
         perturbation_specs = self._build_perturbations(chart, base_patient)
         results: list[dict[str, Any]] = []
         findings: list[dict[str, Any]] = []
+        seen_findings: set[tuple[str, str, str]] = set()
 
         for index, spec in enumerate(perturbation_specs[: self.perturbations], start=1):
             variant_patient = fhir_chart_to_patient(spec["chart"])
@@ -71,6 +74,9 @@ class DiffEHRFuzzer:
                 "id": contract.id,
                 "type": spec["type"],
                 "mutation": spec["mutation"],
+                "intended_perturbation": spec["intended_perturbation"],
+                "base_chart": chart,
+                "variant_chart": spec["chart"],
                 "base_decision": base_response.decision,
                 "variant_decision": variant_response.decision,
                 "changed_decision": changed_decision,
@@ -80,13 +86,36 @@ class DiffEHRFuzzer:
             }
             results.append(item)
             if spec["type"] == "demographic" and changed_decision:
-                findings.append({**item, "finding": "invariance_violation"})
+                finding = {
+                    **item,
+                    "finding": "invariance_violation",
+                    "finding_status": "confirmed_contract_violation",
+                    "needs_human_review": True,
+                }
+                key = (finding["finding"], finding["mutation"], finding["variant_decision"])
+                if key not in seen_findings:
+                    findings.append(finding)
+                    seen_findings.add(key)
             if spec["type"] == "temporal" and future_citations:
-                findings.append({**item, "finding": "temporal_leakage"})
+                finding = {
+                    **item,
+                    "finding": "temporal_leakage",
+                    "finding_status": "confirmed_contract_violation",
+                    "needs_human_review": True,
+                }
+                key = (finding["finding"], finding["mutation"], ",".join(future_citations))
+                if key not in seen_findings:
+                    findings.append(finding)
+                    seen_findings.add(key)
 
         return {
             "schema_version": "0.2",
             "model": self.model.name,
+            "generation_config": {
+                "seed": self.seed,
+                "perturbations_requested": self.perturbations,
+                "families": ["demographic", "temporal"],
+            },
             "base_patient_id": base_patient.id,
             "n_perturbations": len(results),
             "n_findings": len(findings),
@@ -136,6 +165,7 @@ class DiffEHRFuzzer:
                 {
                     "type": "demographic",
                     "mutation": f"{key}={value}",
+                    "intended_perturbation": "nonclinical attribute invariance check",
                     "chart": mutated,
                 }
             )
@@ -148,6 +178,7 @@ class DiffEHRFuzzer:
                 {
                     "type": "temporal",
                     "mutation": f"{item.id}.date={future_date.isoformat()}",
+                    "intended_perturbation": "shift one evidence timestamp after decision_t",
                     "chart": mutated,
                 }
             )
@@ -169,6 +200,53 @@ def save_fuzz_results(payload: dict[str, Any], path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def replay_finding(path: str | Path, finding_id: str, model: ModelAdapter) -> dict[str, Any]:
+    payload = load_fuzz_results(path)
+    finding = next((item for item in payload.get("findings", []) if item.get("id") == finding_id), None)
+    if finding is None:
+        raise ValueError(f"Finding not found: {finding_id}")
+    chart = finding.get("base_chart")
+    if not isinstance(chart, dict):
+        raise ValueError(f"{finding_id}: recorded finding does not include base_chart")
+    fuzzer = DiffEHRFuzzer(
+        model,
+        perturbations=1,
+        seed=int(payload.get("generation_config", {}).get("seed", 2025)),
+    )
+    base_patient = fhir_chart_to_patient(chart)
+    variant_chart = finding.get("variant_chart")
+    if not isinstance(variant_chart, dict):
+        raise ValueError(f"{finding_id}: recorded finding does not include variant_chart")
+    spec = {
+        "type": finding["type"],
+        "mutation": finding["mutation"],
+        "intended_perturbation": finding.get("intended_perturbation", "recorded replay"),
+        "chart": variant_chart,
+    }
+    contract = fuzzer._contract_for(1, base_patient, fhir_chart_to_patient(variant_chart), spec)
+    base_response = model.answer(contract, "base")
+    variant_response = model.answer(contract, "variant")
+    return {
+        "schema_version": "0.2",
+        "model": model.name,
+        "replayed_finding_id": finding_id,
+        "mutation": finding["mutation"],
+        "base_decision": base_response.decision,
+        "variant_decision": variant_response.decision,
+        "changed_decision": base_response.decision != variant_response.decision,
+        "base_citations": list(base_response.citations),
+        "variant_citations": list(variant_response.citations),
+    }
+
+
+def load_fuzz_results(path: str | Path) -> dict[str, Any]:
+    with Path(path).open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    if not isinstance(data, dict):
+        raise ValueError("Fuzz results must be a JSON object")
+    return data
 
 
 def fhir_chart_to_patient(chart: dict[str, Any]) -> PatientRecord:

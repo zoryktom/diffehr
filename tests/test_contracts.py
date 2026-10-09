@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from diffehr.contracts import BehavioralRelation, ContractError, contract_from_dict, load_contracts
+from diffehr.dataset import generate_dataset_manifest, summarize_counterfactual_differences
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,19 @@ class ContractTests(unittest.TestCase):
         bad["base_patient"]["fhir"] = {"entry": []}
         with pytest.raises(ContractError, match="resourceType"):
             contract_from_dict(bad)
+
+    def test_dataset_manifest_matches_actual_contracts(self):
+        manifest = generate_dataset_manifest(ROOT / "examples").payload
+        self.assertEqual(manifest["contract_count"], 32)
+        self.assertEqual(manifest["domain_counts"], {"cardiology": 8, "infectious_disease": 8, "oncology": 16})
+        self.assertEqual(len(manifest["contracts"]), 32)
+        self.assertTrue(all("sha256" in item for item in manifest["contracts"]))
+
+    def test_counterfactual_difference_summary_is_machine_readable(self):
+        contract = next(item for item in load_contracts(ROOT / "examples") if item.id == "onc_race_invariance_006")
+        summary = summarize_counterfactual_differences(contract)
+        self.assertEqual(summary["factor_label"], "single_factor")
+        self.assertIn("race", summary["attribute_changes"])
 
 
 if __name__ == "__main__":

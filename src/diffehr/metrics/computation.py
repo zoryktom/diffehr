@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+from hashlib import sha256
 import json
+import os
 from pathlib import Path
+import platform
 import random
 from typing import Any
 
+import diffehr
 from pydantic import BaseModel, ConfigDict, Field
 
 from diffehr.adapters import ModelAdapter, ModelResponse
 from diffehr.core import BehavioralRelation, Contract
+from diffehr.dataset import DATASET_VERSION
 
 
 class MetricModel(BaseModel):
@@ -173,6 +179,19 @@ def run_evaluation(contracts: list[Contract], model: ModelAdapter) -> dict[str, 
     return {
         "schema_version": "0.2",
         "model": model.name,
+        "run_metadata": {
+            "diffehr_version": diffehr.__version__,
+            "python_version": platform.python_version(),
+            "adapter": model.__class__.__name__,
+            "contract_count": len(results),
+            "contract_ids": [contract.id for contract in contracts],
+            "dataset_version": DATASET_VERSION,
+            "dataset_fingerprint_sha256": _dataset_fingerprint(contracts),
+            "generated_at": _run_timestamp(),
+            "bootstrap_samples": 1000,
+            "bootstrap_seed": 2025,
+            "external_model": model.name.startswith(("openai:", "localhf:", "hf:")),
+        },
         "n_contracts": len(results),
         "passed": passed,
         "pass_rate": round(passed / len(results), 4) if results else 0.0,
@@ -303,3 +322,20 @@ def save_results(payload: dict[str, Any], path: str | Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2)
+        handle.write("\n")
+
+
+def _dataset_fingerprint(contracts: list[Contract]) -> str:
+    canonical = [
+        contract.model_dump(mode="json")
+        for contract in sorted(contracts, key=lambda item: item.id)
+    ]
+    payload = json.dumps(canonical, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return sha256(payload).hexdigest()
+
+
+def _run_timestamp() -> str:
+    configured = os.environ.get("DIFFEHR_RUN_TIMESTAMP")
+    if configured:
+        return configured
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")

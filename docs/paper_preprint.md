@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Clinical AI systems are often evaluated on static question-answering or case-vignette benchmarks, which can miss whether a system changes behavior for the right clinical reasons. We introduce DiffEHR, an executable research artifact for counterfactual contract testing on paired synthetic health records. Each contract defines a base chart, a controlled counterfactual variant, a clinical task, allowed decisions, an expected behavioral relation, required evidence citations, and temporal constraints at a decision index timestamp. We evaluate three baselines across 32 contracts spanning oncology, cardiology, and infectious disease. The oracle baseline passed 32/32 contracts with mean score 1.000. A temporally careful heuristic passed 32/32 with mean score 0.999. A reckless baseline that overreacts to payer status and ignores decision-time availability passed 24/32 with mean score 0.877, an invariance violation rate of 50.00% and 5 temporal leakage violations. Automated fuzzing over a FHIR chart generated 20 perturbations and identified 6 findings: 4 payer-driven invariance violations and 2 future-evidence leakage cases. These results show that counterfactual contract testing can expose deployment-relevant failures that static accuracy alone would obscure.
+Clinical AI systems are often evaluated on static question-answering or case-vignette benchmarks, which can miss whether a system changes behavior for the right clinical reasons. We introduce DiffEHR, an executable research artifact for counterfactual contract testing on paired synthetic health records. Each contract defines a base chart, a controlled counterfactual variant, a clinical task, allowed decisions, an expected behavioral relation, required evidence citations, and temporal constraints at a decision index timestamp. We evaluate three baselines across 32 contracts spanning oncology, cardiology, and infectious disease. The oracle baseline passed 32/32 contracts with mean score 1.000. A temporally careful heuristic passed 32/32 with mean score 0.999. A reckless baseline that overreacts to payer status and ignores decision-time availability passed 24/32 with mean score 0.877, an invariance violation rate of 50.00% and 5 temporal leakage violations. Automated fuzzing over a FHIR chart generated 20 perturbations and identified 3 distinct findings after deduplication: 2 payer-driven invariance violations and 1 future-evidence leakage case. These results show that counterfactual contract testing can expose deployment-relevant failures that static accuracy alone would obscure.
 
 ## Introduction
 
@@ -12,13 +12,25 @@ DiffEHR reframes clinical AI evaluation as executable counterfactual contracts. 
 
 This artifact contributes a multi-specialty benchmark, a strict schema, a metrics engine, adapter interfaces, an automated fuzzer, and reproducible reports. It is intended for research, regression testing, and governance workflows, not for clinical decision support.
 
-## Related Work
+## Research Questions
+
+- RQ1: Can DiffEHR detect predefined violations of clinical behavior contracts in controlled synthetic experiments?
+- RQ2: How do decisive sensitivity and irrelevant-attribute invariance vary across deterministic baselines?
+- RQ3: What failure modes are revealed by evidence-grounding and temporal-validity checks?
+- RQ4: Are deterministic evaluations reproducible from checked-in contracts and scripts?
+- RQ5: What limitations prevent synthetic contract-test performance from establishing real-world clinical reliability?
+
+## Background And Related Work
 
 Medical AI benchmarks such as exam-style multiple-choice tasks and clinical QA datasets measure important aspects of medical knowledge. However, they typically evaluate isolated answers rather than behavioral stability under controlled chart edits. Software testing offers a complementary framing: properties can be encoded as tests that must continue passing as systems evolve. DiffEHR applies this idea to synthetic FHIR-style clinical records, making counterfactual behavior inspectable and reproducible.
 
-The closest methodological family is metamorphic testing: a system should satisfy expected relations between outputs under controlled input transformations. DiffEHR specializes this approach for clinical AI by encoding clinical tasks, paired records, evidence IDs, temporal constraints, and specialty-specific expected behavior.
+The closest methodological family is metamorphic testing: a system should satisfy expected relations between outputs under controlled input transformations. DiffEHR specializes this approach for clinical AI by encoding clinical tasks, paired records, evidence IDs, temporal constraints, and specialty-specific expected behavior. DiffEHR uses FHIR R4-style JSON for chart representation, but does not claim conformance to a complete production FHIR profile.
 
-## Formal Methods
+## Problem Formulation
+
+The problem is not to prove that a clinical AI system is safe. The narrower question is whether a system satisfies explicitly defined behavior contracts on synthetic paired records. A failure means the model violated a benchmark assertion; it does not by itself quantify patient harm or clinical deployment risk.
+
+## DiffEHR Methodology
 
 ### Contract Definition
 
@@ -37,7 +49,11 @@ DiffEHR supports two primary behavioral relations:
 
 Each chart is represented as strict Pydantic v2 models with FHIR R4-style JSON compatibility. Records contain dated chart items, demographic attributes, optional FHIR resources, and a decision `as_of` timestamp. Evidence citations are chart item IDs.
 
-### Metrics
+## Contract Schema And Counterfactual Construction
+
+Contracts are versioned JSON objects validated by strict Pydantic models. The dataset manifest records counts and SHA-256 checksums for the checked-in contracts. Counterfactual integrity checks summarize observed differences between base and variant records as single-factor, multifactor/dependent representation, or none. This structural summary supports auditability, but it does not replace clinical review.
+
+## Evaluation Metrics
 
 DiffEHR reports contract pass rate and four research metrics.
 
@@ -68,7 +84,7 @@ TLVR = citations with evidence_t > decision_t / total observed citations
 
 For IVR and DSS, DiffEHR computes deterministic 95% percentile bootstrap confidence intervals by resampling contracts with replacement.
 
-## Empirical Setup
+## Benchmark Design
 
 The benchmark contains exactly 32 paired synthetic contracts:
 
@@ -85,11 +101,15 @@ The three evaluated baselines were:
 - Heuristic: rule-based, respects decision timestamps, and ignores non-clinical attributes.
 - Reckless: rule-based, ignores temporal visibility and overreacts to payer status.
 
+## Experimental Setup
+
 The full reproducible report is generated by:
 
 ```bash
 scripts/run_all_benchmarks.sh
 ```
+
+The deterministic run requires no API keys, internet access, or downloaded model weights. Optional OpenAI and local-HF adapters are available but were not used for the reported deterministic results.
 
 ## Results
 
@@ -124,14 +144,59 @@ Representative failures included:
 
 ### Automated Counterfactual Discovery
 
-DiffEHR includes a fuzzer that mutates non-clinical demographic attributes and shifts FHIR resource dates into the future. Against the reckless baseline, the fuzzer ran 20 perturbations and found 6 failures:
+DiffEHR includes a fuzzer that mutates non-clinical demographic attributes and shifts FHIR resource dates into the future. Against the reckless baseline, the fuzzer ran 20 perturbations and found 3 distinct failures after deduplicating equivalent findings:
 
 | Finding type | Count |
 |---|---:|
-| Invariance violation | 4 |
-| Temporal leakage | 2 |
+| Invariance violation | 2 |
+| Temporal leakage | 1 |
 
 The fuzz run is stored at `evidence/runs/fuzz_findings.json`.
+
+## Ablation And Robustness Analysis
+
+The deterministic baselines serve as practical ablations of framework claims:
+
+| Comparison | What changes | Expected diagnostic result | Observed result |
+|---|---|---|---|
+| Oracle vs heuristic | Hidden contract fixture vs transparent rules | Both should pass if evaluator and rules match contracts | Both passed 32/32 |
+| Heuristic vs reckless | Temporal visibility and payer-invariance disabled in reckless | Reckless should fail temporal and invariance checks | Reckless passed 24/32, IVR 50.00%, 5 temporal leaks |
+| Fuzz demographic perturbations | Non-clinical payer fields changed | Reckless should reveal payer-driven flips | 2 deduplicated invariance findings |
+| Fuzz temporal perturbations | Evidence dates shifted after decision index | Reckless should cite future evidence | 1 deduplicated temporal finding |
+
+These ablations show that the evaluation engine detects the intentionally introduced failure modes. They do not establish performance for a real clinical model.
+
+## Error Analysis
+
+The checked-in failure-analysis report is generated at `evidence/reports/failure_analysis.md`. It assigns severity by explicit benchmark rules:
+
+- high: temporal leakage, safety-related expected decisions, or incorrect task decisions,
+- medium: relation failures without temporal or safety markers,
+- low: evidence-only failures.
+
+All failures require human review before clinical interpretation.
+
+## Threats To Validity
+
+The benchmark is synthetic and deliberately constructed. It is not a random sample of clinical cases. The deterministic baselines are not real clinical AI systems. Evidence matching uses record IDs and does not independently judge semantic truth. Confidence intervals are conditional on the benchmark and bootstrap scheme. Contract rationales are author-specified and should be reviewed before use as a validated benchmark.
+
+## Ethical Considerations
+
+DiffEHR is designed to reduce risk in evaluation workflows by making failure modes visible on synthetic records. It must not be used as clinical decision support. It should not be used to make claims about patient outcomes, model safety, or fairness in deployment without additional validation, governance, and clinician review.
+
+## Reproducibility Statement
+
+The deterministic artifact can be reproduced with:
+
+```bash
+python -m pip install -e '.[test]'
+PYTHONPATH=src pytest tests/ -q
+PYTHONPATH=src python -m diffehr manifest examples
+PYTHONPATH=src python -m diffehr validate examples
+scripts/run_all_benchmarks.sh
+```
+
+Machine-readable outputs are in `evidence/runs/`. Human-readable reports are in `evidence/reports/`. Dataset integrity is recorded in `examples/manifest.json`.
 
 ## Discussion
 
@@ -158,3 +223,12 @@ The current contract pack is synthetic and compact. It does not establish real-w
 ## Conclusion
 
 DiffEHR operationalizes clinical counterfactual testing as a reproducible software artifact. Across 32 contracts, it distinguishes a careful baseline from a reckless baseline despite both showing strong decisive sensitivity. The artifact provides a foundation for rigorous, inspectable, multi-specialty evaluation of clinical AI behavior.
+
+## References
+
+- Chen, T. Y., Cheung, S. C., and Yiu, S. M. 1998. *Metamorphic Testing: A New Approach for Generating Next Test Cases*. Technical Report HKUST-CS98-01. https://www.cse.ust.hk/faculty/scc/publ/CS98-01-metamorphictesting.pdf
+- Segura, S., Fraser, G., Sanchez, A. B., and Ruiz-Cortes, A. 2016. *A Survey on Metamorphic Testing*. IEEE Transactions on Software Engineering, 42(9), 805-824. https://doi.org/10.1109/TSE.2016.2532875
+- HL7. *FHIR Release 4, Bundle Resource*. https://hl7.org/fhir/R4/bundle.html
+- U.S. Food and Drug Administration. 2022. *Clinical Decision Support Software: Guidance for Industry and Food and Drug Administration Staff*. https://www.fda.gov/media/109618/download
+
+These references establish nearby technical and regulatory context. They do not constitute a comprehensive literature review or external clinical validation of DiffEHR.

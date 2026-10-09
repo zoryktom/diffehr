@@ -106,6 +106,107 @@ def render_markdown(result_sets: list[dict[str, Any]], title: str = "DiffEHR Eva
     return "\n".join(lines) + "\n"
 
 
+def render_failure_analysis(result_sets: list[dict[str, Any]], title: str = "DiffEHR Failure Analysis") -> str:
+    lines = [
+        f"# {title}",
+        "",
+        "This report is generated from machine-readable DiffEHR run outputs. Severity is assigned by benchmark rules, not by autonomous clinical adjudication.",
+        "",
+        "## Aggregate Patterns",
+        "",
+        "| Model | Failures | High | Medium | Low | Human review needed |",
+        "|---|---:|---:|---:|---:|---:|",
+    ]
+    all_rows: list[dict[str, Any]] = []
+    for payload in result_sets:
+        rows = [_failure_row(payload, item) for item in payload.get("results", []) if not item.get("passed", False)]
+        all_rows.extend(rows)
+        severities = {level: sum(1 for row in rows if row["severity"] == level) for level in ("high", "medium", "low")}
+        review = sum(1 for row in rows if row["human_review_needed"])
+        lines.append(
+            f"| {payload['model']} | {len(rows)} | {severities['high']} | "
+            f"{severities['medium']} | {severities['low']} | {review} |"
+        )
+
+    lines.extend(["", "## Case-Level Failures", ""])
+    lines.append("| Model | Contract | Domain | Category | Failed assertion | Severity | Expected | Observed | Evidence issue | Reproduce |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|")
+    for row in all_rows:
+        lines.append(
+            f"| {row['model']} | {row['contract_id']} | {row['domain']} | {row['category']} | "
+            f"{row['failed_assertion']} | {row['severity']} | {row['expected']} | {row['observed']} | "
+            f"{row['evidence_issue']} | `{row['reproduce']}` |"
+        )
+    if not all_rows:
+        lines.append("| none | none | none | none | none | none | none | none | none | none |")
+    lines.extend(
+        [
+            "",
+            "## Severity Rules",
+            "",
+            "- `high`: temporal leakage, safety-related expected decisions, or incorrect task decisions.",
+            "- `medium`: relation failure without a temporal or safety marker.",
+            "- `low`: evidence-only failure where decisions and relation were correct.",
+            "",
+            "All failures are marked as needing human review before making any real clinical interpretation.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def _failure_row(payload: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
+    base = item["base"]
+    variant = item["variant"]
+    evidence_issue = _evidence_issue(base, variant)
+    temporal = bool(base.get("temporal_leakage_violations") or variant.get("temporal_leakage_violations"))
+    decision_failure = not base.get("decision_correct", False) or not variant.get("decision_correct", False)
+    relation_failure = not item.get("relation_correct", False)
+    failed = []
+    if decision_failure:
+        failed.append("decision")
+    if relation_failure:
+        failed.append("relation")
+    if evidence_issue != "none":
+        failed.append("evidence")
+    if temporal:
+        failed.append("temporal")
+    expected = f"{base['expected_decision']} -> {variant['expected_decision']}"
+    observed = f"{base['observed_decision']} -> {variant['observed_decision']}"
+    safety_terms = {"unsafe", "contraindicated", "avoid_beta_lactam", "defer"}
+    if temporal or base["expected_decision"] in safety_terms or variant["expected_decision"] in safety_terms or decision_failure:
+        severity = "high"
+    elif relation_failure:
+        severity = "medium"
+    else:
+        severity = "low"
+    return {
+        "model": payload["model"],
+        "contract_id": item["contract_id"],
+        "domain": item.get("domain", "unknown"),
+        "category": item["contract_type"],
+        "failed_assertion": "+".join(failed) if failed else "unknown",
+        "severity": severity,
+        "expected": expected,
+        "observed": observed,
+        "evidence_issue": evidence_issue,
+        "human_review_needed": True,
+        "reproduce": f"PYTHONPATH=src python -m diffehr evaluate examples --model {payload['model']} --out /tmp/{payload['model'].replace(':', '-')}.json",
+    }
+
+
+def _evidence_issue(base: dict[str, Any], variant: dict[str, Any]) -> str:
+    issues = []
+    if not base.get("citation_correct", False):
+        issues.append("base citations")
+    if not variant.get("citation_correct", False):
+        issues.append("variant citations")
+    if base.get("temporal_leakage_violations"):
+        issues.append("base temporal leakage")
+    if variant.get("temporal_leakage_violations"):
+        issues.append("variant temporal leakage")
+    return ", ".join(issues) if issues else "none"
+
+
 def _fmt_rate(value: Any) -> str:
     try:
         return f"{float(value):.2%}"

@@ -16,12 +16,15 @@ class LocalHFAdapter(ModelAdapter):
 
     def answer(self, contract: Contract, side: str) -> ModelResponse:
         generator = self._get_pipeline()
-        output = generator(
-            contract.prompt(side),
-            max_new_tokens=self.max_new_tokens,
-            do_sample=False,
-            return_full_text=False,
-        )
+        try:
+            output = generator(
+                contract.prompt(side),
+                max_new_tokens=self.max_new_tokens,
+                do_sample=False,
+                return_full_text=False,
+            )
+        except Exception as exc:
+            raise RuntimeError(f"LocalHFAdapter generation failed for {self.model_id}: {exc}") from exc
         text = _extract_generated_text(output)
         return parse_model_response(self.name, text, contract.allowed_decisions)
 
@@ -33,7 +36,10 @@ class LocalHFAdapter(ModelAdapter):
                 raise RuntimeError(
                     "LocalHFAdapter requires transformers. Install with `pip install diffehr[hf]`."
                 ) from exc
-            self._pipeline = pipeline("text-generation", model=self.model_id)
+            try:
+                self._pipeline = pipeline("text-generation", model=self.model_id)
+            except Exception as exc:
+                raise RuntimeError(f"LocalHFAdapter could not load model {self.model_id}: {exc}") from exc
         return self._pipeline
 
 
