@@ -15,6 +15,10 @@ ROOT = Path(__file__).resolve().parents[1]
 class AdapterTests(unittest.TestCase):
     def setUp(self):
         self.contract = load_contracts(ROOT / "examples" / "oncology" / "contracts")[0]
+        env = patch.dict(os.environ)
+        env.start()
+        self.addCleanup(env.stop)
+        os.environ.pop("HF_OFFLINE", None)
 
     def test_malformed_model_text_becomes_unknown_not_success(self):
         response = parse_model_response(

@@ -20,12 +20,22 @@ DiffEHR evaluates whether clinical AI systems satisfy counterfactual contracts: 
 
 Values are percentages with binomial standard error (SE) in parentheses; SDI is a weighted error fraction (lower is safer) with bootstrap SE and 95% CI. See `docs/METRICS.md`.
 
+## Output Validity And Decision Accuracy
+
+Side-level statistics over both charts of every contract. A decision of `unknown` means the output could not be parsed into an allowed decision; two `unknown` answers on an invariance pair count as unchanged, so read IFR and TDV together with the unparseable rate. Contract pass additionally requires full citation recall.
+
+| Model | Decision accuracy | Unparseable decisions | Pairs with changed decision | Mean citation recall |
+|---|---:|---:|---:|---:|
+| oracle | 100.00% | 0/240 (0.00%) | 74/120 | 1.000 |
+| heuristic-oncology | 77.08% | 40/240 (16.67%) | 53/120 | 0.767 |
+| reckless-oncology | 66.25% | 57/240 (23.75%) | 65/120 | 0.667 |
+
 ## Contracts Per Pack And Runtime
 
 | Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |
 |---|---|---:|---:|---:|---:|---:|---:|
-| oracle | OracleAdapter | 40 | 40 | 40 | 120 | 0.002 | 0.019 |
-| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.032 |
+| oracle | OracleAdapter | 40 | 40 | 40 | 120 | 0.003 | 0.027 |
+| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.005 | 0.039 |
 | reckless-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.031 |
 
 ## Metric 95% Bootstrap Confidence Intervals

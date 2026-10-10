@@ -24,14 +24,26 @@ DiffEHR evaluates whether clinical AI systems satisfy counterfactual contracts: 
 
 Values are percentages with binomial standard error (SE) in parentheses; SDI is a weighted error fraction (lower is safer) with bootstrap SE and 95% CI. See `docs/METRICS.md`.
 
+## Output Validity And Decision Accuracy
+
+Side-level statistics over both charts of every contract. A decision of `unknown` means the output could not be parsed into an allowed decision; two `unknown` answers on an invariance pair count as unchanged, so read IFR and TDV together with the unparseable rate. Contract pass additionally requires full citation recall.
+
+| Model | Decision accuracy | Unparseable decisions | Pairs with changed decision | Mean citation recall |
+|---|---:|---:|---:|---:|
+| heuristic-oncology | 77.08% | 40/240 (16.67%) | 53/120 | 0.767 |
+| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | 34.58% | 100/240 (41.67%) | 12/120 | 0.135 |
+| localhf:Qwen/Qwen2.5-0.5B-Instruct | 31.67% | 2/240 (0.83%) | 5/120 | 0.083 |
+| oracle | 100.00% | 0/240 (0.00%) | 74/120 | 1.000 |
+| reckless-oncology | 66.25% | 57/240 (23.75%) | 65/120 | 0.667 |
+
 ## Contracts Per Pack And Runtime
 
 | Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |
 |---|---|---:|---:|---:|---:|---:|---:|
-| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.032 |
-| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 471.306 | 3927.551 |
-| localhf:Qwen/Qwen2.5-0.5B-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 982.842 | 8190.350 |
-| oracle | OracleAdapter | 40 | 40 | 40 | 120 | 0.002 | 0.019 |
+| heuristic-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.005 | 0.039 |
+| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 548.918 | 4574.315 |
+| localhf:Qwen/Qwen2.5-0.5B-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 1017.316 | 8477.631 |
+| oracle | OracleAdapter | 40 | 40 | 40 | 120 | 0.003 | 0.027 |
 | reckless-oncology | HeuristicAdapter | 40 | 40 | 40 | 120 | 0.004 | 0.031 |
 
 ## Metric 95% Bootstrap Confidence Intervals

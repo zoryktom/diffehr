@@ -145,3 +145,21 @@ def test_benchmark_comma_models_and_fixture_report_separation(tmp_path, monkeypa
         == 2
     )
     assert "does not exist" in capsys.readouterr().err
+
+
+def test_report_exposes_unparseable_rate_and_decision_accuracy():
+    from diffehr.adapters.oracle import OracleAdapter
+    from diffehr.metrics.computation import run_evaluation
+    from diffehr.report import render_markdown
+
+    class Silent(OracleAdapter):
+        name = "silent"
+
+        def answer(self, contract, side):
+            return parse_model_response(self.name, "no decision here", contract.allowed_decisions)
+
+    payload = run_evaluation(CONTRACTS[:6], Silent())
+    markdown = render_markdown([payload])
+    assert "Output Validity And Decision Accuracy" in markdown
+    assert "| silent | 0.00% | 12/12 (100.00%) | 0/6 |" in markdown
+    assert payload["passed"] == 0

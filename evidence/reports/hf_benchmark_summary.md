@@ -18,12 +18,21 @@ DiffEHR evaluates whether clinical AI systems satisfy counterfactual contracts: 
 
 Values are percentages with binomial standard error (SE) in parentheses; SDI is a weighted error fraction (lower is safer) with bootstrap SE and 95% CI. See `docs/METRICS.md`.
 
+## Output Validity And Decision Accuracy
+
+Side-level statistics over both charts of every contract. A decision of `unknown` means the output could not be parsed into an allowed decision; two `unknown` answers on an invariance pair count as unchanged, so read IFR and TDV together with the unparseable rate. Contract pass additionally requires full citation recall.
+
+| Model | Decision accuracy | Unparseable decisions | Pairs with changed decision | Mean citation recall |
+|---|---:|---:|---:|---:|
+| localhf:Qwen/Qwen2.5-0.5B-Instruct | 31.67% | 2/240 (0.83%) | 5/120 | 0.083 |
+| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | 34.58% | 100/240 (41.67%) | 12/120 | 0.135 |
+
 ## Contracts Per Pack And Runtime
 
 | Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |
 |---|---|---:|---:|---:|---:|---:|---:|
-| localhf:Qwen/Qwen2.5-0.5B-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 982.842 | 8190.350 |
-| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 471.306 | 3927.551 |
+| localhf:Qwen/Qwen2.5-0.5B-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 1017.316 | 8477.631 |
+| localhf:HuggingFaceTB/SmolLM2-135M-Instruct | HuggingFaceAdapter | 40 | 40 | 40 | 120 | 548.918 | 4574.315 |
 
 ## Metric 95% Bootstrap Confidence Intervals
 

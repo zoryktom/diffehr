@@ -77,6 +77,7 @@ def _render_markdown(result_sets: list[dict[str, Any]], title: str) -> str:
             "",
         ]
     )
+    lines.extend(_output_validity_section(result_sets))
     lines.extend(["## Contracts Per Pack And Runtime", ""])
     lines.append(
         "| Model | Policy / architecture | Oncology | Cardiology | Infectious disease | Total | Elapsed (s) | Latency (ms/contract) |"
@@ -195,6 +196,35 @@ def _render_markdown(result_sets: list[dict[str, Any]], title: str) -> str:
         ]
     )
     return "\n".join(lines) + "\n"
+
+
+def _output_validity_section(result_sets: list[dict[str, Any]]) -> list[str]:
+    lines = [
+        "## Output Validity And Decision Accuracy",
+        "",
+        "Side-level statistics over both charts of every contract. A decision of `unknown` means the output could "
+        "not be parsed into an allowed decision; two `unknown` answers on an invariance pair count as unchanged, so "
+        "read IFR and TDV together with the unparseable rate. Contract pass additionally requires full citation recall.",
+        "",
+        "| Model | Decision accuracy | Unparseable decisions | Pairs with changed decision | Mean citation recall |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for payload in result_sets:
+        rows = payload.get("results", [])
+        sides = [side for item in rows for side in (item["base"], item["variant"])]
+        responses = [item[key] for item in rows for key in ("base_response", "variant_response")]
+        if not sides:
+            continue
+        accuracy = sum(1 for side in sides if side["decision_correct"]) / len(sides)
+        unknown = sum(1 for resp in responses if resp["decision"] == "unknown")
+        changed = sum(1 for item in rows if item["base_response"]["decision"] != item["variant_response"]["decision"])
+        recall = sum(side["citation_recall"] for side in sides) / len(sides)
+        lines.append(
+            f"| {payload['model']} | {accuracy:.2%} | {unknown}/{len(responses)} ({unknown / len(responses):.2%}) | "
+            f"{changed}/{len(rows)} | {recall:.3f} |"
+        )
+    lines.append("")
+    return lines
 
 
 def render_failure_analysis(
